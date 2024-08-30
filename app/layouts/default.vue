@@ -1,0 +1,140 @@
+<script setup lang="ts">
+import { useWindowSize } from '@vueuse/core';
+
+const mainStore = useMainStore();
+const { isUserSessionValid, leftDrawer } = storeToRefs(mainStore);
+const { start, finish } = useLoadingIndicator();
+const sidebarLinksUI = {
+  label: 'text-lg lg:text-sm truncate relative',
+  active: 'text-primary-500 dark:text-primary-400 before:bg-gray-100 dark:before:bg-gray-800',
+  dot: {
+    wrapper: 'w-px h-full mx-[9.5px] bg-gray-200 dark:bg-gray-700 relative',
+    after: 'after:absolute after:z-[1] after:w-px after:h-full after:bg-gray-200 after:dark:bg-gray-700 after:transform after:translate-y-full',
+    base: 'w-1 h-1 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
+    active: 'bg-primary-400 dark:bg-primary',
+    inactive: 'bg-gray-400 dark:bg-gray-500 group-hover:bg-gray-700 dark:group-hover:bg-gray-200'
+  },
+};
+type screenSize = 'mobile' | 'tablet' | 'desktop';
+const myScreenSize = computed<screenSize>(() => {
+  const isClient = import.meta.client;
+  if (isClient) {
+    const { width } = useWindowSize();
+    if (width.value < 768) { return 'mobile' }
+    if (width.value < 1024) { return 'tablet' }
+    return 'desktop';
+  }
+  return 'desktop';
+});
+
+//ACTIONS
+const shouldCloseLeftDrawer = () => {
+  if (myScreenSize.value === 'mobile') {
+    leftDrawer.value = false;
+  }
+};
+const logout = async(error?: string) => {
+  start();
+  const { supabase } = useSupabase();
+  await supabase.auth.signOut();
+  document.cookie.split(';').forEach((c) => {
+    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+  });
+  isUserSessionValid.value = false;
+  error?.length
+    ? await navigateTo(`/auth/login${error ?? ''}`)
+    : await navigateTo('/auth/login');
+  finish();
+};
+const refreshSessionOrLogout = async() => {
+  start();
+  const { supabase } = useSupabase();
+  const { data, error } = await supabase.auth.refreshSession();
+  console.log({data})
+  if (error) {
+    console.error('Error refreshing session', error);
+    isUserSessionValid.value = false;
+    finish();
+    logout('?error=session_expired');
+    return;
+  }
+  finish();
+};
+
+//replace with Pinia main store state
+const userMenu = [
+  { label: 'Dashboard', icon: 'i-heroicons-home-20-solid', to: '/', click: shouldCloseLeftDrawer, },
+  { label: 'Profile', icon: 'i-heroicons-user-20-solid', to: '/security/roles', click: shouldCloseLeftDrawer, },
+  { label: 'Settings', icon: 'i-heroicons-cog-20-solid', to: '/security/users', click: shouldCloseLeftDrawer, },
+  // { label: 'Logout', icon: 'i-heroicons-user', to: '/auth/login', click: shouldCloseLeftDrawer, },
+  { label: 'Logout', icon: 'i-heroicons-user', click: logout, },
+];
+
+//HOOKS and WATCHERS
+import.meta.client && refreshSessionOrLogout();
+
+watch(() => isUserSessionValid.value, (value) => {
+  if (!value) {
+    console.log('watch triggered');
+    refreshSessionOrLogout();
+  }
+});
+</script>
+
+<template>
+  <div>
+    <NuxtLoadingIndicator />
+      <UPage>
+        <AppHeader />
+
+        <div v-if="myScreenSize === 'mobile'">
+          <USlideover
+            v-model="leftDrawer"
+            prevent-close
+            side="left">
+            <UCard class="flex flex-col flex-1" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+                    Slideover
+                  </h3>
+                  <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="leftDrawer = false" />
+                </div>
+              </template>
+
+              <UDashboardSidebarLinks
+                  v-for="n in 10"
+                  :links="userMenu"
+                  :ui="sidebarLinksUI" />
+
+              noup
+            </UCard>
+          </USlideover>
+          <NuxtPage />
+        </div>
+
+        <div v-if="myScreenSize !== 'mobile'">
+          <UDashboardLayout>
+            <UDashboardPanel
+              v-if="leftDrawer"
+              resizable>
+              <UDashboardPanelContent class="mt-14">
+                <UDashboardSidebarLinks
+                  v-for="n in 10"
+                  :links="userMenu"
+                  :ui="sidebarLinksUI" />
+              </UDashboardPanelContent>
+            </UDashboardPanel>
+
+            <UDashboardPanel grow>
+              <UDashboardPanelContent class="mt-12">
+                <NuxtPage />
+              </UDashboardPanelContent>
+            </UDashboardPanel>
+
+          </UDashboardLayout>
+        </div>
+      </UPage>
+    <UNotifications />
+  </div>
+</template>

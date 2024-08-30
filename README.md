@@ -75,4 +75,8 @@ bun run preview
 ## Refresh Supabase database typescript
 npm i supabase@">=1.8.1" --save-dev
 npx supabase login
+supabase gen types --lang=typescript --project-id talzswrlxcdlbttmzrzh > app/types/database.types.ts
+
+old:
 npx supabase gen types --lang=typescript --project-id "talzswrlxcdlbttmzrzh" --schema public > app/types/database.types.ts
+

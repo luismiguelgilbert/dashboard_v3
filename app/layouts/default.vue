@@ -2,7 +2,7 @@
 import { useWindowSize } from '@vueuse/core';
 
 const mainStore = useMainStore();
-const { isUserSessionValid, leftDrawer } = storeToRefs(mainStore);
+const { isUserSessionValid, leftDrawer, userSession } = storeToRefs(mainStore);
 const { start, finish } = useLoadingIndicator();
 const sidebarLinksUI = {
   label: 'text-lg lg:text-sm truncate relative',
@@ -50,7 +50,7 @@ const refreshSessionOrLogout = async() => {
   start();
   const { supabase } = useSupabase();
   const { data, error } = await supabase.auth.refreshSession();
-  console.log({data})
+  userSession.value = data.session;
   if (error) {
     console.error('Error refreshing session', error);
     isUserSessionValid.value = false;

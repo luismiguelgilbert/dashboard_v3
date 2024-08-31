@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core';
+import SkeletonHeader from '~/components/SkeletonHeader.vue';
 
 const mainStore = useMainStore();
-const { isUserSessionValid, leftDrawer, userSession } = storeToRefs(mainStore);
+const route = useRoute();
+const {
+  isLoadingCompanies,
+  isLoadingMenu,
+  isUserSessionValid,
+  leftDrawer,
+  userCompanies,
+  userMenuFormatted,
+  userSession,
+} = storeToRefs(mainStore);
 const { start, finish } = useLoadingIndicator();
 const sidebarLinksUI = {
   label: 'text-lg lg:text-sm truncate relative',
@@ -28,11 +38,6 @@ const myScreenSize = computed<screenSize>(() => {
 });
 
 //ACTIONS
-const shouldCloseLeftDrawer = () => {
-  if (myScreenSize.value === 'mobile') {
-    leftDrawer.value = false;
-  }
-};
 const logout = async(error?: string) => {
   start();
   const { supabase } = useSupabase();
@@ -46,6 +51,7 @@ const logout = async(error?: string) => {
     : await navigateTo('/auth/login');
   finish();
 };
+
 const refreshSessionOrLogout = async() => {
   start();
   const { supabase } = useSupabase();
@@ -61,22 +67,22 @@ const refreshSessionOrLogout = async() => {
   finish();
 };
 
-//replace with Pinia main store state
-const userMenu = [
-  { label: 'Dashboard', icon: 'i-heroicons-home-20-solid', to: '/', click: shouldCloseLeftDrawer, },
-  { label: 'Profile', icon: 'i-heroicons-user-20-solid', to: '/security/roles', click: shouldCloseLeftDrawer, },
-  { label: 'Settings', icon: 'i-heroicons-cog-20-solid', to: '/security/users', click: shouldCloseLeftDrawer, },
-  // { label: 'Logout', icon: 'i-heroicons-user', to: '/auth/login', click: shouldCloseLeftDrawer, },
-  { label: 'Logout', icon: 'i-heroicons-user', click: logout, },
-];
-
 //HOOKS and WATCHERS
-import.meta.client && refreshSessionOrLogout();
+onMounted(() => {
+  import.meta.client && refreshSessionOrLogout();
+  import.meta.client && mainStore.fetchUserCompanies();
+  import.meta.client && mainStore.fetchUserMenu();
+});
 
 watch(() => isUserSessionValid.value, (value) => {
   if (!value) {
-    console.log('watch triggered');
     refreshSessionOrLogout();
+  }
+});
+
+watch(() => route.fullPath, () => {
+  if (myScreenSize.value === 'mobile') {
+    leftDrawer.value = false;
   }
 });
 </script>
@@ -102,12 +108,13 @@ watch(() => isUserSessionValid.value, (value) => {
                 </div>
               </template>
 
+              <SkeletonHeader
+                v-if="isLoadingMenu"
+                v-for="n in 5" />
               <UDashboardSidebarLinks
-                  v-for="n in 10"
-                  :links="userMenu"
-                  :ui="sidebarLinksUI" />
-
-              noup
+                v-else
+                :links="userMenuFormatted"
+                :ui="sidebarLinksUI" />
             </UCard>
           </USlideover>
           <NuxtPage />
@@ -117,11 +124,16 @@ watch(() => isUserSessionValid.value, (value) => {
           <UDashboardLayout>
             <UDashboardPanel
               v-if="leftDrawer"
+              class="bg-gray-50"
               resizable>
               <UDashboardPanelContent class="mt-14">
+                <SkeletonHeader
+                  class="py-1"
+                  v-if="isLoadingMenu"
+                  v-for="n in 5" />
                 <UDashboardSidebarLinks
-                  v-for="n in 10"
-                  :links="userMenu"
+                  v-else
+                  :links="userMenuFormatted"
                   :ui="sidebarLinksUI" />
               </UDashboardPanelContent>
             </UDashboardPanel>

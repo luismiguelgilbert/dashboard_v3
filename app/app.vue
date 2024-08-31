@@ -1,12 +1,6 @@
 <script setup lang="ts">
 const { seo } = useAppConfig();
 
-// const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
-// const { data: files } = useLazyFetch<ParsedContent[]>('/api/search.json', {
-//   default: () => [],
-//   server: false
-// })
-
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' }

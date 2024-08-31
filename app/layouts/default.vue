@@ -5,7 +5,6 @@ import SkeletonHeader from '~/components/SkeletonHeader.vue';
 const mainStore = useMainStore();
 const route = useRoute();
 const {
-  isLoadingCompanies,
   isLoadingMenu,
   isUserSessionValid,
   leftDrawer,

@@ -123,7 +123,7 @@ watch(() => route.fullPath, () => {
           <UDashboardLayout>
             <UDashboardPanel
               v-if="leftDrawer"
-              class="bg-gray-50"
+              class="bg-gray-50 dark:bg-gray-900"
               resizable>
               <UDashboardPanelContent class="mt-14">
                 <SkeletonHeader

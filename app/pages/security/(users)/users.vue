@@ -96,13 +96,19 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
           <UButton class="ml-2" color="gray" variant="ghost" size="md">
             <span v-if="!isMobile">Nuevo</span>
             <template #trailing>
-              <UIcon name="i-ri-add-circle-fill" class="w-5 h-5" />
+              <UIcon name="i-hugeicons-plus-sign-circle" class="w-5 h-5" />
             </template>
           </UButton>
           <UButton class="ml-2" color="gray" variant="ghost" size="md">
             <template #trailing>
               <span v-if="!isMobile">Descargar</span>
               <UIcon name="i-ri-file-excel-2-line" class="w-5 h-5" />
+            </template>
+          </UButton>
+          <UButton class="ml-2" color="gray" variant="ghost" size="md">
+            <template #trailing>
+              <span v-if="!isMobile">Filtros</span>
+              <UIcon name="i-hugeicons-filter" class="w-5 h-5" />
             </template>
           </UButton>
         </div>

@@ -15,6 +15,8 @@ const emits = defineEmits(['cancel']);
 
 const route = useRoute();
 const router = useRouter();
+const mainStore = useMainStore();
+const { isMobile } = storeToRefs(mainStore);
 
 const cardUi = { 
   body: {
@@ -64,13 +66,15 @@ const state = reactive({
             </h3>
             <div class="flex gap-3">
               <UButton
-                label="Cancelar"
                 icon="i-heroicons-arrow-left-circle"
                 color="gray"
-                @click="closeSlideOder" />
+                @click="closeSlideOder">
+                <span v-if="!isMobile">Cancelar</span>
+              </UButton>
             <UButton
-              label="Guardar"
-              icon="i-heroicons-check-circle" />
+              icon="i-heroicons-check-circle">
+              <span v-if="!isMobile">Guardar</span>
+            </UButton>
             </div>
           </div>
         </template>

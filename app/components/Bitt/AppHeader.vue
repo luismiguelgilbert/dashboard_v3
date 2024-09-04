@@ -9,16 +9,19 @@ const { header } = useAppConfig();
 const mainStore = useMainStore();
 const route = useRoute();
 const {
+  isMobile,
   leftDrawer,
   userMenu,
   isLoadingMenu,
+  showBadge,
+  badgeLabel,
 } = storeToRefs(mainStore);
 
 const links = computed(() => {
   let routes = [];
   routes.push(
     {
-      label: 'Home',
+      label: 'Inicio',
       icon: 'i-hugeicons-house-04',
       to: '/'
     }
@@ -34,7 +37,7 @@ const links = computed(() => {
     );
   })
 
-  return routes;
+  return !isMobile.value ? routes : routes.slice(-1);
 });
 </script>
 
@@ -51,18 +54,32 @@ const links = computed(() => {
           size="lg"
           icon="i-heroicons-bars-3-16-solid"
           @click="leftDrawer = !leftDrawer" />
-        <span class="font-bold pl-2">Dashboard</span>
+        <span class="font-bold pl-2 hidden sm:block">Dashboard</span>
         <UBreadcrumb
           v-if="!isLoadingMenu"
-          class="pl-10"
+          class="pl-1 sm:pl-10 overflow-hidden text-wrap max-w-3/4 sm:max-w-full"
           :links="links" />
+        <UBadge
+          v-if="showBadge"
+          variant="subtle"
+          class="ml-2">
+          {{ badgeLabel }}
+        </UBadge>
       </div>
     </template>
     <template #right>
-      <UColorModeButton v-if="header?.colorMode" />
-      <UAvatar
-        alt="L"
-        size="md" />
+      <UColorModeButton
+        v-if="header?.colorMode"
+        class="my-2" />
+      <UButton
+          variant="ghost"
+          color="gray"
+          :ui="{ rounded: 'rounded-xl' }"
+          to="/">
+        <UAvatar
+          alt="L"
+          size="sm" />
+      </UButton>
     </template>
   </UDashboardNavbar>
 </template>

@@ -3,6 +3,7 @@ import { type sys_companies } from "@/types/sys_companies";
 import { type sys_links } from "@/types/sys_links.js";
 
 export const useMainStore = defineStore('main', () => {
+  const isMobile = ref<boolean>(false);
   const isLoadingCompanies = ref<boolean>(false);
   const isLoadingMenu = ref<boolean>(false);
   const isUserSessionValid = ref<boolean>(false);
@@ -10,6 +11,8 @@ export const useMainStore = defineStore('main', () => {
   const userCompanies = ref<sys_companies[]>([]);
   const userMenu = ref<sys_links[]>([]);
   const userSession = ref<Session | null>(null);
+  const showBadge = ref<boolean>(false);
+  const badgeLabel = ref<string|number>('');
 
   //Actions
   const fetchUserCompanies = async () => {
@@ -56,6 +59,7 @@ export const useMainStore = defineStore('main', () => {
   });
 
   return {
+    isMobile,
     isLoadingCompanies,
     isLoadingMenu,
     isUserSessionValid,
@@ -63,6 +67,8 @@ export const useMainStore = defineStore('main', () => {
     userCompanies,
     userMenu,
     userSession,
+    showBadge,
+    badgeLabel,
     //Getters
     userMenuFormatted,
     //Actions

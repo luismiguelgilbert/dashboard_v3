@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core';
-import SkeletonHeader from '~/components/SkeletonHeader.vue';
 
 const mainStore = useMainStore();
 const route = useRoute();
 const {
+  isMobile,
   isLoadingMenu,
   isUserSessionValid,
   leftDrawer,
   userCompanies,
   userMenuFormatted,
   userSession,
+  showBadge,
+  badgeLabel,
 } = storeToRefs(mainStore);
 const { start, finish } = useLoadingIndicator();
 const sidebarLinksUI = {
@@ -71,6 +73,7 @@ onMounted(() => {
   import.meta.client && refreshSessionOrLogout();
   import.meta.client && mainStore.fetchUserCompanies();
   import.meta.client && mainStore.fetchUserMenu();
+  import.meta.client && (isMobile.value = myScreenSize.value === 'mobile');
 });
 
 watch(() => isUserSessionValid.value, (value) => {
@@ -80,72 +83,47 @@ watch(() => isUserSessionValid.value, (value) => {
 });
 
 watch(() => route.fullPath, () => {
+  showBadge.value = false;
+  badgeLabel.value = '';
   if (myScreenSize.value === 'mobile') {
     leftDrawer.value = false;
   }
 });
+
+watch(() => myScreenSize.value, () => isMobile.value = myScreenSize.value === 'mobile');
 </script>
 
 <template>
-  <div>
-    <NuxtLoadingIndicator />
-      <UPage>
-        <AppHeader />
+  <UContainer
+    :ui="{
+      base: 'mx-0',
+      padding: 'px-0 sm:px-0 lg:px-0',
+      constrained: 'max-w-full',
+    }">
+    <UPage
+      :ui="{
+        wrapper: 'flex flex-col lg:grid lg:grid-cols-10 lg:gap-0',
+      }">
 
-        <div v-if="myScreenSize === 'mobile'">
-          <USlideover
-            v-model="leftDrawer"
-            prevent-close
-            side="left">
-            <UCard class="flex flex-col flex-1" :ui="{ body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-              <template #header>
-                <div class="flex items-center justify-between">
-                  <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-                    Slideover
-                  </h3>
-                  <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="leftDrawer = false" />
-                </div>
-              </template>
+      <template #left v-if="leftDrawer">
+        <div class="h-[calc(100dvh-65px)] min-w-48 overflow-y-auto px-2 pt-2 border-r-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950">
+          <BittSkeletonHeader
+            class="py-1"
+            v-if="isLoadingMenu"
+            v-for="n in 5" />
+          <UDashboardSidebarLinks
+            v-else
+            :links="userMenuFormatted"
+            :ui="sidebarLinksUI" />
+          <br />
+        </div>
+      </template>
 
-              <SkeletonHeader
-                v-if="isLoadingMenu"
-                v-for="n in 5" />
-              <UDashboardSidebarLinks
-                v-else
-                :links="userMenuFormatted"
-                :ui="sidebarLinksUI" />
-            </UCard>
-          </USlideover>
+      <div class="h-[calc(100dvh-65px)] overflow-y-auto">
+        <suspense>
           <NuxtPage />
-        </div>
-
-        <div v-if="myScreenSize !== 'mobile'">
-          <UDashboardLayout>
-            <UDashboardPanel
-              v-if="leftDrawer"
-              class="bg-gray-50 dark:bg-gray-900"
-              resizable>
-              <UDashboardPanelContent class="mt-14">
-                <SkeletonHeader
-                  class="py-1"
-                  v-if="isLoadingMenu"
-                  v-for="n in 5" />
-                <UDashboardSidebarLinks
-                  v-else
-                  :links="userMenuFormatted"
-                  :ui="sidebarLinksUI" />
-              </UDashboardPanelContent>
-            </UDashboardPanel>
-
-            <UDashboardPanel grow>
-              <UDashboardPanelContent class="mt-12">
-                <NuxtPage />
-              </UDashboardPanelContent>
-            </UDashboardPanel>
-
-          </UDashboardLayout>
-        </div>
-      </UPage>
-    <UNotifications />
-  </div>
+        </suspense>
+      </div>
+    </UPage>
+  </UContainer>
 </template>

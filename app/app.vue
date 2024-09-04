@@ -27,8 +27,15 @@ useSeoMeta({
     <NuxtLoadingIndicator
       :throttle="100"
       :height="7" />
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
+    
+    <BittAppHeader />
+
+    <UMain>
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+    </UMain>
+
+    <UNotifications />
   </div>
 </template>

@@ -1,15 +1,15 @@
 // import { type Session } from "@supabase/supabase-js";
+import { type sys_users } from "@/types/sys_users.js";
 
 export const useUsersStore = defineStore('users', () => {
   const searchString = ref<string>('');
-  const listKey = ref<number>(1);
   const page = ref<number>(1);
   const pageSize = ref<number>(100);
   const pagesLoaded = ref<number[]>([]);
-  const rows = ref<{[k: string]: any}>({});
+  const rows = ref<{[k: string]: sys_users[]}>({});
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
-  const selectedRow = ref<any>();
+  const selectedRowId = ref<string>();
 
   //Actions
   const addToPagesLoaded = (page: number) => {
@@ -24,7 +24,6 @@ export const useUsersStore = defineStore('users', () => {
     pagesLoaded.value = [];
     rows.value = {};
     totalRows.value = 0;
-    listKey.value++;
   };
   // const fetchUserCompanies = async () => {
   //   try {
@@ -77,8 +76,7 @@ export const useUsersStore = defineStore('users', () => {
     totalRows,
     isLoading,
     rows,
-    listKey,
-    selectedRow,
+    selectedRowId,
     //Actions
     addToPagesLoaded,
     resetLoadedData,

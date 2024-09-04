@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { sys_users_schema, type sys_users } from '~/types/sys_users';
+
 const router = useRouter();
 const searchinputcomponent = ref<{ input: HTMLInputElement }>();
 const mainStore = useMainStore();
@@ -11,8 +13,7 @@ const {
   totalRows,
   isLoading,
   rows,
-  listKey,
-  selectedRow,
+  selectedRowId,
 } = storeToRefs(usersStore);
 const showEditForm = ref<boolean>(false);
 
@@ -37,8 +38,7 @@ const refresh = async(pages: number[]) => {
         });
         totalRows.value = algoliaData.value?.nbHits ?? 0;
         badgeLabel.value = totalRows.value;
-        rows.value[pageToLoad] = algoliaData.value?.hits ?? [];
-        // data.value =  array(sys_users).cast(algoliaData.value.hits) ?? [];
+        rows.value[pageToLoad] = sys_users_schema.array().parse(algoliaData.value?.hits) ?? [];
       }
     })
   } catch(error) {
@@ -56,18 +56,18 @@ const closeEditForm = () => {
   showEditForm.value = false;
   router.replace({ query: { } })
 };
-const rowClicked = (record: any) => {
-  selectedRow.value = record.id;
+const rowClicked = (record: sys_users) => {
+  selectedRowId.value = record.id;
   showEditForm.value = true;
-  router.replace({ query: { id: selectedRow.value } })
+  router.replace({ query: { id: selectedRowId.value } })
 };
 
 //HOOKS and WATCHERS
 onMounted(async() => {
   if (import.meta.client) {
-    selectedRow.value = router.currentRoute.value.query.id?.toLocaleString();
-    selectedRow.value && (showEditForm.value = true);
-    router.replace({ query: { id: selectedRow.value } })
+    selectedRowId.value = router.currentRoute.value.query.id?.toLocaleString();
+    selectedRowId.value && (showEditForm.value = true);
+    router.replace({ query: { id: selectedRowId.value } })
   }
 });
 watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true });
@@ -119,14 +119,13 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
       :rows="rows"
       :rowsTotal="totalRows"
       :pageSize="pageSize"
-      :listKey="listKey"
-      :selectedRow="selectedRow"
+      :selectedRow="selectedRowId"
       @data-request="updatePageAndRefresh"
       @row-click="rowClicked" />
     
     <SecurityUsersUserEdit
       :isOpen="showEditForm"
-      :id="selectedRow"
+      :id="selectedRowId"
       @cancel="closeEditForm" />
   </div>
 </template>

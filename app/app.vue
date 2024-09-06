@@ -1,11 +1,10 @@
 <script setup lang="ts">
 const { seo } = useAppConfig();
 const mainStore = useMainStore();
-const { isMobile } = storeToRefs(mainStore);
 
 useHead({
   meta: [
-    { name: 'viewport', content: `width=device-width, initial-scale=${isMobile.value ? '0.90':'1'}, user-scalable=0` },
+    { name: 'viewport', content: `width=device-width, initial-scale=0.85}, user-scalable=0` },
   ],
   link: [
     { rel: 'icon', href: '/favicon.ico' }

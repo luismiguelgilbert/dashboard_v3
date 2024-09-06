@@ -183,15 +183,15 @@ const inputUI = 'md';
             <UFormGroup
               :size="inputSize"
               name="dark_enabled">
-              <UColorModeSelect class="w-28" />
+              <UColorModeSelect />
               <!-- <UToggle
                 v-model="userData.dark_enabled"
                 on-icon="i-heroicons-moon"
                 off-icon="i-heroicons-sun"
                 :disabled="state.isLoading" /> -->
-              <span
+              <!-- <span
                 class="ml-5"
-                style="vertical-align: text-bottom;">{{ userData.dark_enabled ? 'Oscuro' : 'Claro' }}</span>
+                style="vertical-align: text-bottom;">{{ userData.dark_enabled ? 'Oscuro' : 'Claro' }}</span> -->
             </UFormGroup>
   
             <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />

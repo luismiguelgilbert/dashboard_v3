@@ -75,6 +75,7 @@ onMounted(() => {
     refreshSessionOrLogout();
     mainStore.fetchUserCompanies();
     mainStore.fetchUserMenu();
+    mainStore.fetchUserData();
     isMobile.value = myScreenSize.value === 'mobile';
   }
 });

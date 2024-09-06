@@ -5,16 +5,18 @@ const navBarUI = {
   wrapper: 'bg-background/75 backdrop-blur h-[--header-height] flex-shrink-0 flex items-center border-b border-gray-200 dark:border-gray-800 px-4 gap-x-4 min-w-0 sticky top-0 z-50',
 };
 
-const { header } = useAppConfig();
 const mainStore = useMainStore();
 const route = useRoute();
 const {
+  badgeLabel,
+  isLoadingMenu,
   isMobile,
   leftDrawer,
-  userMenu,
-  isLoadingMenu,
   showBadge,
-  badgeLabel,
+  userCompany,
+  userCompaniesFormatted,
+  userData,
+  userMenu,
 } = storeToRefs(mainStore);
 
 const links = computed(() => {
@@ -68,16 +70,41 @@ const links = computed(() => {
       </div>
     </template>
     <template #right>
-      <UColorModeButton
-        v-if="header?.colorMode"
-        class="my-2" />
+      <USelectMenu
+        v-model="userCompany" 
+        :options="userCompaniesFormatted"
+        option-attribute="name_es_short"
+        color="gray"
+        :ui-menu="{
+          width: 'min-w-fit px-4',
+        }">
+        <UButton
+          variant="ghost"
+          color="gray"
+          :title="userCompany?.name_es_short ?? 'NA'"
+          class="flex-1 justify-between">
+          <template #leading>
+            <UAvatar
+              v-if="userCompany?.avatar_url && userCompany.avatar_url != 'null'"
+              :src="userCompany.avatar_url"
+              size="sm" />
+            <UAvatar
+              v-if="!userCompany?.avatar_url || userCompany.avatar_url == 'null'"
+              size="sm">
+              {{ userCompany?.name_es_short[0] ?? 'N' }}
+            </UAvatar>
+          </template>
+        </UButton>
+      </USelectMenu>
       <UButton
         variant="ghost"
         color="gray"
         :ui="{ rounded: 'rounded-xl' }"
         to="/">
         <UAvatar
-          alt="L"
+          v-if="userData?.avatar_url && userData?.avatar_url != 'null'"
+          :src="userData?.avatar_url"
+          :alt="userData?.user_name[0] ?? 'N'"
           size="sm" />
       </UButton>
     </template>

@@ -41,9 +41,11 @@ const rowClicked = (record: sys_users) => emits('row-click', record);
     key-field="id"
     @update="containerScroll">
     <div class="border-b border-gray-200 dark:border-gray-800">
-      <BittSkeletonHeader
+      <div
         v-if="!getRowExists(item)"
-        class="pl-6 pt-1 pb-5 pr-7" />
+        class="p-6">
+        <BittSkeletonHeader />
+      </div>
       <div
         v-else-if="getRowData(item)?.id"
         :class="getRowData(item)?.id == props.selectedRow

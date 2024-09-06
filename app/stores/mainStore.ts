@@ -1,18 +1,22 @@
 import type { Session } from '@supabase/supabase-js';
 import type { sys_companies } from '@/types/sys_companies';
-import type { sys_links } from '@/types/sys_links.js';
+import type { sys_links } from '@/types/sys_links';
+import type { sys_users } from '@/types/sys_users';
 
 export const useMainStore = defineStore('main', () => {
-  const isMobile = ref<boolean>(false);
+  const badgeLabel = ref<string | number>('');
   const isLoadingCompanies = ref<boolean>(false);
   const isLoadingMenu = ref<boolean>(false);
+  const isLoadingUserData = ref<boolean>(false);
+  const isMobile = ref<boolean>(false);
   const isUserSessionValid = ref<boolean>(false);
   const leftDrawer = ref<boolean>(true);
+  const showBadge = ref<boolean>(false);
+  const userCompany = ref<sys_companies>();
   const userCompanies = ref<sys_companies[]>([]);
+  const userData = ref<sys_users | null>(null);
   const userMenu = ref<sys_links[]>([]);
   const userSession = ref<Session | null>(null);
-  const showBadge = ref<boolean>(false);
-  const badgeLabel = ref<string | number>('');
 
   // Actions
   const fetchUserCompanies = async () => {
@@ -28,6 +32,22 @@ export const useMainStore = defineStore('main', () => {
     }
   };
 
+  const fetchUserData = async () => {
+    try {
+      isLoadingUserData.value = true;
+      const response = await $fetch('/api/system/user_data');
+      if (response.length && response[0]) {
+        userData.value = response[0];
+      }
+    }
+    catch (error) {
+      console.error(`Error fetching user data: ${error}`);
+    }
+    finally {
+      isLoadingUserData.value = false;
+    }
+  };
+
   const fetchUserMenu = async () => {
     try {
       isLoadingMenu.value = true;
@@ -40,6 +60,7 @@ export const useMainStore = defineStore('main', () => {
       isLoadingMenu.value = false;
     }
   };
+
 
   // Getters
   const userMenuFormatted = computed(() => {
@@ -63,21 +84,40 @@ export const useMainStore = defineStore('main', () => {
       }) ?? [];
   });
 
+  const userCompaniesFormatted = computed(() => {
+    return userCompanies.value
+      ?.map((company) => {
+        return {
+          ...company,
+          avatar: { 
+            src: (company.avatar_url && company.avatar_url != 'null') ? company.avatar_url : undefined,
+            alt: company.name_es_short[0] ?? 'N',
+          },
+          // icon: (company.avatar_url && company.avatar_url != 'null') ? company.avatar_url : undefined ,
+        };
+      }) ?? [];
+  });
+
   return {
-    isMobile,
+    badgeLabel,
     isLoadingCompanies,
     isLoadingMenu,
+    isLoadingUserData,
+    isMobile,
     isUserSessionValid,
     leftDrawer,
+    showBadge,
+    userCompany,
     userCompanies,
+    userData,
     userMenu,
     userSession,
-    showBadge,
-    badgeLabel,
     // Getters
+    userCompaniesFormatted,
     userMenuFormatted,
     // Actions
     fetchUserCompanies,
+    fetchUserData,
     fetchUserMenu,
   };
 });

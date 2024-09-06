@@ -57,7 +57,7 @@ const links = computed(() => {
         <span class="font-bold pl-2 hidden sm:block">Dashboard</span>
         <UBreadcrumb
           v-if="!isLoadingMenu"
-          class="pl-1 sm:pl-10 overflow-hidden text-wrap max-w-3/4 sm:max-w-full"
+          class="pl-1 sm:pl-10 overflow-hidden text-wrap max-w-[calc(100dvw-180px)] sm:max-w-full"
           :links="links" />
         <UBadge
           v-if="showBadge"

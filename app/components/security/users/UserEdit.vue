@@ -13,12 +13,12 @@ const props = defineProps({
 });
 const emits = defineEmits(['cancel']);
 
-const route = useRoute();
-const router = useRouter();
+// const route = useRoute();
+// const router = useRouter();
 const mainStore = useMainStore();
 const { isMobile } = storeToRefs(mainStore);
 
-const cardUi = { 
+const cardUi = {
   body: {
     base: 'flex-1',
     padding: 'px-4 py-2 sm:p-6',
@@ -29,12 +29,12 @@ const cardUi = {
 };
 
 const tabsUi = {
-  list:{
+  list: {
     tab: {
       icon: 'w-5 h-5 flex-shrink-0 mr-2',
-    }
-  }
-}
+    },
+  },
+};
 
 const tabs = [
   {
@@ -46,18 +46,21 @@ const tabs = [
     slot: 'companies',
     label: 'Organizaciones',
     icon: 'i-hugeicons-user-lock-01',
-  }
+  },
 ];
 const closeSlideOder = () => emits('cancel');
-const state = reactive({
-  user: undefined,
-  lastname: undefined
-});
+// const state = reactive({
+//   user: undefined,
+//   lastname: undefined,
+// });
 </script>
 
 <template>
   <div>
-    <USlideover :model-value="props.isOpen" prevent-close :ui="{width: 'max-w-4xl'}">
+    <USlideover
+      :model-value="props.isOpen"
+      prevent-close
+      :ui="{ width: 'max-w-4xl' }">
       <UCard :ui="cardUi">
         <template #header>
           <div class="flex items-center justify-between">
@@ -71,15 +74,17 @@ const state = reactive({
                 @click="closeSlideOder">
                 <span v-if="!isMobile">Cancelar</span>
               </UButton>
-            <UButton
-              icon="i-heroicons-check-circle">
-              <span v-if="!isMobile">Guardar</span>
-            </UButton>
+              <UButton
+                icon="i-heroicons-check-circle">
+                <span v-if="!isMobile">Guardar</span>
+              </UButton>
             </div>
           </div>
         </template>
 
-        <UTabs :items="tabs" :ui="tabsUi">
+        <UTabs
+          :items="tabs"
+          :ui="tabsUi">
           <template #user>
             <div class="h-[calc(100dvh-135px)] sm:h-[calc(100dvh-150px)] overflow-y-auto">
               <SecurityUsersUserEditUser />
@@ -89,9 +94,7 @@ const state = reactive({
             <SecurityUsersUserEditCompanies />
           </template>
         </UTabs>
-
       </UCard>
-      
     </USlideover>
   </div>
 </template>

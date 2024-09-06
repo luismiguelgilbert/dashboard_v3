@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen flex items-center justify-center overlay">
-    <div class="gradient" />
+    <div class="gradient"></div>
     <NuxtPage />
   </div>
 </template>

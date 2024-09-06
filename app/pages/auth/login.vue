@@ -30,17 +30,21 @@ const fields = [
     placeholder: 'Ingrese su clave',
     color: 'gray',
     size: sizeXL,
-  }
+  },
 ];
+type CredentialData = {
+  email: string;
+  password: string;
+};
 
-const validate = (state: any) => {
+const validate = (state: CredentialData) => {
   const errors: FormError[] = [];
   if (!state.email) errors.push({ path: 'email', message: 'Email es obligatorio' });
   if (!state.password) errors.push({ path: 'password', message: 'Password es obligatorio' });
   return errors;
 };
 
-const onSubmit = async (credentialData: any) => {
+const onSubmit = async (credentialData: CredentialData) => {
   try {
     start();
     loading.value = true;
@@ -54,14 +58,15 @@ const onSubmit = async (credentialData: any) => {
       errorMessage.value = `Error al iniciar sesión: ${error.message}`;
       throw error;
     }
-    
+
     document.cookie = `sb-access-token=${data.session.access_token}; path=/`;
     document.cookie = `sb-refresh-token=${data.session.refresh_token}; path=/`;
     loading.value = false;
     finish();
     isUserSessionValid.value = true;
     await navigateTo('/');
-  } catch(error: any) {
+  }
+  catch (error) {
     finish();
     loading.value = false;
     isUserSessionValid.value = false;
@@ -70,7 +75,7 @@ const onSubmit = async (credentialData: any) => {
     toast.add({
       title: 'Error al iniciar sesión',
       color: 'rose',
-      description: `${error.message}`,
+      description: `${error}`,
     });
   }
 };
@@ -88,7 +93,7 @@ const onSubmit = async (credentialData: any) => {
         :ui="{ base: 'text-center', footer: 'text-center' }"
         :submit-button="{ label: 'Iniciar sesión', trailingIcon: 'i-heroicons-arrow-right-20-solid', size: 'xl' }"
         @submit="onSubmit">
-        <template 
+        <template
           v-if="errorMessage.length"
           #footer>
           <UAlert

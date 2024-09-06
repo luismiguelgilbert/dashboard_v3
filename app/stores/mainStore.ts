@@ -1,6 +1,6 @@
-import { type Session } from "@supabase/supabase-js";
-import { type sys_companies } from "@/types/sys_companies";
-import { type sys_links } from "@/types/sys_links.js";
+import type { Session } from '@supabase/supabase-js';
+import type { sys_companies } from '@/types/sys_companies';
+import type { sys_links } from '@/types/sys_links.js';
 
 export const useMainStore = defineStore('main', () => {
   const isMobile = ref<boolean>(false);
@@ -12,16 +12,18 @@ export const useMainStore = defineStore('main', () => {
   const userMenu = ref<sys_links[]>([]);
   const userSession = ref<Session | null>(null);
   const showBadge = ref<boolean>(false);
-  const badgeLabel = ref<string|number>('');
+  const badgeLabel = ref<string | number>('');
 
-  //Actions
+  // Actions
   const fetchUserCompanies = async () => {
     try {
       isLoadingCompanies.value = true;
       userCompanies.value = await $fetch('/api/system/user_companies');
-    } catch (error) {
-      console.error('Error fetching user companies:');
-    } finally {
+    }
+    catch (error) {
+      console.error(`Error fetching user companies: ${error}`);
+    }
+    finally {
       isLoadingCompanies.value = false;
     }
   };
@@ -30,24 +32,27 @@ export const useMainStore = defineStore('main', () => {
     try {
       isLoadingMenu.value = true;
       userMenu.value = await $fetch('/api/system/user_menu');
-    } catch (error) {
-      console.error('Error fetching user menu:');
-    } finally {
+    }
+    catch (error) {
+      console.error(`Error fetching user menu: ${error}`);
+    }
+    finally {
       isLoadingMenu.value = false;
     }
   };
 
-  //Getters
+  // Getters
   const userMenuFormatted = computed(() => {
     return userMenu.value?.filter(root => !root.parent)
-      ?.map(menu => { 
-        const children = userMenu.value?.filter((child) => child.parent === menu.id)
-          .map(x => { return {
-            label: x.name_es!,
-            to: x.link!,
-            icon: '',
-          };
-        });
+      ?.map((menu) => {
+        const children = userMenu.value?.filter(child => child.parent === menu.id)
+          .map((x) => {
+            return {
+              label: x.name_es!,
+              to: x.link!,
+              icon: '',
+            };
+          });
 
         return {
           label: menu.name_es!,
@@ -69,10 +74,10 @@ export const useMainStore = defineStore('main', () => {
     userSession,
     showBadge,
     badgeLabel,
-    //Getters
+    // Getters
     userMenuFormatted,
-    //Actions
+    // Actions
     fetchUserCompanies,
     fetchUserMenu,
-  }
-})
+  };
+});

@@ -17,16 +17,16 @@ const {
 } = storeToRefs(usersStore);
 const showEditForm = ref<boolean>(false);
 
-defineShortcuts({'/': () => { searchinputcomponent.value?.input?.focus()}});
-const refresh = async(pages: number[]) => {
+defineShortcuts({ '/': () => { searchinputcomponent.value?.input?.focus(); } });
+const refresh = async (pages: number[]) => {
   try {
     isLoading.value = true;
     showBadge.value = true;
     badgeLabel.value = totalRows.value;
-    pages.forEach(async(pageToLoad) => {
+    pages.forEach(async (pageToLoad) => {
       if (!pagesLoaded.value.includes(pageToLoad)) {
         usersStore.addToPagesLoaded(pageToLoad);
-        const { data: algoliaData } = await useAsyncAlgoliaSearch({ 
+        const { data: algoliaData } = await useAsyncAlgoliaSearch({
           indexName: 'sys_users',
           query: searchString.value ?? '',
           requestOptions: {
@@ -34,16 +34,18 @@ const refresh = async(pages: number[]) => {
             hitsPerPage: pageSize.value,
             cacheable: false,
             // facetFilters: selectedFiltersFacet.value ? selectedFiltersFacet.value : undefined,
-          }
+          },
         });
         totalRows.value = algoliaData.value?.nbHits ?? 0;
         badgeLabel.value = totalRows.value;
         rows.value[pageToLoad] = sys_users_schema.array().parse(algoliaData.value?.hits) ?? [];
       }
-    })
-  } catch(error) {
+    });
+  }
+  catch (error) {
     console.error(error);
-  } finally {
+  }
+  finally {
     isLoading.value = false;
   }
 };
@@ -54,20 +56,22 @@ const resetLoadedDataAndRefresh = async () => {
 };
 const closeEditForm = () => {
   showEditForm.value = false;
-  router.replace({ query: { } })
+  router.replace({ query: { } });
 };
 const rowClicked = (record: sys_users) => {
   selectedRowId.value = record.id;
   showEditForm.value = true;
-  router.replace({ query: { id: selectedRowId.value } })
+  router.replace({ query: { id: selectedRowId.value } });
 };
 
-//HOOKS and WATCHERS
-onMounted(async() => {
+// HOOKS and WATCHERS
+onMounted(async () => {
   if (import.meta.client) {
     selectedRowId.value = router.currentRoute.value.query.id?.toLocaleString();
-    selectedRowId.value && (showEditForm.value = true);
-    router.replace({ query: { id: selectedRowId.value } })
+    if (selectedRowId.value) {
+      showEditForm.value = true;
+    }
+    router.replace({ query: { id: selectedRowId.value } });
   }
 });
 watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true });
@@ -93,39 +97,57 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
               <UKbd value="/" />
             </template>
           </UInput>
-          <UButton class="ml-2" color="gray" variant="ghost" size="md">
+          <UButton
+            class="ml-2"
+            color="gray"
+            variant="ghost"
+            size="md">
             <span v-if="!isMobile">Nuevo</span>
             <template #trailing>
-              <UIcon name="i-hugeicons-plus-sign-circle" class="w-5 h-5" />
+              <UIcon
+                name="i-hugeicons-plus-sign-circle"
+                class="w-5 h-5" />
             </template>
           </UButton>
-          <UButton class="ml-2" color="gray" variant="ghost" size="md">
+          <UButton
+            class="ml-2"
+            color="gray"
+            variant="ghost"
+            size="md">
             <template #trailing>
               <span v-if="!isMobile">Descargar</span>
-              <UIcon name="i-ri-file-excel-2-line" class="w-5 h-5" />
+              <UIcon
+                name="i-ri-file-excel-2-line"
+                class="w-5 h-5" />
             </template>
           </UButton>
-          <UButton class="ml-2" color="gray" variant="ghost" size="md">
+          <UButton
+            class="ml-2"
+            color="gray"
+            variant="ghost"
+            size="md">
             <template #trailing>
               <span v-if="!isMobile">Filtros</span>
-              <UIcon name="i-hugeicons-filter" class="w-5 h-5" />
+              <UIcon
+                name="i-hugeicons-filter"
+                class="w-5 h-5" />
             </template>
           </UButton>
         </div>
       </template>
     </UHeader>
-    
+
     <LazySecurityUsersList
       :rows="rows"
-      :rowsTotal="totalRows"
-      :pageSize="pageSize"
-      :selectedRow="selectedRowId"
+      :rows-total="totalRows"
+      :page-size="pageSize"
+      :selected-row="selectedRowId"
       @data-request="updatePageAndRefresh"
       @row-click="rowClicked" />
-    
+
     <SecurityUsersUserEdit
-      :isOpen="showEditForm"
       :id="selectedRowId"
+      :is-open="showEditForm"
       @cancel="closeEditForm" />
   </div>
 </template>

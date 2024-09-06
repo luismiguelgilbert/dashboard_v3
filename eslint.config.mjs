@@ -1,5 +1,5 @@
 // @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs'
+import withNuxt from './.nuxt/eslint.config.mjs';
 
 export default withNuxt(
   // Your custom configs here
@@ -17,14 +17,14 @@ export default withNuxt(
         {
           singleline: 'never',
           multiline: 'never',
-        }
+        },
       ],
       'vue/max-attributes-per-line': [
         'error',
         {
           singleline: 1,
           multiline: 1,
-        }
+        },
       ],
       'vue/html-indent': [
         'error',
@@ -35,7 +35,7 @@ export default withNuxt(
           // closeBracket: 0,
           alignAttributesVertically: true,
           ignores: [],
-        }
+        },
       ],
       'vue/html-self-closing': [
         'error',
@@ -44,9 +44,9 @@ export default withNuxt(
             void: 'always',
             normal: 'never',
           },
-        }
+        },
       ],
       'vue/no-v-html': 0,
-    }
-  }
-)
+    },
+  },
+);

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 
 export const sys_users_schema = z.object({
@@ -16,6 +16,6 @@ export const sys_users_schema = z.object({
   last_sign_in_at: z.string().optional().nullable(),
 });
 
-export type sys_users = z.infer<typeof sys_users_schema>;
+export type sys_users = z.infer<typeof sys_users_schema>
 
-export type sys_users_object = {[k: string]: sys_users[]};
+export type sys_users_object = { [k: string]: sys_users[] }

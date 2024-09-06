@@ -14,4 +14,4 @@ export const sys_companies_schema = z.object({
   avatar_url: z.coerce.string().optional(),
 });
 
-export type sys_companies = z.infer<typeof sys_companies_schema>;
+export type sys_companies = z.infer<typeof sys_companies_schema>

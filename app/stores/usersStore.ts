@@ -1,17 +1,17 @@
 // import { type Session } from "@supabase/supabase-js";
-import { type sys_users } from "@/types/sys_users.js";
+import type { sys_users } from '@/types/sys_users.js';
 
 export const useUsersStore = defineStore('users', () => {
   const searchString = ref<string>('');
   const page = ref<number>(1);
   const pageSize = ref<number>(100);
   const pagesLoaded = ref<number[]>([]);
-  const rows = ref<{[k: string]: sys_users[]}>({});
+  const rows = ref<{ [k: string]: sys_users[] }>({});
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
   const selectedRowId = ref<string>();
 
-  //Actions
+  // Actions
   const addToPagesLoaded = (page: number) => {
     if (!pagesLoaded.value.includes(page)) {
       pagesLoaded.value.push(page);
@@ -47,10 +47,10 @@ export const useUsersStore = defineStore('users', () => {
   //   }
   // };
 
-  //Getters
+  // Getters
   // const userMenuFormatted = computed(() => {
   //   return userMenu.value?.filter(root => !root.parent)
-  //     ?.map(menu => { 
+  //     ?.map(menu => {
   //       const children = userMenu.value?.filter((child) => child.parent === menu.id)
   //         .map(x => { return {
   //           label: x.name_es!,
@@ -77,8 +77,8 @@ export const useUsersStore = defineStore('users', () => {
     isLoading,
     rows,
     selectedRowId,
-    //Actions
+    // Actions
     addToPagesLoaded,
     resetLoadedData,
-  }
-})
+  };
+});

@@ -1,3 +1,3 @@
 <template>
-  This is Roles
+  <span>This is Roles</span>
 </template>

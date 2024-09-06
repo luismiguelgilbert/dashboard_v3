@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from 'zod';
 
 export const sys_links_schema = z.object({
   id: z.string(),
@@ -11,4 +11,4 @@ export const sys_links_schema = z.object({
   requires_company: z.coerce.boolean(),
 });
 
-export type sys_links = z.infer<typeof sys_links_schema>;
+export type sys_links = z.infer<typeof sys_links_schema>

@@ -25,7 +25,7 @@ const inputUI = 'md';
     class="pl-6 pr-6 md:pl-2 md:pr-2 pt-4 md:pt-0"
     :state="state.data">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 items-end">
-      <div class="col-span-1 sm:col-span-2 pt-1" />
+      <div class="col-span-1 sm:col-span-2 pt-1"></div>
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
           Email:
@@ -88,7 +88,7 @@ const inputUI = 'md';
           :ui="inputUI"
           :loading="state.isLoading" />
       </UFormGroup>
-  
+
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
@@ -163,7 +163,7 @@ const inputUI = 'md';
             accept=".jpg, .jpeg, .png, .gif" />
         </div>
       </UFormGroup>
-      
+
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
@@ -185,7 +185,7 @@ const inputUI = 'md';
           class="ml-5"
           style="vertical-align: text-bottom;">{{ state.data.dark_enabled ? 'Oscuro' : 'Claro' }}</span>
       </UFormGroup>
-      
+
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
@@ -204,7 +204,7 @@ const inputUI = 'md';
           :options="[]"
           :loading="state.isLoading" />
       </UFormGroup>
-      
+
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
@@ -223,7 +223,7 @@ const inputUI = 'md';
           :options="[]"
           :loading="state.isLoading" />
       </UFormGroup>
-      
+
       <UDivider
         v-if="state.data.id"
         class="col-span-1 sm:col-span-2 my-5 sm:my-0" />

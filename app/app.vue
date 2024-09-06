@@ -1,17 +1,16 @@
 <script setup lang="ts">
 const { seo } = useAppConfig();
-const mainStore = useMainStore();
 
 useHead({
   meta: [
-    { name: 'viewport', content: `width=device-width, initial-scale=0.85}, user-scalable=0` },
+    { name: 'viewport', content: 'width=device-width, initial-scale=0.85}, user-scalable=0' },
   ],
   link: [
-    { rel: 'icon', href: '/favicon.ico' }
+    { rel: 'icon', href: '/favicon.ico' },
   ],
   htmlAttrs: {
-    lang: 'es'
-  }
+    lang: 'es',
+  },
 });
 
 useSeoMeta({
@@ -19,7 +18,7 @@ useSeoMeta({
   ogSiteName: seo?.siteName,
   ogImage: 'https://docs-template.nuxt.dev/social-card.png',
   twitterImage: 'https://docs-template.nuxt.dev/social-card.png',
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
 });
 </script>
 
@@ -28,7 +27,7 @@ useSeoMeta({
     <NuxtLoadingIndicator
       :throttle="100"
       :height="7" />
-    
+
     <BittAppHeader />
 
     <UMain>

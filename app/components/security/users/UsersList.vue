@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core';
-import { type sys_users_object, type sys_users } from '~/types/sys_users';
+import type { sys_users_object, sys_users } from '~/types/sys_users';
 
 type usersList = {
-  rows: sys_users_object,
-  selectedRow: string | undefined,
-  rowsTotal: number,
-  pageSize: number,
+  rows: sys_users_object
+  selectedRow: string | undefined
+  rowsTotal: number
+  pageSize: number
 }
 const props = defineProps<usersList>();
 
@@ -25,20 +25,20 @@ const getRowData = (item: number) => props.rows[getRowPage(item)]?.[getRowIndexI
 const containerScroll = useDebounceFn((startIndex: number, endIndex: number) => {
   const topRowPage = Math.ceil(startIndex / props.pageSize);
   const lastRowPage = Math.ceil(endIndex / props.pageSize);
-  emits('data-request', [topRowPage > 0 ? topRowPage : 1, lastRowPage])
+  emits('data-request', [topRowPage > 0 ? topRowPage : 1, lastRowPage]);
 }, 250);
 
-const rowClicked = (record: any) => emits('row-click', record);
+const rowClicked = (record: sys_users) => emits('row-click', record);
 </script>
 
 <template>
   <RecycleScroller
+    v-slot="{ item }: {item: number}"
     :items="myRows"
     :item-size="rowHeight"
-    :emitUpdate="true"
+    :emit-update="true"
     page-mode
     key-field="id"
-    v-slot="{ item }"
     @update="containerScroll">
     <div class="border-b border-gray-200 dark:border-gray-800">
       <BittSkeletonHeader
@@ -49,7 +49,7 @@ const rowClicked = (record: any) => emits('row-click', record);
         :class="getRowData(item)?.id == props.selectedRow
           ? 'p-4 text-sm cursor-pointer border-l-2 border-primary-500 dark:border-primary-400 bg-primary-100 dark:bg-primary-900/25'
           : 'p-4 text-sm cursor-pointer border-l-2 border-white dark:border-gray-900 hover:border-primary-500/25 dark:hover:border-primary-400/25 hover:bg-primary-100/50 dark:hover:bg-primary-900/10'"
-          @click="() => rowClicked(getRowData(item))">
+        @click="() => rowClicked(getRowData(item)!)">
         <div v-if="isMobile">
           <div class="flex items-center justify-between h-14">
             <div class="flex min-w-0 items-center gap-3">
@@ -98,7 +98,11 @@ const rowClicked = (record: any) => emits('row-click', record);
               {{ getRowData(item)?.email }}
             </div>
             <div class="col-span-1">
-              <UBadge variant="subtle" size="lg">{{ getRowData(item)?.sys_profile_name }}</UBadge>
+              <UBadge
+                variant="subtle"
+                size="lg">
+                {{ getRowData(item)?.sys_profile_name }}
+              </UBadge>
             </div>
           </div>
         </div>

@@ -7,19 +7,18 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@iconify-json/hugeicons": "^1.1.1",
     "@iconify-json/ri": "^1.2.0",
-    "@nuxt/eslint": "^0.5.3",
     "@nuxt/ui-pro": "^1.4.1",
     "@nuxtjs/algolia": "^1.10.2",
     "@pinia/nuxt": "^0.5.4",
     "@supabase/supabase-js": "^2.45.2",
-    "@types/pg": "^8.11.8",
     "@vueuse/core": "^11.0.3",
-    "nuxt": "^3.13.0",
     "pg": "^8.12.0",
     "uuid": "^10.0.0",
     "vue": "latest",
@@ -28,5 +27,13 @@
   },
   "overrides": {
     "vue": "latest"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^0.5.3",
+    "@types/pg": "^8.11.8",
+    "eslint": "^9.9.1",
+    "nuxt": "^3.13.0",
+    "typescript": "^5.5.4",
+    "vue-tsc": "^2.1.6"
   }
 }

@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { v4 as uuidv4 } from 'uuid';
 
 export const sys_users_schema = z.object({
-  id: z.string().uuid().default(crypto.randomUUID),
+  id: z.string().uuid().default(uuidv4()),
   user_name: z.string(),
   user_lastname: z.string(),
   user_sex: z.coerce.boolean().default(true),

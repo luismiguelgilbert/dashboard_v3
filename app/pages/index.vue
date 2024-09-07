@@ -174,7 +174,7 @@ const inputUI = 'md';
             <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
             <div>
               <p class="text-gray-900 dark:text-white font-semibold">
-                Tema oscuro::
+                Color de fondo:
               </p>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Utilizar fondo oscuro.
@@ -207,7 +207,7 @@ const inputUI = 'md';
               :size="inputSize"
               name="default_dark_color">
               <USelectMenu
-                v-model="userData.default_dark_color"
+                v-model="userData.dark_enabled"
                 icon="i-heroicons-moon"
                 :options="[]"
                 :loading="isLoadingUserData" />

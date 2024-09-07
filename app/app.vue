@@ -28,8 +28,6 @@ useSeoMeta({
       :throttle="100"
       :height="7" />
 
-    <BittAppHeader />
-
     <UMain>
       <NuxtLayout>
         <NuxtPage />

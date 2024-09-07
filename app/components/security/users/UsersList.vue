@@ -13,7 +13,7 @@ const props = defineProps<usersList>();
 const emits = defineEmits(['row-click', 'data-request']);
 const mainStore = useMainStore();
 const { isMobile } = storeToRefs(mainStore);
-const rowHeight = 88;
+const rowHeight = 80;
 
 const myRows = computed(() => Array.from(Array(props.rowsTotal).keys()));
 
@@ -40,72 +40,72 @@ const rowClicked = (record: sys_users) => emits('row-click', record);
     page-mode
     key-field="id"
     @update="containerScroll">
-    <div class="border-b border-gray-200 dark:border-gray-800">
+    <div class="border-b border-gray-200 dark:border-gray-800 h-20 place-content-center">
       <div
         v-if="!getRowExists(item)"
-        class="p-6">
+        class="px-2 sm:px-5">
         <BittSkeletonHeader />
       </div>
       <div
         v-else-if="getRowData(item)?.id"
         :class="getRowData(item)?.id == props.selectedRow
-          ? 'p-4 text-sm cursor-pointer border-l-2 border-primary-500 dark:border-primary-400 bg-primary-100 dark:bg-primary-900/25'
-          : 'p-4 text-sm cursor-pointer border-l-2 border-white dark:border-gray-900 hover:border-primary-500/25 dark:hover:border-primary-400/25 hover:bg-primary-100/50 dark:hover:bg-primary-900/10'"
+          ? 'h-full place-content-center px-2 sm:px-5 text-sm cursor-pointer border-l-2 border-primary-500 dark:border-primary-400 bg-primary-100 dark:bg-primary-900/25'
+          : 'h-full place-content-center px-2 sm:px-5 text-sm cursor-pointer border-l-2 border-white dark:border-gray-900 hover:border-primary-500/25 dark:hover:border-primary-400/25 hover:bg-primary-100/50 dark:hover:bg-primary-900/10'"
         @click="() => rowClicked(getRowData(item)!)">
-        <div v-if="isMobile">
-          <div class="flex items-center justify-between h-14">
-            <div class="flex min-w-0 items-center gap-3">
-              <UAvatar
-                v-if="getRowData(item)?.avatar_url"
-                :src="getRowData(item)?.avatar_url!"
-                size="lg"
-                alt="Avatar" />
-              <UAvatar
-                v-else-if="getRowData(item)?.user_lastname"
-                :alt="getRowData(item)?.user_lastname[0]"
-                size="lg" />
-              <div class="min-w-0 flex-auto text-base font-semibold">
-                <p class="dark:text-white text-black truncate text-ellipsis">
-                  {{ getRowData(item)?.user_name }} {{ getRowData(item)?.user_lastname }}
-                </p>
-                <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis text-xs">
-                  {{ getRowData(item)?.email }}
-                </p>
-                <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis text-xs">
-                  {{ getRowData(item)?.sys_profile_name }}
-                </p>
-              </div>
+        <div
+          v-if="isMobile"
+          class="flex items-center justify-between">
+          <div class="flex min-w-0 items-center gap-3">
+            <UAvatar
+              v-if="getRowData(item)?.avatar_url"
+              :src="getRowData(item)?.avatar_url!"
+              size="lg"
+              alt="Avatar" />
+            <UAvatar
+              v-else-if="getRowData(item)?.user_lastname"
+              :alt="getRowData(item)?.user_lastname[0]"
+              size="lg" />
+            <div class="min-w-0 flex-auto text-base font-semibold">
+              <p class="dark:text-white text-black truncate text-ellipsis">
+                {{ getRowData(item)?.user_name }} {{ getRowData(item)?.user_lastname }}
+              </p>
+              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis text-xs">
+                {{ getRowData(item)?.email }}
+              </p>
+              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis text-xs">
+                {{ getRowData(item)?.sys_profile_name }}
+              </p>
             </div>
           </div>
         </div>
-        <div v-if="!isMobile">
-          <div class="grid grid-cols-8 items-center h-14">
-            <div class="col-span-1">
-              <UAvatar
-                v-if="getRowData(item)?.avatar_url"
-                :src="getRowData(item)?.avatar_url!"
-                size="lg"
-                alt="Avatar" />
-              <UAvatar
-                v-else-if="getRowData(item)?.user_lastname"
-                :alt="getRowData(item)?.user_lastname[0]"
-                size="lg" />
-            </div>
-            <div class="col-span-3">
-              <p class="dark:text-white text-black truncate text-ellipsis text-base font-semibold">
-                {{ getRowData(item)?.user_name }} {{ getRowData(item)?.user_lastname }}
-              </p>
-            </div>
-            <div class="col-span-3 text-gray-500 dark:text-gray-400 text-base truncate text-ellipsis">
-              {{ getRowData(item)?.email }}
-            </div>
-            <div class="col-span-1">
-              <UBadge
-                variant="subtle"
-                size="lg">
-                {{ getRowData(item)?.sys_profile_name }}
-              </UBadge>
-            </div>
+        <div
+          v-if="!isMobile"
+          class="grid grid-cols-8 items-center pr-5">
+          <div class="col-span-1">
+            <UAvatar
+              v-if="getRowData(item)?.avatar_url"
+              :src="getRowData(item)?.avatar_url!"
+              size="lg"
+              alt="Avatar" />
+            <UAvatar
+              v-else-if="getRowData(item)?.user_lastname"
+              :alt="getRowData(item)?.user_lastname[0]"
+              size="lg" />
+          </div>
+          <div class="col-span-3">
+            <p class="dark:text-white text-black truncate text-ellipsis text-base font-semibold">
+              {{ getRowData(item)?.user_name }} {{ getRowData(item)?.user_lastname }}
+            </p>
+          </div>
+          <div class="col-span-3 text-gray-500 dark:text-gray-400 text-base truncate text-ellipsis">
+            {{ getRowData(item)?.email }}
+          </div>
+          <div class="col-span-1">
+            <UBadge
+              variant="subtle"
+              size="lg">
+              {{ getRowData(item)?.sys_profile_name }}
+            </UBadge>
           </div>
         </div>
       </div>

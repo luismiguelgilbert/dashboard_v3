@@ -98,37 +98,39 @@ watch(() => myScreenSize.value, () => isMobile.value = myScreenSize.value === 'm
 </script>
 
 <template>
-  <UContainer
-    :ui="{
-      base: 'mx-0',
-      padding: 'px-0 sm:px-0 lg:px-0',
-      constrained: 'max-w-full',
-    }">
-    <UPage
+  <div>
+    <BittAppHeader />
+    <UContainer
       :ui="{
-        wrapper: 'flex flex-col lg:grid lg:grid-cols-10 lg:gap-0',
+        base: 'mx-0',
+        padding: 'px-0 sm:px-0 lg:px-0',
+        constrained: 'max-w-full',
       }">
-      <template
-        v-if="leftDrawer"
-        #left>
-        <div class="h-[calc(100dvh-65px)] min-w-48 overflow-y-auto px-2 pt-2 border-r-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950">
-          <BittSkeletonHeader
-            v-if="isLoadingMenu"
-            :lines="5"
-            class="py-1" />
-          <UDashboardSidebarLinks
-            v-else
-            :links="userMenuFormatted"
-            :ui="sidebarLinksUI" />
-          <br />
+      <UPage
+        :ui="{
+          wrapper: 'flex flex-col lg:grid lg:grid-cols-10 lg:gap-0',
+        }">
+        <template
+          v-if="leftDrawer"
+          #left>
+          <div class="h-[calc(100dvh-65px)] min-w-48 overflow-y-auto px-2 pt-2 border-r-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950">
+            <BittSkeletonHeader
+              v-if="isLoadingMenu"
+              :lines="5" />
+            <UDashboardSidebarLinks
+              v-else
+              :links="userMenuFormatted"
+              :ui="sidebarLinksUI" />
+            <br />
+          </div>
+        </template>
+  
+        <div class="h-[calc(100dvh-65px)] overflow-y-auto">
+          <suspense>
+            <NuxtPage />
+          </suspense>
         </div>
-      </template>
-
-      <div class="h-[calc(100dvh-65px)] overflow-y-auto">
-        <suspense>
-          <NuxtPage />
-        </suspense>
-      </div>
-    </UPage>
-  </UContainer>
+      </UPage>
+    </UContainer>
+  </div>
 </template>

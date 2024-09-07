@@ -68,9 +68,7 @@ const rowClicked = (record: sys_users) => {
 onMounted(async () => {
   if (import.meta.client) {
     selectedRowId.value = router.currentRoute.value.query.id?.toLocaleString();
-    if (selectedRowId.value) {
-      showEditForm.value = true;
-    }
+    if (selectedRowId.value) { showEditForm.value = true; }
     router.replace({ query: { id: selectedRowId.value } });
   }
 });

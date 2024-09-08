@@ -69,13 +69,13 @@ const closeSlideOder = () => emits('cancel');
             </h3>
             <div class="flex gap-3">
               <UButton
-                icon="i-heroicons-arrow-left-circle"
+                icon="i-hugeicons-cancel-circle"
                 color="gray"
                 @click="closeSlideOder">
                 <span v-if="!isMobile">Cancelar</span>
               </UButton>
               <UButton
-                icon="i-heroicons-check-circle">
+                icon="i-hugeicons-checkmark-circle-01">
                 <span v-if="!isMobile">Guardar</span>
               </UButton>
             </div>

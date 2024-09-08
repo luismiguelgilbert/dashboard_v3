@@ -4,20 +4,27 @@ import { sys_companies_schema } from '@/types/sys_companies';
 export default defineEventHandler(async (event) => {
   try {
     const userCompaniesResultset = await serverDB.query(`
+      with userCompanies as (
+        select *
+        from sys_companies_users
+        where user_id = '24f718bb-bbc4-41e5-a399-8330d8be3f70'
+      )
       select
-      id
-      ,company_number
-      ,name_es
-      ,INITCAP(name_es_short) as name_es_short
-      ,billing_phone
-      ,billing_address
-      ,is_active
-      ,created_at
-      ,updated_at
-      ,updated_by
-      ,avatar_url
-      from sys_companies
-      order by name_es_short
+      a.id
+      ,a.company_number
+      ,a.name_es
+      ,INITCAP(a.name_es_short) as name_es_short
+      ,a.billing_phone
+      ,a.billing_address
+      ,a.is_active
+      ,a.created_at
+      ,a.updated_at
+      ,a.updated_by
+      ,a.avatar_url
+      ,b.is_default
+      from sys_companies a
+      inner join userCompanies b on a.id = b.sys_company_id
+      order by a.name_es_short
     `);
 
     return sys_companies_schema.array().parse(userCompaniesResultset.rows);

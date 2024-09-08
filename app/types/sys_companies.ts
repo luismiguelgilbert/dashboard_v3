@@ -12,6 +12,7 @@ export const sys_companies_schema = z.object({
   updated_at: z.coerce.string(),
   updated_by: z.coerce.string(),
   avatar_url: z.coerce.string().optional(),
+  is_default: z.coerce.boolean().optional().default(false),
 });
 
 export type sys_companies = z.infer<typeof sys_companies_schema>

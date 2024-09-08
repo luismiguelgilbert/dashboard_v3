@@ -8,7 +8,6 @@ const {
   isLoadingMenu,
   isUserSessionValid,
   leftDrawer,
-  // userCompanies,
   userMenuFormatted,
   userSession,
   showBadge,
@@ -38,21 +37,7 @@ const myScreenSize = computed<screenSize>(() => {
   return 'desktop';
 });
 
-// ACTIONS
-const logout = async (error?: string) => {
-  start();
-  const { supabase } = useSupabase();
-  await supabase.auth.signOut();
-  document.cookie.split(';').forEach((c) => {
-    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-  });
-  isUserSessionValid.value = false;
-  console.log('error: ', error);
-  // error?.length
-  //   ? await navigateTo(`/auth/login${error ?? ''}`)
-  //   : await navigateTo('/auth/login');
-  finish();
-};
+// ACTION
 
 const refreshSessionOrLogout = async () => {
   start();
@@ -60,11 +45,7 @@ const refreshSessionOrLogout = async () => {
   const { data, error } = await supabase.auth.refreshSession();
   userSession.value = data.session;
   if (error) {
-    console.error('Error refreshing session', error);
-    isUserSessionValid.value = false;
-    finish();
-    logout('?error=session_expired');
-    return;
+    mainStore.clearUserDataAndLogout();
   }
   finish();
 };

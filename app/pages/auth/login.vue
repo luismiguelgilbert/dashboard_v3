@@ -55,12 +55,14 @@ const onSubmit = async (credentialData: CredentialData) => {
     const { supabase } = useSupabase();
     const { data, error } = await supabase.auth.signInWithPassword(credentials);
     if (error) {
-      errorMessage.value = `Error al iniciar sesión: ${error.message}`;
+      errorMessage.value = error.message;
       throw error;
     }
 
-    document.cookie = `sb-access-token=${data.session.access_token}; path=/`;
-    document.cookie = `sb-refresh-token=${data.session.refresh_token}; path=/`;
+    const accessToken = useCookie('sb-access-token');
+    const refreshToken = useCookie('sb-refresh-token');
+    accessToken.value = data.session.access_token;
+    refreshToken.value = data.session.refresh_token;
     loading.value = false;
     finish();
     isUserSessionValid.value = true;
@@ -71,12 +73,6 @@ const onSubmit = async (credentialData: CredentialData) => {
     loading.value = false;
     isUserSessionValid.value = false;
     console.error(error);
-    const toast = useToast();
-    toast.add({
-      title: 'Error al iniciar sesión',
-      color: 'rose',
-      description: `${error}`,
-    });
   }
 };
 </script>
@@ -100,6 +96,7 @@ const onSubmit = async (credentialData: CredentialData) => {
             icon="i-hugeicons-clock-03"
             color="rose"
             variant="subtle"
+            title="Error al iniciar sesión"
             :description="errorMessage" />
         </template>
         <!-- <template #email-hint>

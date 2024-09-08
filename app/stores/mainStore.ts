@@ -28,6 +28,8 @@ export const useMainStore = defineStore('main', () => {
       console.error(`Error fetching user companies: ${error}`);
     }
     finally {
+      const defaultCompany = userCompanies.value.find((company) => company.is_default);
+      userCompany.value = defaultCompany ?? userCompanies.value[0] ?? undefined;
       isLoadingCompanies.value = false;
     }
   };
@@ -59,6 +61,26 @@ export const useMainStore = defineStore('main', () => {
     finally {
       isLoadingMenu.value = false;
     }
+  };
+
+  const clearUserDataAndLogout = async () => {
+    const { start, finish } = useLoadingIndicator();
+    start();
+    userData.value = null;
+    userCompanies.value = [];
+    userCompany.value = undefined;
+    userMenu.value = [];
+    userSession.value = null;
+    showBadge.value = false;
+    const { supabase } = useSupabase();
+    await supabase.auth.signOut();
+    const accessToken = useCookie('sb-access-token');
+    const refreshToken = useCookie('sb-refresh-token');
+    accessToken.value = null;
+    refreshToken.value = null;
+    isUserSessionValid.value = false;
+    await navigateTo('/auth/login');
+    finish();
   };
 
 
@@ -116,6 +138,7 @@ export const useMainStore = defineStore('main', () => {
     userCompaniesFormatted,
     userMenuFormatted,
     // Actions
+    clearUserDataAndLogout,
     fetchUserCompanies,
     fetchUserData,
     fetchUserMenu,

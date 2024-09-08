@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const mainStore = useMainStore();
-const { userData, isLoadingUserData } = storeToRefs(mainStore);
+const { userData, isLoadingUserData, isMobile } = storeToRefs(mainStore);
 const inputSize = 'xl';
 const inputUI = 'md';
 </script>
@@ -8,10 +8,11 @@ const inputUI = 'md';
 <template>
   <UDashboardPage>
     <div class="overflow-y-scroll w-full">
-      <LazyBittSkeletonHeader
+      <div
         v-if="isLoadingUserData"
-        :lines="5"
-        class="py-1" />
+        class="m-5">
+        <LazyBittSkeletonHeader :lines="5" />
+      </div>
       <div v-else-if="userData">
         <ULandingCard
           class="m-10"
@@ -30,7 +31,7 @@ const inputUI = 'md';
         <UForm
           ref="form"
           :state="userData ?? {}"
-          class="pl-10 pr-6 md:pl-10 md:pr-2 pt-4 md:pt-0">
+          class="pl-6 pr-6 md:pl-10 md:pr-10 pt-4 md:pt-0">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 items-end">
             <div class="col-span-1 sm:col-span-2 pt-1"></div>
             <div>
@@ -184,14 +185,6 @@ const inputUI = 'md';
               :size="inputSize"
               name="dark_enabled">
               <UColorModeSelect />
-              <!-- <UToggle
-                v-model="userData.dark_enabled"
-                on-icon="i-heroicons-moon"
-                off-icon="i-heroicons-sun"
-                :disabled="state.isLoading" /> -->
-              <!-- <span
-                class="ml-5"
-                style="vertical-align: text-bottom;">{{ userData.dark_enabled ? 'Oscuro' : 'Claro' }}</span> -->
             </UFormGroup>
   
             <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -254,6 +247,14 @@ const inputUI = 'md';
               icon="i-heroicons-circle-stack"
               :ui="inputUI"
               :loading="isLoadingUserData" />
+            <br />
+            <UAlert
+              class="col-span-1 sm:col-span-2 my-5 sm:my-0"
+              icon="i-hugeicons-logout-04"
+              color="rose"
+              variant="subtle"
+              :title="isMobile? 'Salir del Sistema' : 'Salir del sistema y regresar a página de inicio de sesión.'"
+              :actions="[{ variant: 'solid', color: 'rose', label: 'Cerrar sesión', click: mainStore.clearUserDataAndLogout }]" />
             <br /><br />
           </div>
         </UForm>

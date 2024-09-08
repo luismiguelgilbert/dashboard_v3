@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app';
 
-defineProps<{
+const props = defineProps<{
   error: NuxtError
 }>();
 
@@ -20,7 +20,9 @@ useSeoMeta({
     <UContainer>
       <UMain>
         <UPage>
-          <UPageError :error="error" />
+          <UPageError
+            name="Lo sentimos, ha ocurrido un error"
+            :message="props.error.message" />
         </UPage>
       </UMain>
     </UContainer>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core';
+import { unprotectedPaths } from '@/types/unsecuredRoutes';
 
 const mainStore = useMainStore();
 const route = useRoute();
@@ -51,13 +52,21 @@ const refreshSessionOrLogout = async () => {
 };
 
 // HOOKS and WATCHERS
-onMounted(() => {
+onMounted(async () => {
   if (import.meta.client) {
     refreshSessionOrLogout();
     mainStore.fetchUserCompanies();
-    mainStore.fetchUserMenu();
     mainStore.fetchUserData();
     isMobile.value = myScreenSize.value === 'mobile';
+    await mainStore.fetchUserMenu();
+    //Check if the route is allowed on first load (after fetching userMenu)
+    const isProtectedPath = !unprotectedPaths.includes(useRoute().fullPath);
+    if (isProtectedPath) {
+      const routeIsAllowed = mainStore.userMenu.some(menu => useRoute().fullPath === menu.link);
+      if (!routeIsAllowed) {
+        return showError('Privilegios insuficientes!');
+      }
+    }
   }
 });
 

@@ -5,9 +5,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const isProtectedPath = !unprotectedPaths.includes(to.fullPath);
     if (isProtectedPath) {
       const mainStore = useMainStore();
-      const routeIsAllowed = mainStore.userMenu.some(menu => to.fullPath.includes(menu.link));
-      if (!routeIsAllowed) {
-        return showError('Privilengios insuficientes!');
+      if (mainStore.userMenu.length > 0) {//we need to check data after first load, else let the user fetch data first
+        const routeIsAllowed = mainStore.userMenu.some(menu => to.fullPath === menu.link);
+        if (!routeIsAllowed) {
+          return showError('Privilegios insuficientes!');
+        }
       }
     }
   }

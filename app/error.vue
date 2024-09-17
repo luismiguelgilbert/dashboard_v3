@@ -22,6 +22,7 @@ useSeoMeta({
         <UPage>
           <UPageError
             name="Lo sentimos, ha ocurrido un error"
+            :status="props.error.statusCode"
             :message="props.error.message" />
         </UPage>
       </UMain>

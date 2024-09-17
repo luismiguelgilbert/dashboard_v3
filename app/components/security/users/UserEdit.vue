@@ -13,10 +13,10 @@ const props = defineProps({
 });
 const emits = defineEmits(['cancel']);
 
-// const route = useRoute();
-// const router = useRouter();
 const mainStore = useMainStore();
+const usersStore = useUsersStore();
 const { isMobile } = storeToRefs(mainStore);
+const { isLoading, selectedRowData } = storeToRefs(usersStore);
 
 const cardUi = {
   body: {
@@ -48,11 +48,22 @@ const tabs = [
     icon: 'i-hugeicons-user-lock-01',
   },
 ];
-const closeSlideOder = () => emits('cancel');
-// const state = reactive({
-//   user: undefined,
-//   lastname: undefined,
-// });
+
+const closeSlideOder = () => {
+  emits('cancel');
+  selectedRowData.value = undefined;
+};
+
+const fetchData = async () => {
+  if (useRoute().query.id) {
+    isLoading.value = true;
+    selectedRowData.value = await $fetch(`/api/security/users/${useRoute().query.id}`);
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => fetchData());
+watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
 </script>
 
 <template>
@@ -71,11 +82,13 @@ const closeSlideOder = () => emits('cancel');
               <UButton
                 icon="i-hugeicons-cancel-circle"
                 color="gray"
+                :disabled="isLoading"
                 @click="closeSlideOder">
                 <span v-if="!isMobile">Cancelar</span>
               </UButton>
               <UButton
-                icon="i-hugeicons-checkmark-circle-01">
+                icon="i-hugeicons-checkmark-circle-01"
+                :disabled="isLoading">
                 <span v-if="!isMobile">Guardar</span>
               </UButton>
             </div>

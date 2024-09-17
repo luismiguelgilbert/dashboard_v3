@@ -1,5 +1,4 @@
-// import { type Session } from "@supabase/supabase-js";
-import type { sys_users } from '@/types/sys_users.js';
+import type { sys_users } from '@/types/sys_users';
 
 export const useUsersStore = defineStore('users', () => {
   const searchString = ref<string>('');
@@ -10,13 +9,13 @@ export const useUsersStore = defineStore('users', () => {
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
   const selectedRowId = ref<string>();
+  const selectedRowData = ref<sys_users>();
 
   // Actions
   const addToPagesLoaded = (page: number) => {
     if (!pagesLoaded.value.includes(page)) {
       pagesLoaded.value.push(page);
     }
-    // pagesLoaded.value = Array.from(new Set([...pagesLoaded.value, page])).sort((a, b) => a - b);
   };
 
   const resetLoadedData = () => {
@@ -77,6 +76,7 @@ export const useUsersStore = defineStore('users', () => {
     isLoading,
     rows,
     selectedRowId,
+    selectedRowData,
     // Actions
     addToPagesLoaded,
     resetLoadedData,

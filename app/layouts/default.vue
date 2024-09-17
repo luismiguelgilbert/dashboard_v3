@@ -62,9 +62,9 @@ onMounted(async () => {
     //Check if the route is allowed on first load (after fetching userMenu)
     const isProtectedPath = !unprotectedPaths.includes(useRoute().fullPath);
     if (isProtectedPath) {
-      const routeIsAllowed = mainStore.userMenu.some(menu => useRoute().fullPath === menu.link);
+      const routeIsAllowed = mainStore.userMenu.some(menu => useRoute().path === menu.link);
       if (!routeIsAllowed) {
-        return showError('Privilegios insuficientes!');
+        return showError({ message: 'Privilegios insuficientes!', statusCode: 403, status: 403, statusText: 'Forbidden', fatal: true });
       }
     }
   }

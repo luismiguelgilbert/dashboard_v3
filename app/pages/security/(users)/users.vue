@@ -80,58 +80,58 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
     <UHeader
       class="z-10"
       :ui="{
-        container: 'mx-0 px-4 sm:px-4 lg:px-4 flex items-center justify-between gap-3 h-[--header-height]',
+        container: 'mx-0 px-2 sm:px-4 lg:px-4 flex items-center justify-between gap-3 h-[--header-height] overflow-hidden',
       }">
       <template #left>
-        <div class="flex">
-          <UInput
-            ref="searchinputcomponent"
-            v-model="searchString"
-            class="min-w-40"
-            icon="i-hugeicons-search-01"
-            placeholder="Buscar..."
-            size="md">
-            <template #trailing>
-              <UKbd value="/" />
-            </template>
-          </UInput>
-          <UButton
-            class="ml-2"
-            color="gray"
-            variant="ghost"
-            size="md">
-            <span v-if="!isMobile">Nuevo</span>
-            <template #trailing>
-              <UIcon
-                name="i-hugeicons-plus-sign-circle"
-                class="w-5 h-5" />
-            </template>
-          </UButton>
-          <UButton
-            class="ml-2"
-            color="gray"
-            variant="ghost"
-            size="md">
-            <template #trailing>
-              <span v-if="!isMobile">Descargar</span>
-              <UIcon
-                name="i-ri-file-excel-2-line"
-                class="w-5 h-5" />
-            </template>
-          </UButton>
-          <UButton
-            class="ml-2"
-            color="gray"
-            variant="ghost"
-            size="md">
-            <template #trailing>
-              <span v-if="!isMobile">Filtros</span>
-              <UIcon
-                name="i-hugeicons-filter"
-                class="w-5 h-5" />
-            </template>
-          </UButton>
-        </div>
+        <UInput
+          ref="searchinputcomponent"
+          v-model="searchString"
+          class="min-w-40"
+          icon="i-hugeicons-search-01"
+          placeholder="Buscar..."
+          size="md">
+          <template #trailing>
+            <UKbd value="/" />
+          </template>
+        </UInput>
+      </template>
+      <template #right>
+        <UButton
+          class="ml-2"
+          color="gray"
+          variant="ghost"
+          size="md">
+          <span v-if="!isMobile">Nuevo</span>
+          <template #trailing>
+            <UIcon
+              name="i-hugeicons-plus-sign-circle"
+              class="w-5 h-5" />
+          </template>
+        </UButton>
+        <UButton
+          class="ml-2"
+          color="gray"
+          variant="ghost"
+          size="md">
+          <template #trailing>
+            <span v-if="!isMobile">Descargar</span>
+            <UIcon
+              name="i-ri-file-excel-2-line"
+              class="w-5 h-5" />
+          </template>
+        </UButton>
+        <UButton
+          class="ml-2"
+          color="gray"
+          variant="ghost"
+          size="md">
+          <template #trailing>
+            <span v-if="!isMobile">Filtros</span>
+            <UIcon
+              name="i-hugeicons-filter"
+              class="w-5 h-5" />
+          </template>
+        </UButton>
       </template>
     </UHeader>
 

@@ -1,29 +1,16 @@
 <script setup lang="ts">
-const state = reactive({
-  data: {
-    id: '',
-    email: '',
-    user_name: '',
-    user_lastname: '',
-    sys_profile_id: '',
-    avatar_url: '',
-    user_sex: false,
-    dark_enabled: false,
-    default_color: false,
-    default_dark_color: false,
-  },
-  isLoading: false,
-});
+const usersStore = useUsersStore();
+const { selectedRowData, isLoading } = storeToRefs(usersStore);
+
 const inputSize = 'xl';
 const inputUI = 'md';
 </script>
 
 <template>
   <UForm
-    v-if="state.data"
-    ref="form"
+    v-if="selectedRowData"
     class="pl-6 pr-6 md:pl-2 md:pr-2 pt-4 md:pt-0"
-    :state="state.data">
+    :state="selectedRowData">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 items-end">
       <div class="col-span-1 sm:col-span-2 pt-1"></div>
       <div>
@@ -38,13 +25,13 @@ const inputUI = 'md';
         :size="inputSize"
         name="email">
         <UInput
-          v-model:model-value="state.data.email"
+          v-model:model-value="selectedRowData.email!"
           required
           placeholder="Email del Usuario"
           icon="i-heroicons-envelope"
-          :disabled="!!state.data.id"
+          :disabled="!!selectedRowData.id"
           :ui="inputUI"
-          :loading="state.isLoading" />
+          :loading="isLoading" />
       </UFormGroup>
 
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -60,12 +47,12 @@ const inputUI = 'md';
         :size="inputSize"
         name="user_name">
         <UInput
-          v-model:model-value="state.data.user_name"
+          v-model:model-value="selectedRowData.user_name"
           required
           placeholder="Nombres del Usuario"
           icon="i-heroicons-user"
           :ui="inputUI"
-          :loading="state.isLoading" />
+          :loading="isLoading" />
       </UFormGroup>
 
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -81,12 +68,12 @@ const inputUI = 'md';
         :size="inputSize"
         name="user_lastname">
         <UInput
-          v-model:model-value="state.data.user_lastname"
+          v-model:model-value="selectedRowData.user_lastname"
           required
           placeholder="Apellidos del Usuario"
           icon="i-heroicons-user"
           :ui="inputUI"
-          :loading="state.isLoading" />
+          :loading="isLoading" />
       </UFormGroup>
 
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -102,11 +89,11 @@ const inputUI = 'md';
         :size="inputSize"
         name="user_sex">
         <UToggle
-          v-model="state.data.user_sex"
-          :disabled="state.isLoading" />
+          v-model="selectedRowData.user_sex"
+          :disabled="isLoading" />
         <span
           class="ml-5"
-          style="vertical-align: text-bottom;">{{ state.data.user_sex ? 'Hombre' : 'Mujer' }}</span>
+          style="vertical-align: text-bottom;">{{ selectedRowData.user_sex ? 'Hombre' : 'Mujer' }}</span>
       </UFormGroup>
 
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -122,7 +109,7 @@ const inputUI = 'md';
         :size="inputSize"
         name="sys_profile_id">
         <USelectMenu
-          v-model="state.data.sys_profile_id"
+          v-model="selectedRowData.sys_profile_id"
           searchable
           required
           :loading="true"
@@ -148,8 +135,8 @@ const inputUI = 'md';
         name="avatar_url">
         <div class="flex items-center">
           <UAvatar
-            :src="state.data.avatar_url!"
-            :alt="state.data.user_lastname"
+            :src="selectedRowData.avatar_url!"
+            :alt="selectedRowData.user_lastname"
             size="lg" />
           <UButton
             label="Seleccionar"
@@ -177,13 +164,13 @@ const inputUI = 'md';
         :size="inputSize"
         name="dark_enabled">
         <UToggle
-          v-model="state.data.dark_enabled"
+          v-model="selectedRowData.dark_enabled"
           on-icon="i-heroicons-moon"
           off-icon="i-heroicons-sun"
-          :disabled="state.isLoading" />
+          :disabled="isLoading" />
         <span
           class="ml-5"
-          style="vertical-align: text-bottom;">{{ state.data.dark_enabled ? 'Oscuro' : 'Claro' }}</span>
+          style="vertical-align: text-bottom;">{{ selectedRowData.dark_enabled ? 'Oscuro' : 'Claro' }}</span>
       </UFormGroup>
 
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -199,10 +186,10 @@ const inputUI = 'md';
         :size="inputSize"
         name="default_dark_color">
         <USelectMenu
-          v-model="state.data.default_dark_color"
+          v-model="selectedRowData.default_dark_color"
           icon="i-heroicons-moon"
           :options="[]"
-          :loading="state.isLoading" />
+          :loading="isLoading" />
       </UFormGroup>
 
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -218,16 +205,16 @@ const inputUI = 'md';
         :size="inputSize"
         name="default_dark_color">
         <USelectMenu
-          v-model="state.data.default_color"
+          v-model="selectedRowData.default_color"
           icon="i-heroicons-swatch"
           :options="[]"
-          :loading="state.isLoading" />
+          :loading="isLoading" />
       </UFormGroup>
 
       <UDivider
-        v-if="state.data.id"
+        v-if="selectedRowData.id"
         class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-      <div v-if="state.data.id">
+      <div v-if="selectedRowData.id">
         <p class="text-gray-900 dark:text-white font-semibold">
           Código:
         </p>
@@ -236,8 +223,8 @@ const inputUI = 'md';
         </p>
       </div>
       <UInput
-        v-if="state.data.id"
-        v-model:model-value="state.data.id"
+        v-if="selectedRowData.id"
+        v-model:model-value="selectedRowData.id"
         required
         label="Código"
         :size="inputSize"
@@ -245,8 +232,11 @@ const inputUI = 'md';
         placeholder="ID del Usuario"
         icon="i-heroicons-circle-stack"
         :ui="inputUI"
-        :loading="state.isLoading" />
+        :loading="isLoading" />
       <br /><br />
     </div>
   </UForm>
+  <BittSkeletonHeader
+    v-if="isLoading"
+    :lines="5" />
 </template>

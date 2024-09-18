@@ -71,6 +71,7 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
     <USlideover
       :model-value="props.isOpen"
       prevent-close
+      :transition="false"
       :ui="{ width: 'max-w-4xl' }">
       <UCard :ui="cardUi">
         <template #header>
@@ -95,7 +96,12 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
           </div>
         </template>
 
+        <BittSkeletonHeader
+          v-if="isLoading"
+          :lines="5" />
+          
         <UTabs
+          v-if="!isLoading"
           :items="tabs"
           :ui="tabsUi">
           <template #user>

@@ -236,7 +236,4 @@ const inputUI = 'md';
       <br /><br />
     </div>
   </UForm>
-  <BittSkeletonHeader
-    v-if="isLoading"
-    :lines="5" />
 </template>

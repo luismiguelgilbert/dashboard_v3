@@ -1,9 +1,12 @@
 import serverDB from '@@/server/utils/db';
 import { sys_users_schema } from '@/types/sys_users';
+import { hasPermission } from '@@/server/utils/handler';
+import { PermissionsList } from '@/types/permissionsEnum';
 
 export default defineEventHandler( async (event) => {
   try{
     const id = getRouterParam(event, 'id');
+    await hasPermission(event, PermissionsList.USERS_READ);
     const text = `
       SELECT
       a.id,

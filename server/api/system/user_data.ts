@@ -1,9 +1,12 @@
 import serverDB from '@@/server/utils/db';
+import { requiresUser } from '@@/server/utils/handler';
 import { sys_users_schema } from '@/types/sys_users';
 
 export default defineEventHandler(async (event) => {
   try {
-    const userDataResultset = await serverDB.query(`
+    await requiresUser(event);
+    const user_id = event.context.user.id;
+    const query = await serverDB.query(`
       select
       a.id
       ,b.email
@@ -22,16 +25,16 @@ export default defineEventHandler(async (event) => {
       from sys_users a
       inner join auth.users b on a.id = b.id
       left join sys_profiles c on a.sys_profile_id = c.id
-      where a.id = '24f718bb-bbc4-41e5-a399-8330d8be3f70'
+      where a.id = '${user_id}'
     `);
 
-    return sys_users_schema.array().parse(userDataResultset.rows);
+    return sys_users_schema.parse(query.rows[0]);
   }
   catch (err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({
       statusCode: 500,
-      statusMessage: 'Unhandled exception',
+      statusMessage: 'Unhandled exception server',
     });
   }
 });

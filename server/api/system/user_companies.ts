@@ -1,13 +1,16 @@
 import serverDB from '@@/server/utils/db';
+import { requiresUser } from '@@/server/utils/handler';
 import { sys_companies_schema } from '@/types/sys_companies';
 
 export default defineEventHandler(async (event) => {
   try {
-    const userCompaniesResultset = await serverDB.query(`
+    await requiresUser(event);
+    const user_id = event.context.user.id;
+    const query = await serverDB.query(`
       with userCompanies as (
         select *
         from sys_companies_users
-        where user_id = '24f718bb-bbc4-41e5-a399-8330d8be3f70'
+        where user_id = '${user_id}'
       )
       select
       a.id
@@ -27,10 +30,10 @@ export default defineEventHandler(async (event) => {
       order by a.name_es_short
     `);
 
-    return sys_companies_schema.array().parse(userCompaniesResultset.rows);
+    return sys_companies_schema.array().parse(query.rows);
   }
   catch (err) {
-    console.error(`Error at ${event.path}. ${err}`);
+    console.error(`Error at ${event.path}: ${err}`);
     throw createError({
       statusCode: 500,
       statusMessage: 'Unhandled exception',

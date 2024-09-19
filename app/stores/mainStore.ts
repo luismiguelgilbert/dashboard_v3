@@ -22,14 +22,21 @@ export const useMainStore = defineStore('main', () => {
   const fetchUserCompanies = async () => {
     try {
       isLoadingCompanies.value = true;
-      userCompanies.value = await $fetch('/api/system/user_companies');
+      const headers = useRequestHeaders(['cookie']);
+      const { data, error } = await useFetch('/api/system/user_companies', { headers });
+      if (error.value) {
+        throw new Error(`Error fetching user companies: ${error.value.statusMessage}`);
+      }
+      if (data.value) {
+        userCompanies.value = data.value;
+        const defaultCompany = userCompanies.value.find((company) => company.is_default);
+        userCompany.value = defaultCompany ?? userCompanies.value[0] ?? undefined;
+      }
     }
     catch (error) {
-      console.error(`Error fetching user companies: ${error}`);
+      throw new Error(`Error fetching user companies B: ${error}`);
     }
     finally {
-      const defaultCompany = userCompanies.value.find((company) => company.is_default);
-      userCompany.value = defaultCompany ?? userCompanies.value[0] ?? undefined;
       isLoadingCompanies.value = false;
     }
   };
@@ -37,13 +44,17 @@ export const useMainStore = defineStore('main', () => {
   const fetchUserData = async () => {
     try {
       isLoadingUserData.value = true;
-      const response = await $fetch('/api/system/user_data');
-      if (response.length && response[0]) {
-        userData.value = response[0];
+      const headers = useRequestHeaders(['cookie']);
+      const { data, error } = await useFetch('/api/system/user_data', { headers });
+      if (error.value) {
+        throw new Error(`Error fetching user data: ${error.value.message}`);
+      }
+      if (data.value) {
+        userData.value = data.value;
       }
     }
     catch (error) {
-      console.error(`Error fetching user data: ${error}`);
+      throw new Error(`Error fetching user data B: ${error}`);
     }
     finally {
       isLoadingUserData.value = false;
@@ -53,10 +64,17 @@ export const useMainStore = defineStore('main', () => {
   const fetchUserMenu = async () => {
     try {
       isLoadingMenu.value = true;
-      userMenu.value = await $fetch('/api/system/user_menu');
+      const headers = useRequestHeaders(['cookie']);
+      const { data, error } = await useFetch('/api/system/user_menu', { headers });
+      if (error.value) {
+        throw new Error(`Error fetching user menu: ${error.value?.message}`);
+      }
+      if (data.value) {
+        userMenu.value = data.value;
+      }
     }
     catch (error) {
-      console.error(`Error fetching user menu: ${error}`);
+      throw new Error(`Error fetching user menu B: ${error}`);
     }
     finally {
       isLoadingMenu.value = false;
@@ -82,7 +100,6 @@ export const useMainStore = defineStore('main', () => {
     await navigateTo('/auth/login');
     finish();
   };
-
 
   // Getters
   const userMenuFormatted = computed(() => {

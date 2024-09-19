@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import type { FormError, FormGroupSize } from '#ui/types';
-
 useHead({ title: 'BITT - Ingreso' });
 
 definePageMeta({
   layout: 'auth',
 });
 const loading = ref<boolean>(false);
-const { start, finish } = useLoadingIndicator();
 const mainStore = useMainStore();
 const { isUserSessionValid } = storeToRefs(mainStore);
 const queryParams = useRoute().query;
@@ -46,7 +44,6 @@ const validate = (state: CredentialData) => {
 
 const onSubmit = async (credentialData: CredentialData) => {
   try {
-    start();
     loading.value = true;
     const credentials = ({
       email: credentialData.email,
@@ -63,13 +60,17 @@ const onSubmit = async (credentialData: CredentialData) => {
     const refreshToken = useCookie('sb-refresh-token');
     accessToken.value = data.session.access_token;
     refreshToken.value = data.session.refresh_token;
-    loading.value = false;
-    finish();
     isUserSessionValid.value = true;
+
+    const headers = useRequestHeaders(['cookie']);
+    const { data: userMenuData, error: userMenuError } = await useFetch('/api/system/user_menu_token', { headers });
+    if (userMenuError.value) throw new Error('Error fetching user menu token');
+    const menuToken = useCookie('sb-menu-token');
+    menuToken.value = userMenuData.value;
+
     await navigateTo('/');
   }
   catch (error) {
-    finish();
     loading.value = false;
     isUserSessionValid.value = false;
     console.error(error);
@@ -90,13 +91,13 @@ const onSubmit = async (credentialData: CredentialData) => {
         :submit-button="{ label: 'Iniciar sesión', trailingIcon: 'i-heroicons-arrow-right-20-solid', size: 'xl' }"
         @submit="onSubmit">
         <template
-          v-if="errorMessage.length"
+          v-if="errorMessage.length && !loading"
           #footer>
           <UAlert
             icon="i-hugeicons-clock-03"
             color="rose"
             variant="subtle"
-            title="Error al iniciar sesión"
+            title="Error"
             :description="errorMessage" />
         </template>
         <!-- <template #email-hint>

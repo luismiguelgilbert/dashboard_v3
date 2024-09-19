@@ -17,6 +17,7 @@ const mainStore = useMainStore();
 const usersStore = useUsersStore();
 const { isMobile } = storeToRefs(mainStore);
 const { isLoading, selectedRowData } = storeToRefs(usersStore);
+const hasError = ref(false);
 
 const cardUi = {
   body: {
@@ -56,9 +57,16 @@ const closeSlideOder = () => {
 
 const fetchData = async () => {
   if (useRoute().query.id) {
-    isLoading.value = true;
-    selectedRowData.value = await $fetch(`/api/security/users/${useRoute().query.id}`);
-    isLoading.value = false;
+    try {
+      hasError.value = false;
+      isLoading.value = true;
+      selectedRowData.value = await $fetch(`/api/security/users/${useRoute().query.id}`);
+      isLoading.value = false;
+    } catch (error) {
+      console.error(error);
+      hasError.value = true;
+      isLoading.value = false;
+    }
   }
 };
 
@@ -96,10 +104,17 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
           </div>
         </template>
 
+        <UAlert
+          v-if="hasError"
+          class="col-span-1 sm:col-span-2 my-5 sm:my-5"
+          icon="i-hugeicons-logout-04"
+          color="rose"
+          variant="subtle"
+          title="Se ha producido un error; por favor reintente" />
+
         <BittSkeletonHeader
           v-if="isLoading"
           :lines="5" />
-          
         <UTabs
           v-if="!isLoading"
           :items="tabs"

@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core';
-import { unprotectedPaths } from '@/types/unsecuredRoutes';
 
 const mainStore = useMainStore();
 const route = useRoute();
 const {
   isMobile,
   isLoadingMenu,
-  isUserSessionValid,
   leftDrawer,
   userMenuFormatted,
-  userSession,
   showBadge,
   badgeLabel,
 } = storeToRefs(mainStore);
-const { start, finish } = useLoadingIndicator();
+
 const sidebarLinksUI = {
   label: 'text-lg lg:text-sm truncate relative',
   active: 'text-primary-500 dark:text-primary-400 before:bg-gray-100 dark:before:bg-gray-800',
@@ -38,42 +35,9 @@ const myScreenSize = computed<screenSize>(() => {
   return 'desktop';
 });
 
-// ACTION
-
-const refreshSessionOrLogout = async () => {
-  start();
-  const { supabase } = useSupabase();
-  const { data, error } = await supabase.auth.refreshSession();
-  userSession.value = data.session;
-  if (error) {
-    mainStore.clearUserDataAndLogout();
-  }
-  finish();
-};
-
 // HOOKS and WATCHERS
 onMounted(async () => {
-  if (import.meta.client) {
-    refreshSessionOrLogout();
-    mainStore.fetchUserCompanies();
-    mainStore.fetchUserData();
-    isMobile.value = myScreenSize.value === 'mobile';
-    await mainStore.fetchUserMenu();
-    //Check if the route is allowed on first load (after fetching userMenu)
-    const isProtectedPath = !unprotectedPaths.includes(useRoute().fullPath);
-    if (isProtectedPath) {
-      const routeIsAllowed = mainStore.userMenu.some(menu => useRoute().path === menu.link);
-      if (!routeIsAllowed) {
-        return showError({ message: 'Privilegios insuficientes!', statusCode: 403, status: 403, statusText: 'Forbidden', fatal: true });
-      }
-    }
-  }
-});
-
-watch(() => isUserSessionValid.value, (value) => {
-  if (!value) {
-    refreshSessionOrLogout();
-  }
+  if (import.meta.client) { isMobile.value = myScreenSize.value === 'mobile'; }
 });
 
 watch(() => route.fullPath, () => {
@@ -109,6 +73,7 @@ watch(() => myScreenSize.value, () => isMobile.value = myScreenSize.value === 'm
               :lines="5" />
             <UDashboardSidebarLinks
               v-else
+              no-prefetch
               :links="userMenuFormatted"
               :ui="sidebarLinksUI" />
             <br />

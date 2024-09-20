@@ -1282,7 +1282,7 @@
     pathe "^1.1.2"
     unimport "^3.11.1"
 
-"@nuxt/icon@^1.4.0":
+"@nuxt/icon@^1.4.0", "@nuxt/icon@^1.5.1":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@nuxt/icon/-/icon-1.5.1.tgz#a39e7807736188897f3b3e55fdbdead3526e3e46"
   integrity sha512-NCCJFumuCfLTaPWyfB0NhOqSPmjK3OCCUbsAk0gfQIxwW0ERudrqiwhCtGJljxA8Ae/952OtI79Fpj1M5Sfuhg==

@@ -7,11 +7,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   future: { compatibilityVersion: 4 },
   extends: ['@nuxt/ui-pro'],
-  modules: [
-    '@nuxt/ui',
-    '@nuxt/eslint',
-    '@nuxtjs/algolia',
-    '@pinia/nuxt'],
+  modules: ['@nuxt/ui', '@nuxt/eslint', '@nuxtjs/algolia', '@pinia/nuxt', '@nuxt/icon'],
 
   eslint: {
     config: {

@@ -94,10 +94,9 @@ const onSubmit = async (credentialData: CredentialData) => {
           v-if="errorMessage.length && !loading"
           #footer>
           <UAlert
-            icon="i-hugeicons-clock-03"
+            icon="i-hugeicons-alert-diamond"
             color="rose"
             variant="subtle"
-            title="Error"
             :description="errorMessage" />
         </template>
         <!-- <template #email-hint>

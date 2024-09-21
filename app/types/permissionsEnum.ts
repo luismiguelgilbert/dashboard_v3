@@ -38,5 +38,4 @@ export enum PermissionsList {
   ENSBOOKS_CREATE = '110401',
   ENSBOOKS_EDIT = '110402',
   ENSBOOKS_EXPORT = '110403',
-  ELIMINAR = '999999999',
 }

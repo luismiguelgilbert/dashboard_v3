@@ -29,8 +29,7 @@ export const useMainStore = defineStore('main', () => {
       }
       if (data.value) {
         userCompanies.value = data.value;
-        const defaultCompany = userCompanies.value.find((company) => company.is_default);
-        userCompany.value = defaultCompany ?? userCompanies.value[0] ?? undefined;
+        userCompany.value = userCompanies.value[0] ?? undefined;
       }
     }
     catch (error) {

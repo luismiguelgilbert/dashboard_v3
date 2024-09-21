@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
       ,b.is_default
       from sys_companies a
       inner join userCompanies b on a.id = b.sys_company_id
-      order by a.name_es_short
+      order by b.is_default desc, a.name_es_short
     `);
 
     return sys_companies_schema.array().parse(query.rows);

@@ -16,7 +16,7 @@ const emits = defineEmits(['cancel']);
 const mainStore = useMainStore();
 const usersStore = useUsersStore();
 const { isMobile } = storeToRefs(mainStore);
-const { isLoading, selectedRowData } = storeToRefs(usersStore);
+const { isLoading, selectedRowData, lookupCompanies } = storeToRefs(usersStore);
 const hasError = ref(false);
 
 const cardUi = {
@@ -60,7 +60,13 @@ const fetchData = async () => {
     try {
       hasError.value = false;
       isLoading.value = true;
-      selectedRowData.value = await $fetch(`/api/security/users/${useRoute().query.id}`);
+
+      const results = await Promise.all([
+        $fetch(`/api/security/users/${useRoute().query.id}`),
+        $fetch('/api/lookups/sys_companies'),
+      ]);
+      selectedRowData.value = results[0];
+      lookupCompanies.value = results[1];
       isLoading.value = false;
     } catch (error) {
       console.error(error);
@@ -125,7 +131,9 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
             </div>
           </template>
           <template #companies>
-            <SecurityUsersUserEditCompanies />
+            <div class="h-[calc(100dvh-135px)] sm:h-[calc(100dvh-150px)] overflow-y-auto">
+              <SecurityUsersUserEditCompanies />
+            </div>
           </template>
         </UTabs>
       </UCard>

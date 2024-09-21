@@ -1,4 +1,5 @@
 import type { sys_users } from '@/types/sys_users';
+import type { sys_companies } from '@/types/sys_companies';
 
 export const useUsersStore = defineStore('users', () => {
   const searchString = ref<string>('');
@@ -10,6 +11,7 @@ export const useUsersStore = defineStore('users', () => {
   const isLoading = ref<boolean>(false);
   const selectedRowId = ref<string>();
   const selectedRowData = ref<sys_users>();
+  const lookupCompanies = ref<sys_companies[]>();
 
   // Actions
   const addToPagesLoaded = (page: number) => {
@@ -77,6 +79,7 @@ export const useUsersStore = defineStore('users', () => {
     rows,
     selectedRowId,
     selectedRowData,
+    lookupCompanies,
     // Actions
     addToPagesLoaded,
     resetLoadedData,

@@ -108,10 +108,10 @@ const inputUI = 'md';
       <UFormGroup
         :size="inputSize"
         name="sys_profile_id">
-        <!-- searchable -->
         <USelectMenu
           v-model="selectedRowData.sys_profile_id"
           required
+          searchable
           searchable-placeholder="Buscar rol..."
           placeholder="Seleccionar rol..."
           icon="i-heroicons-user-circle"

@@ -270,6 +270,7 @@ defineExpose({
           :loading="isLoading" />
       </UFormGroup>
 
+      <!-- exists in url (no need to show)
       <UDivider
         v-if="selectedRowData.id"
         class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -291,7 +292,7 @@ defineExpose({
         placeholder="ID del Usuario"
         icon="i-heroicons-circle-stack"
         :ui="inputUI"
-        :loading="isLoading" />
+        :loading="isLoading" /> -->
       <br /><br />
     </div>
   </UForm>

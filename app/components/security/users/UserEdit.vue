@@ -61,8 +61,7 @@ const fetchData = async () => {
 
 const validateAndSave = async () => {
   try {
-    const results = await userEditComponent.value?.validateMainForm();
-    console.log('results', results);
+    await userEditComponent.value?.validateMainForm();
   } catch (error) {
     console.error(error);
   }

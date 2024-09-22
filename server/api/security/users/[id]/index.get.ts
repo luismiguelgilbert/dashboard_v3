@@ -34,14 +34,22 @@ export default defineEventHandler( async (event) => {
       WHERE a.user_id = '${id}'
     `;
 
+    const userDefaultCompanyQuery = `
+      select a.sys_company_id
+      from sys_companies_users a
+      WHERE a.user_id = '${id}' and a.is_default = true
+    `;
+
     const results = await Promise.all([
       serverDB.query(userDataQuery),
       serverDB.query(userCompaniesQuery),
+      serverDB.query(userDefaultCompanyQuery),
     ]);
     
     return sys_users_form_schema.parse({
       ...sys_users_schema.array().parse(results[0].rows)[0],
       sys_companies_users: results[1].rows.map((row) => row.sys_company_id),
+      default_user_company: results[2].rows[0]?.sys_company_id ?? undefined,
     });
   }catch(err) {
     console.error(`Error at ${event.path}. ${err}`);

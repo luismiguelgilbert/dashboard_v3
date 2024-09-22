@@ -16,7 +16,7 @@ const emits = defineEmits(['cancel']);
 const mainStore = useMainStore();
 const usersStore = useUsersStore();
 const { isMobile } = storeToRefs(mainStore);
-const { isLoading, selectedRowData, lookupCompanies } = storeToRefs(usersStore);
+const { isLoading, selectedRowData, lookupCompanies, lookupProfiles } = storeToRefs(usersStore);
 const hasError = ref(false);
 
 const cardUi = {
@@ -64,9 +64,11 @@ const fetchData = async () => {
       const results = await Promise.all([
         $fetch(`/api/security/users/${useRoute().query.id}`),
         $fetch('/api/lookups/sys_companies'),
+        $fetch('/api/lookups/sys_profiles'),
       ]);
       selectedRowData.value = results[0];
       lookupCompanies.value = results[1];
+      lookupProfiles.value = results[2];
       isLoading.value = false;
     } catch (error) {
       console.error(error);

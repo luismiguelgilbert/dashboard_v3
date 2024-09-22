@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const usersStore = useUsersStore();
-const { selectedRowData, isLoading } = storeToRefs(usersStore);
+const { selectedRowData, isLoading, lookupProfiles } = storeToRefs(usersStore);
 
 const inputSize = 'xl';
 const inputUI = 'md';
@@ -108,17 +108,16 @@ const inputUI = 'md';
       <UFormGroup
         :size="inputSize"
         name="sys_profile_id">
+        <!-- searchable -->
         <USelectMenu
           v-model="selectedRowData.sys_profile_id"
-          searchable
           required
-          :loading="true"
           searchable-placeholder="Buscar rol..."
           placeholder="Seleccionar rol..."
           icon="i-heroicons-user-circle"
           value-attribute="id"
           option-attribute="name_es"
-          :options="[]" />
+          :options="lookupProfiles" />
       </UFormGroup>
 
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />

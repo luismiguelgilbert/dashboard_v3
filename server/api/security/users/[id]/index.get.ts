@@ -1,5 +1,5 @@
 import serverDB from '@@/server/utils/db';
-import { sys_users_schema } from '@/types/sys_users';
+import { sys_users_schema, sys_users_form_schema } from '@/types/sys_users';
 import { hasPermission } from '@@/server/utils/handler';
 import { PermissionsList } from '@/types/permissionsEnum';
 
@@ -7,7 +7,8 @@ export default defineEventHandler( async (event) => {
   try{
     const id = getRouterParam(event, 'id');
     await hasPermission(event, PermissionsList.USERS_READ);
-    const text = `
+
+    const userDataQuery = `
       SELECT
       a.id,
       COALESCE(b.user_name, '') as user_name,
@@ -26,8 +27,22 @@ export default defineEventHandler( async (event) => {
       left join sys_profiles d on b.sys_profile_id = d.id
       WHERE a.id = '${id}'
     `;
-    const data = await serverDB.query(text);
-    return sys_users_schema.array().parse(data.rows)[0];
+
+    const userCompaniesQuery = `
+      select a.sys_company_id
+      from sys_companies_users a
+      WHERE a.user_id = '${id}'
+    `;
+
+    const results = await Promise.all([
+      serverDB.query(userDataQuery),
+      serverDB.query(userCompaniesQuery),
+    ]);
+    
+    return sys_users_form_schema.parse({
+      ...sys_users_schema.array().parse(results[0].rows)[0],
+      sys_companies_users: results[1].rows.map((row) => row.sys_company_id),
+    });
   }catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

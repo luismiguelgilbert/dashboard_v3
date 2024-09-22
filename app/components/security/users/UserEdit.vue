@@ -19,6 +19,8 @@ const { isMobile } = storeToRefs(mainStore);
 const { isLoading, selectedRowData, lookupCompanies, lookupProfiles } = storeToRefs(usersStore);
 const hasError = ref(false);
 
+const userEditComponent = useTemplateRef('userEditComponent');
+
 const cardUi = {
   body: {
     base: 'flex-1',
@@ -28,27 +30,6 @@ const cardUi = {
   divide: 'divide-y divide-gray-100 dark:divide-gray-800',
   rounded: 'rounded-none',
 };
-
-const tabsUi = {
-  list: {
-    tab: {
-      icon: 'w-5 h-5 flex-shrink-0 mr-2',
-    },
-  },
-};
-
-const tabs = [
-  {
-    slot: 'user',
-    label: 'Usuario',
-    icon: 'i-hugeicons-location-user-01',
-  },
-  {
-    slot: 'companies',
-    label: 'Organizaciones',
-    icon: 'i-hugeicons-user-lock-01',
-  },
-];
 
 const closeSlideOder = () => {
   emits('cancel');
@@ -75,6 +56,15 @@ const fetchData = async () => {
       hasError.value = true;
       isLoading.value = false;
     }
+  }
+};
+
+const validateAndSave = async () => {
+  try {
+    const results = await userEditComponent.value?.validateMainForm();
+    console.log('results', results);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -105,7 +95,8 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
               </UButton>
               <UButton
                 icon="i-hugeicons-checkmark-circle-01"
-                :disabled="isLoading">
+                :disabled="isLoading"
+                @click="validateAndSave">
                 <span v-if="!isMobile">Guardar</span>
               </UButton>
             </div>
@@ -115,7 +106,7 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
         <UAlert
           v-if="hasError"
           class="col-span-1 sm:col-span-2 my-5 sm:my-5"
-          icon="i-hugeicons-logout-04"
+          icon="i-hugeicons-settings-error-01"
           color="rose"
           variant="subtle"
           title="Se ha producido un error; por favor reintente" />
@@ -123,21 +114,12 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
         <BittSkeletonHeader
           v-if="isLoading"
           :lines="5" />
-        <UTabs
+        
+        <div
           v-if="!isLoading"
-          :items="tabs"
-          :ui="tabsUi">
-          <template #user>
-            <div class="h-[calc(100dvh-135px)] sm:h-[calc(100dvh-150px)] overflow-y-auto">
-              <SecurityUsersUserEditUser />
-            </div>
-          </template>
-          <template #companies>
-            <div class="h-[calc(100dvh-135px)] sm:h-[calc(100dvh-150px)] overflow-y-auto">
-              <SecurityUsersUserEditCompanies />
-            </div>
-          </template>
-        </UTabs>
+          class="h-[calc(100dvh-135px)] sm:h-[calc(100dvh-100px)] overflow-y-auto">
+          <SecurityUsersUserEditUser ref="userEditComponent" />
+        </div>
       </UCard>
     </USlideover>
   </div>

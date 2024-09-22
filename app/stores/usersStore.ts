@@ -1,4 +1,4 @@
-import type { sys_users } from '@/types/sys_users';
+import type { sys_users, sys_users_form } from '@/types/sys_users';
 import type { sys_companies } from '@/types/sys_companies';
 import type { sys_profiles } from '@/types/sys_profiles';
 
@@ -11,7 +11,7 @@ export const useUsersStore = defineStore('users', () => {
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
   const selectedRowId = ref<string>();
-  const selectedRowData = ref<sys_users>();
+  const selectedRowData = ref<sys_users_form>();
   const lookupCompanies = ref<sys_companies[]>();
   const lookupProfiles = ref<sys_profiles[]>();
 

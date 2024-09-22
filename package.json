@@ -19,6 +19,7 @@
     "@nuxtjs/algolia": "^1.10.2",
     "@pinia/nuxt": "^0.5.4",
     "@supabase/supabase-js": "^2.45.2",
+    "@types/uuid": "^10.0.0",
     "@vueuse/core": "^11.0.3",
     "crypto-js": "^4.2.0",
     "pg": "^8.12.0",

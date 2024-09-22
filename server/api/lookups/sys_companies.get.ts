@@ -13,7 +13,9 @@ export default defineEventHandler( async (event) => {
       a.name_es_short,
       a.billing_phone,
       a.billing_address,
-      a.avatar_url
+      a.avatar_url,
+      a.is_active,
+      NOT(a.is_active) as disabled
       from sys_companies a
       order by a.name_es_short
     `;

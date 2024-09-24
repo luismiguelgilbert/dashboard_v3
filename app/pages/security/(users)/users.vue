@@ -12,6 +12,7 @@ const {
   pagesLoaded,
   totalRows,
   isLoading,
+  isDownloading,
   rows,
   selectedRowId,
 } = storeToRefs(usersStore);
@@ -63,6 +64,26 @@ const rowClicked = (record: sys_users) => {
   showEditForm.value = true;
   router.replace({ query: { id: selectedRowId.value } });
 };
+const downloadList = async() => {
+  try {
+    isDownloading.value = true;
+    const response: Blob = await $fetch('/api/security/users/download', {
+      method: 'post',
+      // body: filterPayload,
+    });
+    const url = window.URL.createObjectURL(response);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'Usuarios.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    isDownloading.value = false;
+  }
+};
 
 // HOOKS and WATCHERS
 onMounted(async () => {
@@ -89,7 +110,8 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
           class="min-w-40"
           icon="i-hugeicons-search-01"
           placeholder="Buscar..."
-          size="md">
+          size="md"
+          :disabled="isDownloading">
           <template #trailing>
             <UKbd value="/" />
           </template>
@@ -100,7 +122,8 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
           class="ml-2"
           color="gray"
           variant="ghost"
-          size="md">
+          size="md"
+          :disabled="isDownloading">
           <span v-if="!isMobile">Nuevo</span>
           <template #trailing>
             <UIcon
@@ -112,7 +135,10 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
           class="ml-2"
           color="gray"
           variant="ghost"
-          size="md">
+          size="md"
+          :loading="isDownloading"
+          :disabled="isDownloading"
+          @click="downloadList">
           <template #trailing>
             <span v-if="!isMobile">Descargar</span>
             <UIcon
@@ -124,7 +150,8 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
           class="ml-2"
           color="gray"
           variant="ghost"
-          size="md">
+          size="md"
+          :disabled="isDownloading">
           <template #trailing>
             <span v-if="!isMobile">Filtros</span>
             <UIcon

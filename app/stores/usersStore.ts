@@ -10,6 +10,7 @@ export const useUsersStore = defineStore('users', () => {
   const rows = ref<{ [k: string]: sys_users[] }>({});
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
+  const isDownloading = ref<boolean>(false);
   const selectedRowId = ref<string>();
   const selectedRowData = ref<sys_users_form>();
   const lookupCompanies = ref<sys_companies[]>();
@@ -78,6 +79,7 @@ export const useUsersStore = defineStore('users', () => {
     pagesLoaded,
     totalRows,
     isLoading,
+    isDownloading,
     rows,
     selectedRowId,
     selectedRowData,

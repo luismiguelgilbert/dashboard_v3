@@ -9,8 +9,8 @@ export default defineEventHandler( async (event) => {
       SELECT
       a.id,
       a.company_number,
-      a.name_es,
-      a.name_es_short,
+      INITCAP(a.name_es) as name_es,
+      INITCAP(a.name_es_short) as name_es_short,
       a.billing_phone,
       a.billing_address,
       a.avatar_url,

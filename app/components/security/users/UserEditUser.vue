@@ -19,10 +19,10 @@ defineExpose({
   <UForm
     v-if="selectedRowData"
     ref="mainForm"
-    class="pl-6 pr-6 md:pl-2 md:pr-2 pt-4 md:pt-0"
+    class="pl-1 pr-1 md:pl-2 md:pr-2 pt-4 md:pt-0"
     :schema="sys_users_form_schema"
     :state="selectedRowData">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 items-end">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-1 sm:px-4 items-end">
       <div class="col-span-1 sm:col-span-2 pt-1"></div>
       <div class="self-start">
         <p class="text-gray-900 dark:text-white font-semibold">

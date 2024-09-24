@@ -116,7 +116,7 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
         
         <div
           v-if="!isLoading"
-          class="h-[calc(100dvh-135px)] sm:h-[calc(100dvh-100px)] overflow-y-auto">
+          class="h-[calc(100dvh-82px)] sm:h-[calc(100dvh-100px)] overflow-y-auto">
           <SecurityUsersUserEditUser ref="userEditComponent" />
         </div>
       </UCard>

@@ -70,6 +70,7 @@ const links = computed(() => {
       </div>
     </template>
     <template #right>
+      <UColorModeButton v-if="!isMobile" />
       <USelectMenu
         v-model="userCompany" 
         :options="userCompaniesFormatted"

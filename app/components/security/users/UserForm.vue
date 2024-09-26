@@ -16,10 +16,16 @@ const emits = defineEmits(['cancel']);
 const mainStore = useMainStore();
 const usersStore = useUsersStore();
 const { isMobile } = storeToRefs(mainStore);
-const { isLoading, selectedRowData, lookupCompanies, lookupProfiles } = storeToRefs(usersStore);
+const {
+  isLoading,
+  selectedRowData,
+  lookupCompanies,
+  lookupProfiles,
+  formModel,
+} = storeToRefs(usersStore);
 const hasError = ref(false);
 
-const userEditComponent = useTemplateRef('userEditComponent');
+const formComponent = useTemplateRef('formComponent');
 
 const cardUi = {
   body: {
@@ -43,7 +49,7 @@ const fetchData = async () => {
       isLoading.value = true;
 
       const results = await Promise.all([
-        $fetch(`/api/security/users/${useRoute().query.id}`),
+        $fetch(`/api/security/users/:${useRoute().query.id}`),
         $fetch('/api/lookups/sys_companies'),
         $fetch('/api/lookups/sys_profiles'),
       ]);
@@ -61,13 +67,38 @@ const fetchData = async () => {
 
 const validateAndSave = async () => {
   try {
-    await userEditComponent.value?.validateMainForm();
+    await formComponent.value?.validateMainForm();
   } catch (error) {
     console.error(error);
   }
 };
 
-onMounted(() => fetchData());
+onMounted(() => {
+  // console.log('formModel.value', formModel.value);
+  if (formModel.value === 'edit') {
+    fetchData();
+  } else {
+    selectedRowData.value = {
+      id: props.id,
+      user_name: '',
+      user_lastname: '',
+      user_sex: true,
+      avatar_url: null,
+      website: null,
+      email: null,
+      sys_profile_id: 0,
+      sys_profile_name: '',
+      default_color: 'indigo',
+      default_dark_color: 'zinc',
+      dark_enabled: false,
+      created_at: null,
+      updated_at: null,
+      last_sign_in_at: null,
+      sys_companies_users: [],
+      default_user_company: undefined,
+    };
+  }
+});
 watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
 </script>
 
@@ -82,19 +113,21 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
         <template #header>
           <div class="flex items-center justify-between">
             <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-              Editar usuario:
+              {{ formModel === 'create' ? 'Crear' : 'Editar' }} usuario:
             </h3>
             <div class="flex gap-3">
               <UButton
                 icon="i-hugeicons-cancel-circle"
                 color="gray"
                 :disabled="isLoading"
+                :loading="isLoading"
                 @click="closeSlideOder">
                 <span v-if="!isMobile">Cancelar</span>
               </UButton>
               <UButton
                 icon="i-hugeicons-checkmark-circle-01"
                 :disabled="isLoading"
+                :loading="isLoading"
                 @click="validateAndSave">
                 <span v-if="!isMobile">Guardar</span>
               </UButton>
@@ -110,14 +143,19 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
           variant="subtle"
           title="Se ha producido un error; por favor reintente" />
 
-        <BittSkeletonHeader
+        <div
           v-if="isLoading"
-          :lines="5" />
+          class="h-[calc(100dvh-82px)] sm:h-[calc(100dvh-100px)] overflow-y-auto">
+          <BittSkeletonHeader
+            :lines="5" />
+        </div>
         
         <div
           v-if="!isLoading"
           class="h-[calc(100dvh-82px)] sm:h-[calc(100dvh-100px)] overflow-y-auto">
-          <SecurityUsersUserEditUser ref="userEditComponent" />
+          <SecurityUsersUserFormBasic
+            :key="props.id"
+            ref="formComponent" />
         </div>
       </UCard>
     </USlideover>

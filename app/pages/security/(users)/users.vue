@@ -1,68 +1,39 @@
 <script setup lang="ts">
-import { sys_users_schema, type sys_users } from '~/types/sys_users';
+import { v4 as uuidv4 } from 'uuid';
+import type { sys_users } from '~/types/sys_users';
 
 const router = useRouter();
 const searchinputcomponent = ref<{ input: HTMLInputElement }>();
 const mainStore = useMainStore();
-const { isMobile, showBadge, badgeLabel } = storeToRefs(mainStore);
+const { isMobile } = storeToRefs(mainStore);
 const usersStore = useUsersStore();
 const {
   searchString,
-  pageSize,
-  pagesLoaded,
-  totalRows,
   isLoading,
   isDownloading,
-  rows,
+  formModel,
   selectedRowId,
 } = storeToRefs(usersStore);
-const showEditForm = ref<boolean>(false);
+const showUserForm = ref<boolean>(false);
 
 defineShortcuts({ '/': () => { searchinputcomponent.value?.input?.focus(); } });
-const refresh = async (pages: number[]) => {
-  try {
-    isLoading.value = true;
-    showBadge.value = true;
-    badgeLabel.value = totalRows.value;
-    pages.forEach(async (pageToLoad) => {
-      if (!pagesLoaded.value.includes(pageToLoad)) {
-        usersStore.addToPagesLoaded(pageToLoad);
-        const { data: algoliaData } = await useAsyncAlgoliaSearch({
-          indexName: 'sys_users',
-          query: searchString.value ?? '',
-          requestOptions: {
-            page: (pageToLoad - 1) >= 0 ? (pageToLoad - 1) : 0,
-            hitsPerPage: pageSize.value,
-            cacheable: false,
-            // facetFilters: selectedFiltersFacet.value ? selectedFiltersFacet.value : undefined,
-          },
-        });
-        totalRows.value = algoliaData.value?.nbHits ?? 0;
-        badgeLabel.value = totalRows.value;
-        rows.value[pageToLoad] = sys_users_schema.array().parse(algoliaData.value?.hits) ?? [];
-      }
-    });
-  }
-  catch (error) {
-    console.error(error);
-  }
-  finally {
-    isLoading.value = false;
-  }
-};
-const updatePageAndRefresh = async (newPages: number[]) => await refresh(newPages);
-const resetLoadedDataAndRefresh = async () => {
-  usersStore.resetLoadedData();
-  await refresh([1]);
-};
-const closeEditForm = () => {
-  showEditForm.value = false;
+
+const closeUserForm = () => {
+  showUserForm.value = false;
   router.replace({ query: { } });
 };
 const rowClicked = (record: sys_users) => {
   selectedRowId.value = record.id;
-  showEditForm.value = true;
+  formModel.value = 'edit';
+  showUserForm.value = true;
   router.replace({ query: { id: selectedRowId.value } });
+};
+const newClicked = () => {
+  const newID = uuidv4();
+  selectedRowId.value = newID;
+  formModel.value = 'create';
+  showUserForm.value = true;
+  router.replace({ query: { new: newID } });
 };
 const downloadList = async() => {
   try {
@@ -84,16 +55,6 @@ const downloadList = async() => {
     isDownloading.value = false;
   }
 };
-
-// HOOKS and WATCHERS
-onMounted(async () => {
-  if (import.meta.client) {
-    selectedRowId.value = router.currentRoute.value.query.id?.toLocaleString();
-    if (selectedRowId.value) { showEditForm.value = true; }
-    router.replace({ query: { id: selectedRowId.value } });
-  }
-});
-watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true });
 </script>
 
 <template>
@@ -101,7 +62,7 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
     <UHeader
       class="z-10"
       :ui="{
-        container: 'mx-0 px-2 sm:px-4 lg:px-4 flex items-center justify-between gap-3 h-[--header-height] overflow-hidden',
+        container: 'mx-0 px-2 sm:px-4 lg:px-4 flex items-center justify-between gap-3 h-[--header-height] overflow-hidden max-w-full',
       }">
       <template #left>
         <UInput
@@ -116,14 +77,20 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
             <UKbd value="/" />
           </template>
         </UInput>
+        <UIcon
+          v-show="isLoading"
+          name="i-hugeicons-loading-03"
+          size="lg"
+          class="animate-spin ml-2" />
       </template>
       <template #right>
         <UButton
           class="ml-2"
-          color="gray"
-          variant="ghost"
+          variant="solid"
           size="md"
-          :disabled="isDownloading">
+
+          :disabled="isDownloading"
+          @click="newClicked">
           <span v-if="!isMobile">Nuevo</span>
           <template #trailing>
             <UIcon
@@ -133,9 +100,9 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
         </UButton>
         <UButton
           class="ml-2"
-          color="gray"
-          variant="ghost"
+          variant="outline"
           size="md"
+          
           :loading="isDownloading"
           :disabled="isDownloading"
           @click="downloadList">
@@ -148,8 +115,7 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
         </UButton>
         <UButton
           class="ml-2"
-          color="gray"
-          variant="ghost"
+          variant="outline"
           size="md"
           :disabled="isDownloading">
           <template #trailing>
@@ -162,17 +128,19 @@ watch(() => searchString.value, () => resetLoadedDataAndRefresh(), { deep: true 
       </template>
     </UHeader>
 
-    <LazySecurityUsersList
+    <!-- <SecurityUsersList
       :rows="rows"
       :rows-total="totalRows"
       :page-size="pageSize"
       :selected-row="selectedRowId"
       @data-request="updatePageAndRefresh"
+      @row-click="rowClicked" /> -->
+    <SecurityUsersListB
       @row-click="rowClicked" />
 
-    <SecurityUsersUserEdit
+    <SecurityUsersUserForm
       :id="selectedRowId"
-      :is-open="showEditForm"
-      @cancel="closeEditForm" />
+      :is-open="showUserForm"
+      @cancel="closeUserForm" />
   </div>
 </template>

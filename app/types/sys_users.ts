@@ -17,6 +17,7 @@ export const sys_users_schema = z.object({
   created_at: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
   last_sign_in_at: z.string().optional().nullable(),
+  rows_count: z.coerce.number().optional().nullable(),
 });
 
 export type sys_users = z.infer<typeof sys_users_schema>
@@ -24,7 +25,7 @@ export type sys_users = z.infer<typeof sys_users_schema>
 export type sys_users_object = { [k: string]: sys_users[] }
 
 export const sys_users_form_schema = sys_users_schema.extend({
-  sys_companies_users: z.array(z.string().uuid()).min(1, 'Debe seleccionar al menos una opción.'),
+  sys_companies_users: z.array(z.string().uuid()).min(1, 'Debe seleccionar al menos una opción.').default([]),
   default_user_company: z.string().uuid().optional(),
 });
 

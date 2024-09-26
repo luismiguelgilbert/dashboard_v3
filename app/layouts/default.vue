@@ -10,6 +10,8 @@ const {
   userMenuFormatted,
   showBadge,
   badgeLabel,
+  isDarkMode,
+  userData,
 } = storeToRefs(mainStore);
 
 const sidebarLinksUI = {
@@ -35,9 +37,22 @@ const myScreenSize = computed<screenSize>(() => {
   return 'desktop';
 });
 
+const handleSpecialColors = () => {
+  if (userData.value?.default_color === 'bitt') {
+    if (isDarkMode.value) {
+      useAppConfig().ui.primary = 'indigo';
+    } else {
+      useAppConfig().ui.primary = 'bitt';
+    }
+  }
+};
 // HOOKS and WATCHERS
 onMounted(async () => {
-  if (import.meta.client) { isMobile.value = myScreenSize.value === 'mobile'; }
+  if (import.meta.client) {
+    isMobile.value = myScreenSize.value === 'mobile'; 
+    useAppConfig().ui.primary = userData.value?.default_color ?? 'bitt';
+    handleSpecialColors();
+  }
 });
 
 watch(() => route.fullPath, () => {
@@ -49,6 +64,7 @@ watch(() => route.fullPath, () => {
 });
 
 watch(() => myScreenSize.value, () => isMobile.value = myScreenSize.value === 'mobile');
+watch(() => isDarkMode.value, () => handleSpecialColors());
 </script>
 
 <template>

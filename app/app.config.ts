@@ -1,6 +1,6 @@
 export default defineAppConfig({
   ui: {
-    primary: 'indigo', // 'indigo', 'violet', 'fuchsia', 'slate', 'zinc', 'neutral', 'stone', 'cool', 'green', 'emerald', 'teal', 'cyan', 'lime', 'blue', 'sky', 'orange', 'amber', 'yellow'
+    primary: 'bitt', // 'bitt', 'indigo', 'violet', 'fuchsia', 'slate', 'zinc', 'neutral', 'stone', 'cool', 'green', 'emerald', 'teal', 'cyan', 'lime', 'blue', 'sky', 'orange', 'amber', 'yellow'
     gray: 'neutral', // export const darkColors = ['slate', 'cool', 'zinc', 'stone', 'neutral'];
   },
   seo: {

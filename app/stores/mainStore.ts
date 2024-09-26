@@ -101,6 +101,7 @@ export const useMainStore = defineStore('main', () => {
   };
 
   // Getters
+  const isDarkMode = computed<boolean>(() => useColorMode().value === 'dark');
   const userMenuFormatted = computed(() => {
     return userMenu.value?.filter(root => !root.parent)
       ?.map((menu) => {
@@ -151,6 +152,7 @@ export const useMainStore = defineStore('main', () => {
     userMenu,
     userSession,
     // Getters
+    isDarkMode,
     userCompaniesFormatted,
     userMenuFormatted,
     // Actions

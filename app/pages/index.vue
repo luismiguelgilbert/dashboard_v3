@@ -1,8 +1,13 @@
 <script setup lang="ts">
 const mainStore = useMainStore();
+const appConfig = useAppConfig();
 const { userData, isLoadingUserData, isMobile } = storeToRefs(mainStore);
 const inputSize = 'xl';
-const inputUI = 'md';
+const inputUI = {};
+
+const setColor = (color: string) => {
+  appConfig.ui.primary = color;
+};
 </script>
 
 <template>
@@ -221,8 +226,9 @@ const inputUI = 'md';
               <USelectMenu
                 v-model="userData.default_color"
                 icon="i-heroicons-swatch"
-                :options="[]"
-                :loading="isLoadingUserData" />
+                :options="['bitt','indigo', 'violet', 'fuchsia', 'slate', 'zinc', 'neutral', 'stone', 'cool', 'green', 'emerald', 'teal', 'cyan', 'lime', 'blue', 'sky', 'orange', 'amber', 'yellow']"
+                :loading="isLoadingUserData"
+                @update:model-value="setColor" />
             </UFormGroup>
   
             <UDivider

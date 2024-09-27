@@ -12,8 +12,9 @@ const {
   formModel,
   selectedRowId,
 } = storeToRefs(usersStore);
+const showFilters = ref<boolean>(false);
 const showUserForm = ref<boolean>(false);
-const items = [
+const actionMenuItems = [
   [
     {
       label: 'Nuevo',
@@ -32,7 +33,7 @@ const items = [
     {
       label: 'Filtros',
       icon: 'i-hugeicons-filter',
-      click: () => downloadList(),
+      click: () => showFilters.value = true,
     },
   ]
 ];
@@ -75,6 +76,7 @@ const downloadList = async() => {
     isDownloading.value = false;
   }
 };
+const closeFilters = () => showFilters.value = false;
 
 onMounted(async () => {
   if (useRoute().query.id) {
@@ -105,7 +107,7 @@ onMounted(async () => {
         </UInput>
       </div>
       <UDropdown
-        :items="items"
+        :items="actionMenuItems"
         class="ml-2" >
         <UButton
           label="Opciones"
@@ -120,6 +122,10 @@ onMounted(async () => {
 
     <SecurityUsersList
       @row-click="rowClicked" />
+
+    <SecurityUsersFilters
+      :is-open="showFilters"
+      @cancel="closeFilters" />
 
     <SecurityUsersUserForm
       :id="selectedRowId"

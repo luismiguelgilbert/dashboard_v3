@@ -15,6 +15,7 @@ const columns = computed(() => [
   { key: 'id', label: '', class: 'hidden' },
   { key: 'name', label: 'Name', class: 'hidden' },
   { key: 'mail', label: 'Email', class: 'hidden' },
+  { key: 'sex', label: 'Sexo', class: 'hidden' },
   { key: 'profile', label: 'Profile', class: 'hidden' },
 ].filter(x => (isMobile.value && ['id', 'name'].includes(x.key)) || (!isMobile.value))
 );
@@ -84,6 +85,9 @@ refreshData();
         <span class="hidden sm:flex text-xs text-gray-500 dark:text-gray-400 truncate text-ellipsis">
           {{ row.website }}
         </span>
+      </template>
+      <template #sex-data="{row} : {row: sys_users}">
+        {{ row.user_sex ? 'Hombre' : 'Mujer' }}
       </template>
       <template #profile-data="{row} : {row: sys_users}">
         <UBadge

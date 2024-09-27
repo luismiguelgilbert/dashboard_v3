@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<FilterItemProps>(), {
 
 const showBody = ref<boolean>(false);
 const searchString = ref<string>('');
-const selectedRows = ref<numericFilterItem[] | booleanFilterItem[]>();
+const selectedRows = defineModel<numericFilterItem[] | booleanFilterItem[]>('selectedRows', { default: [] });
 const cardUI = computed(() => {
   return {
     divide: showBody.value ? 'divide-y divide-gray-200 dark:divide-gray-800' : '',
@@ -45,7 +45,6 @@ const select = (row: numericFilterItem | booleanFilterItem) => {
   }
 };
 
-defineExpose({selectedRows});
 </script>
 
 <template>
@@ -65,7 +64,7 @@ defineExpose({selectedRows});
         </div>
         <div class="flex items-center">
           <UButton
-            trailing-icon="i-hugeicons-square"
+            trailing-icon="i-hugeicons-filter-remove"
             variant="ghost"
             color="gray"
             size="xl"

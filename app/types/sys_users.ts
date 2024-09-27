@@ -30,3 +30,12 @@ export const sys_users_form_schema = sys_users_schema.extend({
 });
 
 export type sys_users_form = z.infer<typeof sys_users_form_schema>
+
+export const sys_users_sort_enum = z.enum(['a.user_name', 'a.user_lastname', 'a.sys_profile_name', 'a.user_sex']);
+export type sys_users_sort_enum = z.infer<typeof sys_users_sort_enum>;
+
+export const sys_users_sort_options_schema = z.object({
+  value: sys_users_sort_enum,
+  label: z.string(),
+});
+export type sys_users_sort_options = z.infer<typeof sys_users_sort_options_schema>

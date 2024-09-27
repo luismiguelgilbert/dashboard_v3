@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { numericFilterItem, booleanFilterItem } from '@/types/filters';
+import type { sys_users_sort_options } from '@/types/sys_users';
 
 const props = defineProps({
   isOpen: {
@@ -14,29 +15,37 @@ const mainStore = useMainStore();
 const usersStore = useUsersStore();
 const { isMobile } = storeToRefs(mainStore);
 const {
+  sortBy,
   isLoading,
 } = storeToRefs(usersStore);
 
 const rowsSex = ref<booleanFilterItem[]>([]);
 const rowsProfile = ref<numericFilterItem[]>([]);
-const sortColumn = ref();
-const options = [{
-  value: 'email',
-  label: 'Email'
-}, {
-  value: 'sms',
-  label: 'Phone (SMS)'
-}, {
-  value: 'push',
-  label: 'Push notification'
-}];
-// const selectedSex = ref([]);
-// const selectedProfile = ref([]);
+const sortOptions: sys_users_sort_options[] = [
+  {
+    value: 'a.user_lastname',
+    label: 'Apellidos'
+  },
+  {
+    value: 'a.user_name',
+    label: 'Nombres'
+  },
+  {
+    value: 'a.sys_profile_name',
+    label: 'Perfil'
+  },
+  {
+    value: 'a.user_sex',
+    label: 'Sexo'
+  },
+];
+const selectedSex = ref<booleanFilterItem[]>([]);
+const selectedProfile = ref<numericFilterItem[]>([]);
 
 const cardUi = {
   body: {
     base: 'flex-1 h-[calc(100dvh-70px)] overflow-y-auto',
-    padding: 'px-4 py-2 sm:p-6',
+    padding: 'px-0 py-2 sm:p-0',
   },
   ring: '',
   divide: 'divide-y divide-gray-100 dark:divide-gray-800',
@@ -47,6 +56,10 @@ const closeSlideOder = () => {
   emits('cancel');
 };
 
+const clearAllFilters = () => {
+  selectedSex.value = [];
+  selectedProfile.value = [];
+};
 const getRowsSex = async () => $fetch('/api/filters/security/userSex').then((data) => rowsSex.value = data);
 const getRowsProfile = async () => $fetch('/api/filters/security/roles').then((data) => rowsProfile.value = data);
 getRowsSex();
@@ -86,21 +99,32 @@ getRowsProfile();
           </div>
         </template>
 
-        <div class="grid gap-y-2">
+        <div class="grid gap-y-2 py-5 px-7">
           <span class="text-base font-bold">Orden:</span>
           <URadioGroup
-            v-model="sortColumn"
-            :options="options" />
+            v-model="sortBy"
+            :options="sortOptions" />
         </div>
+        <UDivider />
 
 
-        <div class="grid gap-y-5 mt-5">
-          <span class="text-base font-bold">Filtros:</span>
+        <div class="grid gap-y-5 py-5 px-7">
+          <div class="flex justify-between">
+            <div class="text-base font-bold">Filtros:</div>
+            <UButton
+              color="gray"
+              icon="i-hugeicons-filter-remove"
+              label="Limpiar todos"
+              size="lg"
+              @click="clearAllFilters" />
+          </div>
           <BittFilterItem
+            v-model:selected-rows="selectedProfile"
             title="Perfil"
             searchable
             :rows="rowsProfile" />
           <BittFilterItem
+            v-model:selected-rows="selectedSex"
             title="Sexo"
             :rows="rowsSex" />
         </div>

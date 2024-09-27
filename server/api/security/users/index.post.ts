@@ -10,6 +10,7 @@ export default defineEventHandler( async (event) => {
     // const payloadB = readValidatedBody(event, XXx)
     const pageSize = payload.pageSize > 0 ? payload.pageSize : 50;
     const page = payload.page > 0 ? payload.page : 1;
+    const sortBy = payload.sortBy;
     const offset = pageSize * (page - 1);
     await hasPermission(event, PermissionsList.USERS_READ);
 
@@ -40,7 +41,7 @@ export default defineEventHandler( async (event) => {
             or a.sys_profile_name &~ '${payload.searchString}'`
         : ''
       }
-      ORDER BY a.user_name
+      ORDER BY ${ sortBy }
       OFFSET ${ offset }
       LIMIT ${ pageSize }
     `;

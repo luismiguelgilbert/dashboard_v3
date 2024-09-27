@@ -7,7 +7,7 @@ const emits = defineEmits(['row-click', 'data-request']);
 const mainStore = useMainStore();
 const usersStore = useUsersStore();
 const { isMobile, isDarkMode } = storeToRefs(mainStore);
-const { searchString, isLoading, totalRows, page, pageSize } = storeToRefs(usersStore);
+const { searchString, isLoading, totalRows, page, pageSize, sortBy } = storeToRefs(usersStore);
 const searchStringDebounced = refDebounced(searchString, 250);
 const rows = shallowRef<sys_users[]>([]);
 const mainTable = useTemplateRef('mainTable');
@@ -26,9 +26,10 @@ const refreshData = async () => {
     const resultSet = await $fetch('/api/security/users', {
       method: 'POST',
       body: {
-        searchString: searchString.value,
+        searchString: searchString.value.toLocaleLowerCase(),
         page: page.value,
         pageSize: pageSize.value,
+        sortBy: sortBy.value,
       }
     });
     totalRows.value = resultSet[0]?.rows_count ?? 0;
@@ -49,6 +50,7 @@ const refreshData = async () => {
 };
 const selectRow = (row: sys_users) => emits('row-click', row);
 
+watch(() => sortBy.value, () => { refreshData(); }, { deep: true });
 watch(() => searchStringDebounced.value, () => { page.value = 1; refreshData(); }, { deep: true });
 refreshData();
 </script>

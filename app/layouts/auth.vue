@@ -1,3 +1,20 @@
+<script setup lang="ts">
+
+const handleSpecialColors = () => {
+  if (useColorMode().value === 'dark') {
+    useAppConfig().ui.primary = 'indigo';
+  } else {
+    useAppConfig().ui.primary = 'bitt';
+  }
+};
+
+onMounted(async () => {
+  if (import.meta.client) {
+    useAppConfig().ui.primary = 'bitt';
+    handleSpecialColors();
+  }
+});
+</script>
 <template>
   <div class="h-screen flex items-center justify-center overlay">
     <div class="gradient"></div>
@@ -35,10 +52,5 @@
       linear-gradient(to right, rgb(var(--color-gray-800)) 2.5px, transparent 0.5px),
       linear-gradient(to bottom, rgb(var(--color-gray-800)) 2.5px, transparent 0.5px);
   }
-  /* .overlay {
-    background-image:
-      linear-gradient(to right, rgb(var(--color-gray-900)) 2.5px, transparent 0.5px),
-      linear-gradient(to bottom, rgb(var(--color-gray-900)) 2.5px, transparent 0.5px);
-  } */
 }
 </style>

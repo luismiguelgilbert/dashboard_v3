@@ -90,8 +90,10 @@ export const useMainStore = defineStore('main', () => {
     await supabase.auth.signOut();
     const accessToken = useCookie('sb-access-token');
     const refreshToken = useCookie('sb-refresh-token');
+    const menuToken = useCookie('sb-menu-token');
     accessToken.value = null;
     refreshToken.value = null;
+    menuToken.value = null;
     isUserSessionValid.value = false;
     await navigateTo('/auth/login');
     finish();

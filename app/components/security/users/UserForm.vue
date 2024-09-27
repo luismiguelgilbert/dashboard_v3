@@ -45,18 +45,20 @@ const closeSlideOder = () => {
 const fetchData = async () => {
   try {
     if (formModel.value === 'edit') {
-      hasError.value = false;
-      isLoading.value = true;
-
-      const results = await Promise.all([
-        $fetch(`/api/security/users/:${useRoute().query.id}`),
-        $fetch('/api/lookups/sys_companies'),
-        $fetch('/api/lookups/sys_profiles'),
-      ]);
-      selectedRowData.value = results[0];
-      lookupCompanies.value = results[1];
-      lookupProfiles.value = results[2];
-      isLoading.value = false;
+      if (useRoute().query.id) {
+        hasError.value = false;
+        isLoading.value = true;
+  
+        const results = await Promise.all([
+          $fetch(`/api/security/users/:${useRoute().query.id}`),
+          $fetch('/api/lookups/sys_companies'),
+          $fetch('/api/lookups/sys_profiles'),
+        ]);
+        selectedRowData.value = results[0];
+        lookupCompanies.value = results[1];
+        lookupProfiles.value = results[2];
+        isLoading.value = false;
+      }
     } else {
       selectedRowData.value = {
         id: props.id,

@@ -8,8 +8,6 @@ const {
   isLoadingMenu,
   leftDrawer,
   userMenuFormatted,
-  showBadge,
-  badgeLabel,
   isDarkMode,
   userData,
 } = storeToRefs(mainStore);
@@ -56,8 +54,6 @@ onMounted(async () => {
 });
 
 watch(() => route.fullPath, () => {
-  showBadge.value = false;
-  badgeLabel.value = '';
   if (myScreenSize.value === 'mobile') {
     leftDrawer.value = false;
   }

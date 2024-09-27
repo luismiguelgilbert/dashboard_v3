@@ -8,11 +8,9 @@ const navBarUI = {
 const mainStore = useMainStore();
 const route = useRoute();
 const {
-  badgeLabel,
   isLoadingMenu,
   isMobile,
   leftDrawer,
-  showBadge,
   userCompany,
   userCompaniesFormatted,
   userData,
@@ -61,12 +59,6 @@ const links = computed(() => {
           v-if="!isLoadingMenu"
           class="pl-1 sm:pl-10 overflow-hidden text-wrap max-w-[calc(100dvw-180px)] sm:max-w-full"
           :links="links" />
-        <UBadge
-          v-if="showBadge"
-          variant="subtle"
-          class="ml-2">
-          {{ badgeLabel }}
-        </UBadge>
       </div>
     </template>
     <template #right>

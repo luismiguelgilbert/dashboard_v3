@@ -43,8 +43,8 @@ const closeSlideOder = () => {
 };
 
 const fetchData = async () => {
-  if (useRoute().query.id) {
-    try {
+  try {
+    if (formModel.value === 'edit') {
       hasError.value = false;
       isLoading.value = true;
 
@@ -57,11 +57,31 @@ const fetchData = async () => {
       lookupCompanies.value = results[1];
       lookupProfiles.value = results[2];
       isLoading.value = false;
-    } catch (error) {
-      console.error(error);
-      hasError.value = true;
-      isLoading.value = false;
+    } else {
+      selectedRowData.value = {
+        id: props.id,
+        user_name: '',
+        user_lastname: '',
+        user_sex: true,
+        avatar_url: null,
+        website: null,
+        email: null,
+        sys_profile_id: 0,
+        sys_profile_name: '',
+        default_color: 'indigo',
+        default_dark_color: 'zinc',
+        dark_enabled: false,
+        created_at: null,
+        updated_at: null,
+        last_sign_in_at: null,
+        sys_companies_users: [],
+        default_user_company: undefined,
+      };
     }
+  } catch (error) {
+    console.error(error);
+    hasError.value = true;
+    isLoading.value = false;
   }
 };
 
@@ -73,32 +93,6 @@ const validateAndSave = async () => {
   }
 };
 
-onMounted(() => {
-  // console.log('formModel.value', formModel.value);
-  if (formModel.value === 'edit') {
-    fetchData();
-  } else {
-    selectedRowData.value = {
-      id: props.id,
-      user_name: '',
-      user_lastname: '',
-      user_sex: true,
-      avatar_url: null,
-      website: null,
-      email: null,
-      sys_profile_id: 0,
-      sys_profile_name: '',
-      default_color: 'indigo',
-      default_dark_color: 'zinc',
-      dark_enabled: false,
-      created_at: null,
-      updated_at: null,
-      last_sign_in_at: null,
-      sys_companies_users: [],
-      default_user_company: undefined,
-    };
-  }
-});
 watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
 </script>
 
@@ -147,7 +141,7 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
           v-if="isLoading"
           class="h-[calc(100dvh-82px)] sm:h-[calc(100dvh-100px)] overflow-y-auto">
           <BittSkeletonHeader
-            :lines="5" />
+            :lines="20" />
         </div>
         
         <div

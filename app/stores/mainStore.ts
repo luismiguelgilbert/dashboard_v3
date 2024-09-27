@@ -4,14 +4,12 @@ import type { sys_links } from '@/types/sys_links';
 import type { sys_users } from '@/types/sys_users';
 
 export const useMainStore = defineStore('main', () => {
-  const badgeLabel = ref<string | number>('');
   const isLoadingCompanies = ref<boolean>(false);
   const isLoadingMenu = ref<boolean>(false);
   const isLoadingUserData = ref<boolean>(false);
   const isMobile = ref<boolean>(false);
   const isUserSessionValid = ref<boolean>(false);
   const leftDrawer = ref<boolean>(true);
-  const showBadge = ref<boolean>(false);
   const userCompany = ref<sys_companies>();
   const userCompanies = ref<sys_companies[]>([]);
   const userData = ref<sys_users | null>(null);
@@ -88,7 +86,6 @@ export const useMainStore = defineStore('main', () => {
     userCompany.value = undefined;
     userMenu.value = [];
     userSession.value = null;
-    showBadge.value = false;
     const { supabase } = useSupabase();
     await supabase.auth.signOut();
     const accessToken = useCookie('sb-access-token');
@@ -138,14 +135,12 @@ export const useMainStore = defineStore('main', () => {
   });
 
   return {
-    badgeLabel,
     isLoadingCompanies,
     isLoadingMenu,
     isLoadingUserData,
     isMobile,
     isUserSessionValid,
     leftDrawer,
-    showBadge,
     userCompany,
     userCompanies,
     userData,

@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
       )
       select
       a.id
+      ,NOT(a.is_active) as disabled
       ,a.company_number
       ,a.name_es
       ,INITCAP(a.name_es_short) as name_es_short

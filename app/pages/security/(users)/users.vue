@@ -4,8 +4,6 @@ import type { sys_users } from '~/types/sys_users';
 
 const router = useRouter();
 const searchinputcomponent = ref<{ input: HTMLInputElement }>();
-const mainStore = useMainStore();
-const { isMobile } = storeToRefs(mainStore);
 const usersStore = useUsersStore();
 const {
   searchString,
@@ -15,7 +13,29 @@ const {
   selectedRowId,
 } = storeToRefs(usersStore);
 const showUserForm = ref<boolean>(false);
-
+const items = [
+  [
+    {
+      label: 'Nuevo',
+      icon: 'i-hugeicons-plus-sign-circle',
+      click: () => newClicked(),
+    },
+  ],
+  [
+    {
+      label: 'Descargar',
+      icon: 'i-ri-file-excel-2-line',
+      click: () => downloadList(),
+    },
+  ],
+  [
+    {
+      label: 'Filtros',
+      icon: 'i-hugeicons-filter',
+      click: () => downloadList(),
+    },
+  ]
+];
 defineShortcuts({ '/': () => { searchinputcomponent.value?.input?.focus(); } });
 
 const closeUserForm = () => {
@@ -33,7 +53,7 @@ const newClicked = () => {
   selectedRowId.value = newID;
   formModel.value = 'create';
   showUserForm.value = true;
-  router.replace({ query: { new: newID } });
+  router.replace({ query: { id: newID } });
 };
 const downloadList = async() => {
   try {
@@ -59,12 +79,8 @@ const downloadList = async() => {
 
 <template>
   <div>
-    <UHeader
-      class="z-10"
-      :ui="{
-        container: 'mx-0 px-2 sm:px-4 lg:px-4 flex items-center justify-between gap-3 h-[--header-height] overflow-hidden max-w-full',
-      }">
-      <template #left>
+    <div class="flex justify-between m-4">
+      <div class="flex items-center">
         <UInput
           ref="searchinputcomponent"
           v-model="searchString"
@@ -72,70 +88,28 @@ const downloadList = async() => {
           icon="i-hugeicons-search-01"
           placeholder="Buscar..."
           size="md"
+          :loading="isLoading"
           :disabled="isDownloading">
           <template #trailing>
             <UKbd value="/" />
           </template>
         </UInput>
-        <UIcon
-          v-show="isLoading"
-          name="i-hugeicons-loading-03"
-          size="lg"
-          class="animate-spin ml-2" />
-      </template>
-      <template #right>
+      </div>
+      <UDropdown
+        :items="items"
+        class="ml-2" >
         <UButton
-          class="ml-2"
+          label="Opciones"
+          size="md"
           variant="solid"
-          size="md"
-
           :disabled="isDownloading"
-          @click="newClicked">
-          <span v-if="!isMobile">Nuevo</span>
-          <template #trailing>
-            <UIcon
-              name="i-hugeicons-plus-sign-circle"
-              class="w-5 h-5" />
-          </template>
-        </UButton>
-        <UButton
-          class="ml-2"
-          variant="outline"
-          size="md"
-          
-          :loading="isDownloading"
-          :disabled="isDownloading"
-          @click="downloadList">
-          <template #trailing>
-            <span v-if="!isMobile">Descargar</span>
-            <UIcon
-              name="i-ri-file-excel-2-line"
-              class="w-5 h-5" />
-          </template>
-        </UButton>
-        <UButton
-          class="ml-2"
-          variant="outline"
-          size="md"
-          :disabled="isDownloading">
-          <template #trailing>
-            <span v-if="!isMobile">Filtros</span>
-            <UIcon
-              name="i-hugeicons-filter"
-              class="w-5 h-5" />
-          </template>
-        </UButton>
-      </template>
-    </UHeader>
+          :loading="isDownloading || isLoading"
+          icon="i-hugeicons-circle-arrow-down-01" />
+      </UDropdown>
+    </div>
+    <UDivider />
 
-    <!-- <SecurityUsersList
-      :rows="rows"
-      :rows-total="totalRows"
-      :page-size="pageSize"
-      :selected-row="selectedRowId"
-      @data-request="updatePageAndRefresh"
-      @row-click="rowClicked" /> -->
-    <SecurityUsersListB
+    <SecurityUsersList
       @row-click="rowClicked" />
 
     <SecurityUsersUserForm

@@ -54,15 +54,17 @@ export default defineNuxtConfig({
       icons: [
         'hugeicons-alert-diamond',
         'hugeicons-building-03',
-        'hugeicons-house-04',
         'hugeicons-cancel-circle',
+        'hugeicons-circle-arrow-down-01',
         'hugeicons-checkmark-circle-01',
+        'hugeicons-database',
         'hugeicons-filter',
+        'hugeicons-house-04',
         'hugeicons-loading-03',
         'hugeicons-logout-04',
         'hugeicons-plus-sign-circle',
-        'hugeicons-settings-error-01',
         'hugeicons-search-01',
+        'hugeicons-settings-error-01',
       ],
 
       // scan all components in the project and include icons 

@@ -23,6 +23,18 @@ const sidebarLinksUI = {
     inactive: 'bg-gray-400 dark:bg-gray-500 group-hover:bg-gray-700 dark:group-hover:bg-gray-200',
   },
 };
+const pageUI = computed(() => {
+  return {
+    wrapper: 'flex flex-col lg:grid lg:grid-cols-10 lg:gap-0',
+    left: 'lg:col-span-2',
+    center: {
+      narrow: 'lg:col-span-6',
+      base: `${leftDrawer.value ? 'lg:col-span-8' : 'lg:col-span-10'}`,
+      full: 'lg:col-span-10'
+    },
+    right: 'lg:col-span-2 order-first lg:order-last'
+  };
+});
 type screenSize = 'mobile' | 'tablet' | 'desktop'
 const myScreenSize = computed<screenSize>(() => {
   const isClient = import.meta.client;
@@ -58,7 +70,6 @@ watch(() => route.fullPath, () => {
     leftDrawer.value = false;
   }
 });
-
 watch(() => myScreenSize.value, () => isMobile.value = myScreenSize.value === 'mobile');
 watch(() => isDarkMode.value, () => handleSpecialColors());
 </script>
@@ -72,10 +83,7 @@ watch(() => isDarkMode.value, () => handleSpecialColors());
         padding: 'px-0 sm:px-0 lg:px-0',
         constrained: 'max-w-full',
       }">
-      <UPage
-        :ui="{
-          wrapper: 'flex flex-col lg:grid lg:grid-cols-10 lg:gap-0',
-        }">
+      <UPage :ui="pageUI">
         <template
           v-if="leftDrawer"
           #left>

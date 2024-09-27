@@ -1,45 +1,45 @@
 <script setup lang="ts">
-import type { numericFilterItem } from '@/types/filters';
+import type { numericFilterItem, booleanFilterItem } from '@/types/filters';
 
 interface FilterItemProps {
   title: string,
-  // rows: { [key: string]: any; }[],
-  // rows: [],
-  rows: numericFilterItem[],
+  rows: numericFilterItem[] | booleanFilterItem[],
+  searchable?: boolean,
 }
 
 const props = withDefaults(defineProps<FilterItemProps>(), {
   title: 'Filter Item',
-  // rows: [],
+  searchable: false,
 });
 
-const mainStore = useMainStore();
-const { isMobile } = storeToRefs(mainStore);
-const showBody = ref(false);
-// const searchString = ref('');
-const selectedRows = ref([]);
-const pageCount = 7;
-const page = ref(1);
-const pagedRows = computed(() => {
-  return props.rows.slice((page.value - 1) * pageCount, (page.value) * pageCount);
-});
+const showBody = ref<boolean>(false);
+const searchString = ref<string>('');
+const selectedRows = ref<numericFilterItem[] | booleanFilterItem[]>();
 const cardUI = computed(() => {
   return {
     divide: showBody.value ? 'divide-y divide-gray-200 dark:divide-gray-800' : '',
     header: { 
       padding: '',
-      background: showBody.value ? 'bg-gray-50 dark:bg-gray-800 rounded-t-lg' : 'bg-gray-50 dark:bg-gray-800 rounded-t-lg rounded-b-lg'
+      background: showBody.value
+        ? 'bg-gray-50 dark:bg-gray-800 rounded-t-lg'
+        : 'bg-gray-50 dark:bg-gray-800 rounded-t-lg rounded-b-lg'
     },
     body: { 
       padding: '' 
     }
   };
 });
+const filteredRows = computed(() => {
+  if (!searchString.value) { return props.rows; }
+  return props.rows.filter((row) => row.label.toLowerCase().includes(searchString.value.toLowerCase()));
+});
 
-const select = (row) => {
-  const index = selectedRows.value.findIndex((item) => item.id === row.id)
+const select = (row: numericFilterItem | booleanFilterItem) => {
+  if (!selectedRows.value) { selectedRows.value = []; }
+  
+  const index = selectedRows.value?.findIndex((item) => item.id === row.id);
   if (index === -1) {
-    selectedRows.value.push(row)
+    selectedRows.value.push(row);
   } else {
     selectedRows.value.splice(index, 1);
   }
@@ -61,7 +61,7 @@ defineExpose({selectedRows});
             color="gray"
             size="xl"
             @click="showBody = !showBody" />
-          <span class="pl-3">{{ props.title }}: {{ selectedRows.length > 0 ? `${selectedRows.length} seleccionado(s)` : '' }}</span>
+          <span class="pl-3">{{ props.title }} {{ selectedRows && selectedRows?.length > 0 ? `(${selectedRows.length})` : '' }}</span>
         </div>
         <div class="flex items-center">
           <UButton
@@ -76,26 +76,35 @@ defineExpose({selectedRows});
     </template>
     <div v-if="showBody">
       <slot name="default">
+        <UInput
+          v-if="props.searchable"
+          v-model="searchString"
+          class="min-w-40"
+          icon="i-hugeicons-search-01"
+          placeholder="Buscar..."
+          size="lg"
+          variant="none" />
+        <UDivider v-if="props.searchable" />
         <UTable
           v-model="selectedRows"
+          class="max-h-56"
           :ui="{
             thead: 'hidden',
+            tr: {
+              base: '',
+              selected: 'bg-transparent dark:bg-transparent',
+              active: 'hover:bg-transparent dark:hover:bg-transparent cursor-pointer',
+            },
           }"
           :columns="[ { key: 'label', label: 'Valor' } ]"
-          :rows="pagedRows"
-          @select="select" />
-        <UDivider v-if="props.rows.length > pageCount" />
-        <div
-          v-if="props.rows.length > pageCount"
-          class="flex justify-between items-center p-2">
-          <UPagination
-            v-model="page"
-            :max="isMobile ? 3 : 7"
-            :page-count="pageCount"
-            :total="props.rows.length" />
-        </div>
-        <!-- <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-        </div> -->
+          :rows="filteredRows"
+          @select="select">
+          <template #label-data="{row}">
+            <span class="font-bold text-base text-gray-900 dark:text-gray-50">
+              {{ row.label }}
+            </span>
+          </template>
+        </UTable>
       </slot>
     </div>
   </UCard>
@@ -103,10 +112,12 @@ defineExpose({selectedRows});
 
 <style scoped>
 :deep(tr > td):nth-child(1) {
+  /* padding-left: 20px; */
   width: 50px !important;
   max-width: 50px !important;
 }
 :deep(tr > td > div):nth-child(1) {
+  padding-left: 10px;
   width: 50px !important;
   max-width: 50px !important;
 }

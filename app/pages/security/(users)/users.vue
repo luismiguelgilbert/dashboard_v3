@@ -4,6 +4,7 @@ import type { sys_users } from '~/types/sys_users';
 
 const router = useRouter();
 const searchinputcomponent = ref<{ input: HTMLInputElement }>();
+const mainStore = useMainStore();
 const usersStore = useUsersStore();
 const {
   searchString,
@@ -12,16 +13,10 @@ const {
   formModel,
   selectedRowId,
 } = storeToRefs(usersStore);
+const { isMobile } = storeToRefs(mainStore);
 const showFilters = ref<boolean>(false);
 const showUserForm = ref<boolean>(false);
 const actionMenuItems = [
-  [
-    {
-      label: 'Nuevo',
-      icon: 'i-hugeicons-plus-sign-circle',
-      click: () => newClicked(),
-    },
-  ],
   [
     {
       label: 'Descargar',
@@ -31,7 +26,7 @@ const actionMenuItems = [
   ],
   [
     {
-      label: 'Filtros',
+      label: 'Orden y Filtros',
       icon: 'i-hugeicons-filter',
       click: () => showFilters.value = true,
     },
@@ -106,17 +101,28 @@ onMounted(async () => {
           </template>
         </UInput>
       </div>
-      <UDropdown
-        :items="actionMenuItems"
-        class="ml-2" >
+      <div class="flex items-center pl-2">
         <UButton
-          label="Opciones"
+          :label="!isMobile ? 'Nuevo' : undefined"
           size="md"
           variant="solid"
           :disabled="isDownloading"
           :loading="isDownloading || isLoading"
-          icon="i-hugeicons-circle-arrow-down-01" />
-      </UDropdown>
+          icon="i-hugeicons-plus-sign-circle"
+          @click="newClicked" />
+        <UDropdown
+          :items="actionMenuItems"
+          class="ml-2" >
+          <UButton
+            :label="!isMobile ? 'Opciones' : undefined"
+            size="md"
+            variant="solid"
+            color="gray"
+            :disabled="isDownloading"
+            :loading="isDownloading || isLoading"
+            icon="i-hugeicons-circle-arrow-down-01" />
+        </UDropdown>
+      </div>
     </div>
     <UDivider />
 

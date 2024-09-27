@@ -19,6 +19,17 @@ const {
 
 const rowsSex = ref<booleanFilterItem[]>([]);
 const rowsProfile = ref<numericFilterItem[]>([]);
+const sortColumn = ref();
+const options = [{
+  value: 'email',
+  label: 'Email'
+}, {
+  value: 'sms',
+  label: 'Phone (SMS)'
+}, {
+  value: 'push',
+  label: 'Push notification'
+}];
 // const selectedSex = ref([]);
 // const selectedProfile = ref([]);
 
@@ -53,7 +64,7 @@ getRowsProfile();
         <template #header>
           <div class="flex items-center justify-between">
             <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-              Filtros
+              Orden y Filtros
             </h3>
             <div class="flex gap-3">
               <UButton
@@ -75,13 +86,23 @@ getRowsProfile();
           </div>
         </template>
 
-        <div class="grid gap-y-5">
+        <div class="grid gap-y-2">
+          <span class="text-base font-bold">Orden:</span>
+          <URadioGroup
+            v-model="sortColumn"
+            :options="options" />
+        </div>
+
+
+        <div class="grid gap-y-5 mt-5">
+          <span class="text-base font-bold">Filtros:</span>
+          <BittFilterItem
+            title="Perfil"
+            searchable
+            :rows="rowsProfile" />
           <BittFilterItem
             title="Sexo"
             :rows="rowsSex" />
-          <BittFilterItem
-            title="Perfil"
-            :rows="rowsProfile" />
         </div>
 
       </UCard>

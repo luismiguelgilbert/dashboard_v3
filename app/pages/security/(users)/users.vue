@@ -75,6 +75,15 @@ const downloadList = async() => {
     isDownloading.value = false;
   }
 };
+
+onMounted(async () => {
+  if (useRoute().query.id) {
+    selectedRowId.value = String(useRoute().query.id);
+    formModel.value = 'edit';
+    showUserForm.value = true;
+    router.replace({ query: { id: selectedRowId.value } });
+  }
+});
 </script>
 
 <template>

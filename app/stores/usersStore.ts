@@ -12,7 +12,7 @@ export const useUsersStore = defineStore('users', () => {
   const isLoading = ref<boolean>(false);
   const isDownloading = ref<boolean>(false);
   const selectedRowId = ref<string>();
-  const formModel = ref<'edit'|'create'>('create');
+  const formModel = ref<'edit'|'create'>('edit');
   const selectedRowData = ref<sys_users_form>();
   const lookupCompanies = ref<sys_companies[]>();
   const lookupProfiles = ref<sys_profiles[]>();

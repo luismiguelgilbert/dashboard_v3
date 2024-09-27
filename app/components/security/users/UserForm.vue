@@ -93,6 +93,7 @@ const validateAndSave = async () => {
   }
 };
 
+onMounted(() => fetchData());
 watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
 </script>
 

@@ -60,10 +60,18 @@ const clearAllFilters = () => {
   selectedSex.value = [];
   selectedProfile.value = [];
 };
-const getRowsSex = async () => $fetch('/api/filters/security/userSex').then((data) => rowsSex.value = data);
-const getRowsProfile = async () => $fetch('/api/filters/security/roles').then((data) => rowsProfile.value = data);
-getRowsSex();
-getRowsProfile();
+
+onMounted(async () => {
+  if (import.meta.client) {
+    // isMobile.value = myScreenSize.value === 'mobile'; 
+    // useAppConfig().ui.primary = userData.value?.default_color ?? 'bitt';
+    // handleSpecialColors();
+    $fetch('/api/filters/security/userSex').then((data) => rowsSex.value = data);
+    $fetch('/api/filters/security/roles').then((data) => rowsProfile.value = data);
+    // getRowsSex();
+    // getRowsProfile();
+  }
+});
 </script>
 
 <template>

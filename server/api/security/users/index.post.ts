@@ -4,14 +4,21 @@ import { hasPermission } from '@@/server/utils/handler';
 import { PermissionsList } from '@/types/permissionsEnum';
 
 export default defineEventHandler( async (event) => {
-  try{
-    const payload = await readValidatedBody(event, sys_users_query_schema.parse);
+  try {
+    await hasPermission(event, PermissionsList.USERS_READ);
+    const { data: payload, error } = await readValidatedBody(event, sys_users_query_schema.safeParse);
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Invalid request: ${error.issues.map(e => e.message).join(';')}`,
+      });
+    }
     const pageSize = payload.pageSize > 0 ? payload.pageSize : 50;
     const page = payload.page > 0 ? payload.page : 1;
     const sortBy = payload.sortBy;
     const offset = pageSize * (page - 1);
-    await hasPermission(event, PermissionsList.USERS_READ);
 
+    //QUERIES
     const userDataQuery = `
       select
        a.id
@@ -58,16 +65,10 @@ export default defineEventHandler( async (event) => {
     const result = await serverDB.query(userDataQuery);
     console.timeEnd(`${event.method} ${event.path}`);
     return sys_users_schema.array().parse(result.rows);
-  }catch(err) {
-    const errorMessage = 'Unhandled exception';
-    // if (err instanceof z.ZodError) {
-    //   console.log('ZodError!!!!!!!!');
-    //   errorMessage = err.issues.map(e => e.message).join(';');
-    // }
-    console.error(`Error at ${event.path}. ${(err)}`);
+  } catch (err) {
     throw createError({
       statusCode: 500,
-      statusMessage: errorMessage,
+      statusMessage: `Error: ${err}`,
     });
   }
 });

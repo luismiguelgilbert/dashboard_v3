@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { sys_users_form_schema } from '@/types/sys_users';
+import { colors_enum, dark_colors_enum } from '@/types/colors';
 
 const usersStore = useUsersStore();
 const mainRef = useTemplateRef('mainForm');
@@ -247,7 +248,7 @@ defineExpose({
         <USelectMenu
           v-model="selectedRowData.default_dark_color"
           icon="i-heroicons-moon"
-          :options="[]"
+          :options="Object.keys(dark_colors_enum.Values)"
           :loading="isLoading" />
       </UFormGroup>
 
@@ -266,33 +267,9 @@ defineExpose({
         <USelectMenu
           v-model="selectedRowData.default_color"
           icon="i-heroicons-swatch"
-          :options="[]"
+          :options="Object.keys(colors_enum.Values)"
           :loading="isLoading" />
       </UFormGroup>
-
-      <!-- exists in url (no need to show)
-      <UDivider
-        v-if="selectedRowData.id"
-        class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-      <div v-if="selectedRowData.id">
-        <p class="text-gray-900 dark:text-white font-semibold">
-          Código:
-        </p>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Código reservado para uso del sistema.
-        </p>
-      </div>
-      <UInput
-        v-if="selectedRowData.id"
-        v-model:model-value="selectedRowData.id"
-        required
-        label="Código"
-        :size="inputSize"
-        readonly
-        placeholder="ID del Usuario"
-        icon="i-heroicons-circle-stack"
-        :ui="inputUI"
-        :loading="isLoading" /> -->
       <br /><br />
     </div>
   </UForm>

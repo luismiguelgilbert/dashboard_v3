@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { colors_enum, dark_colors_enum } from '@/types/colors';
 const mainStore = useMainStore();
 const appConfig = useAppConfig();
 const { userData, isLoadingUserData, isMobile } = storeToRefs(mainStore);
@@ -211,7 +212,7 @@ const setColor = (color: string) => {
               <USelectMenu
                 v-model="userData.default_dark_color"
                 icon="i-heroicons-moon"
-                :options="['slate', 'cool', 'zinc', 'stone', 'neutral']"
+                :options="Object.keys(dark_colors_enum.Values)"
                 :loading="isLoadingUserData"
                 @update:model-value="setDarkBackgroundColor" />
             </UFormGroup>
@@ -231,7 +232,7 @@ const setColor = (color: string) => {
               <USelectMenu
                 v-model="userData.default_color"
                 icon="i-heroicons-swatch"
-                :options="['bitt','indigo', 'violet', 'fuchsia', 'slate', 'zinc', 'neutral', 'stone', 'cool', 'green', 'emerald', 'teal', 'cyan', 'lime', 'blue', 'sky', 'orange', 'amber', 'yellow']"
+                :options="Object.keys(colors_enum.Values)"
                 :loading="isLoadingUserData"
                 @update:model-value="setColor" />
             </UFormGroup>

@@ -24,6 +24,7 @@ const {
   formModel,
 } = storeToRefs(usersStore);
 const hasError = ref(false);
+const isSaveSuccess = ref(false);
 
 const formComponent = useTemplateRef('formComponent');
 
@@ -47,6 +48,7 @@ const fetchData = async () => {
     if (formModel.value === 'edit') {
       if (useRoute().query.id) {
         hasError.value = false;
+        isSaveSuccess.value = false;
         isLoading.value = true;
   
         const results = await Promise.all([
@@ -90,7 +92,19 @@ const fetchData = async () => {
 const validateAndSave = async () => {
   try {
     await formComponent.value?.validateMainForm();
+    isLoading.value = true;
+    isSaveSuccess.value = false;
+    hasError.value = false;
+    await $fetch(`/api/security/users/:${useRoute().query.id}`, {
+      method: 'PATCH',
+      body: selectedRowData.value,
+    });
+    isLoading.value = false;
+    isSaveSuccess.value = true;
   } catch (error) {
+    isLoading.value = false;
+    hasError.value = true;
+    isSaveSuccess.value = false;
     console.error(error);
   }
 };
@@ -119,7 +133,7 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
                 :disabled="isLoading"
                 :loading="isLoading"
                 @click="closeSlideOder">
-                <span v-if="!isMobile">Cancelar</span>
+                <span v-if="!isMobile">Cerrar</span>
               </UButton>
               <UButton
                 icon="i-hugeicons-checkmark-circle-01"
@@ -138,7 +152,15 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
           icon="i-hugeicons-settings-error-01"
           color="rose"
           variant="subtle"
-          title="Se ha producido un error; por favor reintente" />
+          title="Se ha producido un error; por favor revise sus datos y reintente." />
+
+        <UAlert
+          v-if="isSaveSuccess"
+          class="col-span-1 sm:col-span-2 my-5 sm:my-5"
+          icon="i-hugeicons-checkmark-circle-01"
+          color="green"
+          variant="subtle"
+          title="Usuario guardado." />
 
         <div
           v-if="isLoading"

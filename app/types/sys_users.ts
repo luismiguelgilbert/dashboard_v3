@@ -1,5 +1,6 @@
-import { number, z } from 'zod';
+import { z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
+import { colors_enum, dark_colors_enum } from '@/types/colors';
 
 export const sys_users_schema = z.object({
   id: z.string().uuid().default(uuidv4()),
@@ -9,10 +10,10 @@ export const sys_users_schema = z.object({
   avatar_url: z.string().optional().nullable(),
   website: z.string().optional().nullable(),
   email: z.coerce.string().email().optional().nullable(),
-  sys_profile_id: z.number(),
-  sys_profile_name: z.string(),
-  default_color: z.coerce.string().default('indigo'),
-  default_dark_color: z.coerce.string().default('zinc'),
+  sys_profile_id: z.coerce.number(),
+  sys_profile_name: z.coerce.string(),
+  default_color: colors_enum.default('indigo'),
+  default_dark_color: dark_colors_enum.default('zinc'),
   dark_enabled: z.coerce.boolean().default(false),
   created_at: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),

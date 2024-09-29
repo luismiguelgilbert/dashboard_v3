@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { number, z } from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 
 export const sys_users_schema = z.object({
@@ -39,3 +39,21 @@ export const sys_users_sort_options_schema = z.object({
   label: z.string(),
 });
 export type sys_users_sort_options = z.infer<typeof sys_users_sort_options_schema>
+
+export const sys_users_query_schema = z.object({
+  searchString: z.string()
+    .refine(s => !s.includes(' '), 'Sin espacios!')
+    .refine(s => !s.includes(';'), 'Sin caracteres especiales!')
+    .refine(s => !s.includes('truncate'), 'Sin palabras claves!')
+    .refine(s => !s.includes('drop'), 'Sin palabras claves!')
+    .refine(s => !s.includes('delete'), 'Sin palabras claves!')
+    .refine(s => !s.includes('select'), 'Sin palabras claves!')
+    .refine(s => !s.includes('insert'), 'Sin palabras claves!')
+    .refine(s => !s.includes('update'), 'Sin palabras claves!'),
+  filterProfile: z.coerce.number().array(),
+  filterSex: z.coerce.boolean().array(),
+  page: z.coerce.number().min(1),
+  pageSize: z.coerce.number().min(1),
+  sortBy: sys_users_sort_enum,
+});
+export type sys_users_query = z.infer<typeof sys_users_query_schema>

@@ -8,6 +8,8 @@ export const useUsersStore = defineStore('users', () => {
   const pageSize = ref<number>(50);
   const pagesLoaded = ref<number[]>([]);
   const sortBy = ref<sys_users_sort_enum>('a.user_lastname');
+  const filterSex = ref<boolean[]>([]);
+  const filterProfile = ref<number[]>([]);
   const rows = ref<{ [k: string]: sys_users[] }>({});
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
@@ -18,11 +20,15 @@ export const useUsersStore = defineStore('users', () => {
   const lookupCompanies = ref<sys_companies[]>();
   const lookupProfiles = ref<sys_profiles[]>();
 
+  const hasFilter = computed<boolean>(() => searchString.value !== '' || filterSex.value.length > 0 || filterProfile.value.length > 0 );
+
   return {
     searchString,
     page,
     pageSize,
     sortBy,
+    filterSex,
+    filterProfile,
     pagesLoaded,
     totalRows,
     isLoading,
@@ -33,5 +39,7 @@ export const useUsersStore = defineStore('users', () => {
     selectedRowData,
     lookupCompanies,
     lookupProfiles,
+    // Getters
+    hasFilter,
   };
 });

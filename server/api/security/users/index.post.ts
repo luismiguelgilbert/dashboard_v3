@@ -1,13 +1,11 @@
 import serverDB from '@@/server/utils/db';
-import { sys_users_schema } from '@/types/sys_users';
+import { sys_users_schema, sys_users_query_schema } from '@/types/sys_users';
 import { hasPermission } from '@@/server/utils/handler';
 import { PermissionsList } from '@/types/permissionsEnum';
 
 export default defineEventHandler( async (event) => {
   try{
-    // const id = getRouterParam(event, 'id');
-    const payload = await readBody(event);
-    // const payloadB = readValidatedBody(event, XXx)
+    const payload = await readValidatedBody(event, sys_users_query_schema.parse);
     const pageSize = payload.pageSize > 0 ? payload.pageSize : 50;
     const page = payload.page > 0 ? payload.page : 1;
     const sortBy = payload.sortBy;
@@ -33,33 +31,43 @@ export default defineEventHandler( async (event) => {
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at
       , count(*) OVER() AS rows_count
       from sys_users a
+      where (1 = 1)
       ${payload.searchString?.length > 0
-        ? `where
-            a.user_name &~ '${payload.searchString}'
-            or a.user_lastname &~ '${payload.searchString}'
-            or a.website &~ '${payload.searchString}'
-            or a.sys_profile_name &~ '${payload.searchString}'`
+        ? `and (
+            a.user_name &@ '${payload.searchString}'
+            or a.user_lastname &@ '${payload.searchString}'
+            or a.website &@ '${payload.searchString}'
+            or a.sys_profile_name &@ '${payload.searchString}'
+          )`
+        : ''
+      }
+      ${payload.filterProfile?.length > 0
+        ? `and (a.sys_profile_id in (${payload.filterProfile}))`
+        : ''
+      }
+      ${payload.filterSex?.length > 0
+        ? `and (a.user_sex in (${payload.filterSex}))`
         : ''
       }
       ORDER BY ${ sortBy }
       OFFSET ${ offset }
       LIMIT ${ pageSize }
     `;
-    // const offset = pageSize * (page - 1);
-    // ORDER BY ${sortBy} ${sortByOrder ? 'ASC' : 'DESC'}
-    //     OFFSET ${offset}
-    //     LIMIT ${pageSize}
-    //? `where a.ftsb @@ to_tsquery('${payload.searchString}:*')`
 
     console.time(`${event.method} ${event.path}`);
     const result = await serverDB.query(userDataQuery);
     console.timeEnd(`${event.method} ${event.path}`);
     return sys_users_schema.array().parse(result.rows);
   }catch(err) {
-    console.error(`Error at ${event.path}. ${err}`);
+    const errorMessage = 'Unhandled exception';
+    // if (err instanceof z.ZodError) {
+    //   console.log('ZodError!!!!!!!!');
+    //   errorMessage = err.issues.map(e => e.message).join(';');
+    // }
+    console.error(`Error at ${event.path}. ${(err)}`);
     throw createError({
       statusCode: 500,
-      statusMessage: 'Unhandled exception',
+      statusMessage: errorMessage,
     });
   }
 });

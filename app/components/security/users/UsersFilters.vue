@@ -15,8 +15,11 @@ const mainStore = useMainStore();
 const usersStore = useUsersStore();
 const { isMobile } = storeToRefs(mainStore);
 const {
+  filterSex,
+  filterProfile,
   sortBy,
   isLoading,
+  totalRows,
 } = storeToRefs(usersStore);
 
 const rowsSex = ref<booleanFilterItem[]>([]);
@@ -39,8 +42,6 @@ const sortOptions: sys_users_sort_options[] = [
     label: 'Sexo'
   },
 ];
-const selectedSex = ref<booleanFilterItem[]>([]);
-const selectedProfile = ref<numericFilterItem[]>([]);
 
 const cardUi = {
   body: {
@@ -56,20 +57,10 @@ const closeSlideOder = () => {
   emits('cancel');
 };
 
-const clearAllFilters = () => {
-  selectedSex.value = [];
-  selectedProfile.value = [];
-};
-
 onMounted(async () => {
   if (import.meta.client) {
-    // isMobile.value = myScreenSize.value === 'mobile'; 
-    // useAppConfig().ui.primary = userData.value?.default_color ?? 'bitt';
-    // handleSpecialColors();
     $fetch('/api/filters/security/userSex').then((data) => rowsSex.value = data);
     $fetch('/api/filters/security/roles').then((data) => rowsProfile.value = data);
-    // getRowsSex();
-    // getRowsProfile();
   }
 });
 </script>
@@ -79,29 +70,20 @@ onMounted(async () => {
     <USlideover
       :model-value="props.isOpen"
       prevent-close
-      :transition="false"
       :ui="{ width: 'max-w-lg' }">
       <UCard :ui="cardUi">
         <template #header>
           <div class="flex items-center justify-between">
             <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-              Orden y Filtros
+              {{ `Orden y Filtros (${totalRows} registros)` }}
             </h3>
             <div class="flex gap-3">
               <UButton
-                icon="i-hugeicons-cancel-circle"
-                color="gray"
+                icon="i-hugeicons-transition-right"
                 :disabled="isLoading"
                 :loading="isLoading"
                 @click="closeSlideOder">
-                <span v-if="!isMobile">Cancelar</span>
-              </UButton>
-              <UButton
-                icon="i-hugeicons-filter-add"
-                :disabled="isLoading"
-                :loading="isLoading"
-                @click="closeSlideOder">
-                <span v-if="!isMobile">Filtrar</span>
+                <span v-if="!isMobile">Cerrar</span>
               </UButton>
             </div>
           </div>
@@ -111,7 +93,13 @@ onMounted(async () => {
           <span class="text-base font-bold">Orden:</span>
           <URadioGroup
             v-model="sortBy"
-            :options="sortOptions" />
+            :options="sortOptions">
+            <template #label="{ option }">
+              <p class="font-bold text-base text-gray-900 dark:text-gray-50 cursor-pointer">
+                {{ option.label }}
+              </p>
+            </template>
+          </URadioGroup>
         </div>
         <UDivider />
 
@@ -119,20 +107,14 @@ onMounted(async () => {
         <div class="grid gap-y-5 py-5 px-7">
           <div class="flex justify-between">
             <div class="text-base font-bold">Filtros:</div>
-            <UButton
-              color="gray"
-              icon="i-hugeicons-filter-remove"
-              label="Limpiar todos"
-              size="lg"
-              @click="clearAllFilters" />
           </div>
           <BittFilterItem
-            v-model:selected-rows="selectedProfile"
+            v-model:selected-rows="filterProfile"
             title="Perfil"
             searchable
             :rows="rowsProfile" />
           <BittFilterItem
-            v-model:selected-rows="selectedSex"
+            v-model:selected-rows="filterSex"
             title="Sexo"
             :rows="rowsSex" />
         </div>

@@ -11,10 +11,11 @@ const props = withDefaults(defineProps<FilterItemProps>(), {
   title: 'Filter Item',
   searchable: false,
 });
+const selectedRows = defineModel<(number|boolean)[]>('selectedRows', { default: [] });
 
 const showBody = ref<boolean>(false);
 const searchString = ref<string>('');
-const selectedRows = defineModel<numericFilterItem[] | booleanFilterItem[]>('selectedRows', { default: [] });
+
 const cardUI = computed(() => {
   return {
     divide: showBody.value ? 'divide-y divide-gray-200 dark:divide-gray-800' : '',
@@ -29,22 +30,23 @@ const cardUI = computed(() => {
     }
   };
 });
+
 const filteredRows = computed(() => {
   if (!searchString.value) { return props.rows; }
   return props.rows.filter((row) => row.label.toLowerCase().includes(searchString.value.toLowerCase()));
 });
 
-const select = (row: numericFilterItem | booleanFilterItem) => {
-  if (!selectedRows.value) { selectedRows.value = []; }
-  
-  const index = selectedRows.value?.findIndex((item) => item.id === row.id);
-  if (index === -1) {
-    selectedRows.value.push(row);
-  } else {
-    selectedRows.value.splice(index, 1);
-  }
+const isRowSelected = (row: numericFilterItem | booleanFilterItem): boolean => {
+  return Boolean(selectedRows.value?.includes(row.id));
 };
 
+const toggleRow = (row: numericFilterItem | booleanFilterItem, value: boolean) => {
+  if (value) {
+    selectedRows.value.push(row.id);
+  } else {
+    selectedRows.value = selectedRows.value.filter((item) => item != row.id);
+  }
+};
 </script>
 
 <template>
@@ -64,6 +66,7 @@ const select = (row: numericFilterItem | booleanFilterItem) => {
         </div>
         <div class="flex items-center">
           <UButton
+            v-if="selectedRows.length"
             trailing-icon="i-hugeicons-filter-remove"
             variant="ghost"
             color="gray"
@@ -84,40 +87,25 @@ const select = (row: numericFilterItem | booleanFilterItem) => {
           size="lg"
           variant="none" />
         <UDivider v-if="props.searchable" />
-        <UTable
-          v-model="selectedRows"
-          class="max-h-56"
-          :ui="{
-            thead: 'hidden',
-            tr: {
-              base: '',
-              selected: 'bg-transparent dark:bg-transparent',
-              active: 'hover:bg-transparent dark:hover:bg-transparent cursor-pointer',
-            },
-          }"
-          :columns="[ { key: 'label', label: 'Valor' } ]"
-          :rows="filteredRows"
-          @select="select">
-          <template #label-data="{row}">
-            <span class="font-bold text-base text-gray-900 dark:text-gray-50">
-              {{ row.label }}
-            </span>
-          </template>
-        </UTable>
+        <div class="max-h-60 overflow-y-auto">
+          <div
+            v-for="row in filteredRows"
+            :key="Number(row.id)">
+            <UCheckbox
+              class="pl-4 py-3 items-center"
+              :model-value="isRowSelected(row)"
+              :label="`${row.label} - ${isRowSelected(row)}`"
+              @change="(value) => toggleRow(row, value)">
+              <template #label>
+                <span class="font-bold text-base text-gray-900 dark:text-gray-50 cursor-pointer">
+                  {{ row.label }}
+                </span>
+              </template>
+            </UCheckbox>
+            <UDivider />
+          </div>
+        </div>
       </slot>
     </div>
   </UCard>
 </template>
-
-<style scoped>
-:deep(tr > td):nth-child(1) {
-  /* padding-left: 20px; */
-  width: 50px !important;
-  max-width: 50px !important;
-}
-:deep(tr > td > div):nth-child(1) {
-  padding-left: 10px;
-  width: 50px !important;
-  max-width: 50px !important;
-}
-</style>

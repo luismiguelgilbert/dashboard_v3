@@ -5,6 +5,10 @@ const { userData, isLoadingUserData, isMobile } = storeToRefs(mainStore);
 const inputSize = 'xl';
 const inputUI = {};
 
+const setDarkBackgroundColor = (color: string) => {
+  appConfig.ui.gray = color;
+};
+
 const setColor = (color: string) => {
   appConfig.ui.primary = color;
 };
@@ -205,10 +209,11 @@ const setColor = (color: string) => {
               :size="inputSize"
               name="default_dark_color">
               <USelectMenu
-                v-model="userData.dark_enabled"
+                v-model="userData.default_dark_color"
                 icon="i-heroicons-moon"
-                :options="[]"
-                :loading="isLoadingUserData" />
+                :options="['slate', 'cool', 'zinc', 'stone', 'neutral']"
+                :loading="isLoadingUserData"
+                @update:model-value="setDarkBackgroundColor" />
             </UFormGroup>
   
             <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -222,7 +227,7 @@ const setColor = (color: string) => {
             </div>
             <UFormGroup
               :size="inputSize"
-              name="default_dark_color">
+              name="default_color">
               <USelectMenu
                 v-model="userData.default_color"
                 icon="i-heroicons-swatch"

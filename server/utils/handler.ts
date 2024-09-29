@@ -32,7 +32,7 @@ export const hasPermission = (event: H3Event, permission: PermissionsList) => {
     const menuToken = getCookie(event, 'sb-menu-token') || '';
     const userMenuToken = JSON.parse(decryptData(menuToken)) as {id: string}[];
     if (!userMenuToken.some((item) => item.id === permission)) {
-      throw createError({ status: 401, statusMessage: 'Session error' });
+      throw createError({ status: 401, statusMessage: 'Menu token error' });
     }
   } catch (error) {
     console.error(`User does not have permission: ${permission}`);

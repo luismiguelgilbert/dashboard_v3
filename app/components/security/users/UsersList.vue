@@ -7,7 +7,17 @@ const emits = defineEmits(['row-click', 'data-request']);
 const mainStore = useMainStore();
 const usersStore = useUsersStore();
 const { isMobile, isDarkMode } = storeToRefs(mainStore);
-const { searchString, isLoading, totalRows, page, pageSize, sortBy } = storeToRefs(usersStore);
+const {
+  searchString,
+  isLoading,
+  totalRows,
+  page,
+  pageSize,
+  filterProfile,
+  filterSex,
+  hasFilter,
+  sortBy,
+} = storeToRefs(usersStore);
 const searchStringDebounced = refDebounced(searchString, 250);
 const rows = shallowRef<sys_users[]>([]);
 const mainTable = useTemplateRef('mainTable');
@@ -26,7 +36,9 @@ const refreshData = async () => {
     const resultSet = await $fetch('/api/security/users', {
       method: 'POST',
       body: {
-        searchString: searchString.value.toLocaleLowerCase(),
+        searchString: searchString.value.toLocaleLowerCase().replaceAll(' ', ''),
+        filterProfile: filterProfile.value,
+        filterSex: filterSex.value,
         page: page.value,
         pageSize: pageSize.value,
         sortBy: sortBy.value,
@@ -51,7 +63,11 @@ const refreshData = async () => {
 const selectRow = (row: sys_users) => emits('row-click', row);
 
 watch(() => sortBy.value, () => { refreshData(); }, { deep: true });
-watch(() => searchStringDebounced.value, () => { page.value = 1; refreshData(); }, { deep: true });
+watch(() => [
+  searchStringDebounced.value,
+  filterProfile.value,
+  filterSex.value
+], () => { page.value = 1; refreshData(); }, { deep: true });
 refreshData();
 </script>
 
@@ -59,7 +75,7 @@ refreshData();
   <div>  
     <UTable
       ref="mainTable"
-      class="h-[calc(100dvh-180px)] w-full overflow-x-hidden"
+      class="h-[calc(100dvh-185px)] w-full overflow-x-hidden"
       :columns="columns"
       :rows="rows"
       :loading="isLoading"
@@ -108,15 +124,10 @@ refreshData();
           v-model="page"
           class="full-width text-black"
           color="green"
-          :max="isMobile ? 3 : 7"
+          :max="isMobile ? 2 : 7"
           :page-count="pageSize"
           :total="totalRows"
           @update:model-value="refreshData" />
-        <UIcon
-          v-show="isLoading"
-          name="i-hugeicons-loading-03"
-          size="lg"
-          class="animate-spin ml-2" />
       </div>
       <!--Right-->
       <div class="flex items-center">
@@ -124,7 +135,12 @@ refreshData();
           variant="subtle"
           size="lg">
           <UIcon
-            name="i-hugeicons-database"
+            :name="isLoading ? 'i-hugeicons-database-sync-01' : 'i-hugeicons-database'"
+            size="lg"
+            class="mr-2"/>
+          <UIcon
+            v-if="hasFilter"
+            name="i-hugeicons-filter"
             size="lg"
             class="mr-2"/>
           {{ totalRows }}

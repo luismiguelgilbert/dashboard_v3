@@ -16,19 +16,37 @@ const {
 const { isMobile } = storeToRefs(mainStore);
 const showFilters = ref<boolean>(false);
 const showUserForm = ref<boolean>(false);
+const showUserPwdResetForm = ref<boolean>(false);
+const showUserRolesBatchForm = ref<boolean>(false);
+const showUserCompaniesBatchForm = ref<boolean>(false);
 const actionMenuItems = [
   [
     {
-      label: 'Descargar',
+      label: 'Descargar Lista',
       icon: 'i-ri-file-excel-2-line',
       click: () => downloadList(),
     },
-  ],
-  [
     {
       label: 'Orden y Filtros',
       icon: 'i-hugeicons-filter',
       click: () => showFilters.value = true,
+    },
+  ],
+  [
+    {
+      label: 'Restablecer contraseñas',
+      icon: 'i-hugeicons-password-validation',
+      click: () => showUserPwdResetForm.value = true,
+    },
+    {
+      label: 'Actualizar roles',
+      icon: 'i-hugeicons-account-setting-01',
+      click: () => showUserRolesBatchForm.value = true,
+    },
+    {
+      label: 'Actualizar organizaciones',
+      icon: 'i-hugeicons-building-03',
+      click: () => showUserCompaniesBatchForm.value = true,
     },
   ]
 ];
@@ -137,5 +155,17 @@ onMounted(async () => {
       :id="selectedRowId"
       :is-open="showUserForm"
       @cancel="closeUserForm" />
+
+    <SecurityUsersPwdReset
+      :is-open="showUserPwdResetForm"
+      @cancel="showUserPwdResetForm = false" />
+    
+    <SecurityUsersRolesBatch
+      :is-open="showUserRolesBatchForm"
+      @cancel="showUserRolesBatchForm = false" />
+
+    <SecurityUsersCompaniesBatch
+      :is-open="showUserCompaniesBatchForm"
+      @cancel="showUserCompaniesBatchForm = false" />
   </div>
 </template>

@@ -19,6 +19,7 @@ const { isMobile } = storeToRefs(mainStore);
 const {
   isLoading,
   selectedRowData,
+  selectedRowDataAvatarHelper,
   lookupCompanies,
   lookupProfiles,
   formModel,
@@ -45,11 +46,12 @@ const closeSlideOder = () => {
 
 const fetchData = async () => {
   try {
+    selectedRowDataAvatarHelper.value = null;
+    isLoading.value = true;
     if (formModel.value === 'edit') {
       if (useRoute().query.id) {
         hasError.value = false;
         isSaveSuccess.value = false;
-        isLoading.value = true;
   
         const results = await Promise.all([
           $fetch(`/api/security/users/:${useRoute().query.id}`),
@@ -62,6 +64,15 @@ const fetchData = async () => {
         isLoading.value = false;
       }
     } else {
+      hasError.value = false;
+      isSaveSuccess.value = false;
+      const results = await Promise.all([
+        $fetch('/api/lookups/sys_companies'),
+        $fetch('/api/lookups/sys_profiles'),
+      ]);
+      lookupCompanies.value = results[0];
+      lookupProfiles.value = results[1];
+      isLoading.value = false;
       selectedRowData.value = {
         id: props.id,
         user_name: '',
@@ -69,7 +80,7 @@ const fetchData = async () => {
         user_sex: true,
         avatar_url: null,
         website: null,
-        email: null,
+        email: '',
         sys_profile_id: 0,
         sys_profile_name: '',
         default_color: 'indigo',
@@ -95,10 +106,18 @@ const validateAndSave = async () => {
     isLoading.value = true;
     isSaveSuccess.value = false;
     hasError.value = false;
-    await $fetch(`/api/security/users/:${useRoute().query.id}`, {
-      method: 'PATCH',
+    const userData = await $fetch(`/api/security/users/:${useRoute().query.id}`, {
+      method: formModel.value === 'edit' ? 'PATCH' : 'POST',
       body: selectedRowData.value,
     });
+    if (selectedRowData.value?.avatar_url && selectedRowDataAvatarHelper.value ) {
+      const body = new FormData();
+      body.append('file', selectedRowDataAvatarHelper.value);
+      await $fetch(`/api/security/users/:${userData.id}/avatar`, {
+        method: 'PATCH',
+        body: body,
+      });
+    }
     isLoading.value = false;
     isSaveSuccess.value = true;
   } catch (error) {
@@ -146,21 +165,7 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
           </div>
         </template>
 
-        <UAlert
-          v-if="hasError"
-          class="col-span-1 sm:col-span-2 my-5 sm:my-5"
-          icon="i-hugeicons-settings-error-01"
-          color="rose"
-          variant="subtle"
-          title="Se ha producido un error; por favor revise sus datos y reintente." />
-
-        <UAlert
-          v-if="isSaveSuccess"
-          class="col-span-1 sm:col-span-2 my-5 sm:my-5"
-          icon="i-hugeicons-checkmark-circle-01"
-          color="green"
-          variant="subtle"
-          title="Usuario guardado." />
+        
 
         <div
           v-if="isLoading"
@@ -172,6 +177,23 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
         <div
           v-if="!isLoading"
           class="h-[calc(100dvh-82px)] sm:h-[calc(100dvh-100px)] overflow-y-auto">
+
+          <UAlert
+            v-if="hasError"
+            class="col-span-1 sm:col-span-2 my-5 sm:my-5"
+            icon="i-hugeicons-settings-error-01"
+            color="rose"
+            variant="subtle"
+            title="Se ha producido un error; por favor revise sus datos y reintente." />
+
+          <UAlert
+            v-if="isSaveSuccess"
+            class="col-span-1 sm:col-span-2 my-5 sm:my-5"
+            icon="i-hugeicons-checkmark-circle-01"
+            color="green"
+            variant="subtle"
+            title="Datos guardados correctamente." />
+
           <SecurityUsersUserFormBasic
             :key="props.id"
             ref="formComponent" />

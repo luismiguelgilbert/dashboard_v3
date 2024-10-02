@@ -17,6 +17,7 @@ export const useUsersStore = defineStore('users', () => {
   const selectedRowId = ref<string>();
   const formModel = ref<'edit'|'create'>('edit');
   const selectedRowData = ref<sys_users_form>();
+  const selectedRowDataAvatarHelper = ref<File | null>();
   const lookupCompanies = ref<sys_companies[]>();
   const lookupProfiles = ref<sys_profiles[]>();
 
@@ -37,6 +38,7 @@ export const useUsersStore = defineStore('users', () => {
     formModel,
     selectedRowId,
     selectedRowData,
+    selectedRowDataAvatarHelper,
     lookupCompanies,
     lookupProfiles,
     // Getters

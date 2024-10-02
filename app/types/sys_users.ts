@@ -28,7 +28,9 @@ export type sys_users_object = { [k: string]: sys_users[] }
 export const sys_users_form_schema = sys_users_schema.extend({
   sys_companies_users: z.array(z.string().uuid()).min(1, 'Debe seleccionar al menos una opción.').default([]),
   default_user_company: z.string().uuid().optional(),
-});
+  email: z.coerce.string().email(),
+  sys_profile_id: z.coerce.number().min(1, 'Debe seleccionar una opción.'),
+}).strict();
 
 export type sys_users_form = z.infer<typeof sys_users_form_schema>
 
@@ -56,5 +58,5 @@ export const sys_users_query_schema = z.object({
   page: z.coerce.number().min(1),
   pageSize: z.coerce.number().min(1),
   sortBy: sys_users_sort_enum,
-});
+}).strict();
 export type sys_users_query = z.infer<typeof sys_users_query_schema>

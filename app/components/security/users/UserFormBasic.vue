@@ -4,16 +4,42 @@ import { colors_enum, dark_colors_enum } from '@/types/colors';
 
 const usersStore = useUsersStore();
 const mainRef = useTemplateRef('mainForm');
-const { selectedRowData, isLoading, lookupCompanies, lookupProfiles } = storeToRefs(usersStore);
+const fileRef = useTemplateRef('fileRef');
+
+const {
+  selectedRowData,
+  selectedRowDataAvatarHelper,
+  isLoading,
+  lookupCompanies,
+  lookupProfiles,
+  formModel,
+} = storeToRefs(usersStore);
 
 const inputSize = 'xl';
-const inputUI = 'md';
 
 defineExpose({
   validateMainForm: async () => {
     return await mainRef.value?.validate(undefined);
   }
 });
+
+const onFileClick = () => { fileRef.value?.input.click(); };
+const onFileChange = (e: FileList) => {
+  try {
+    if (!e.length) { throw new Error('No se seleccionó archivo.'); }
+    if (e[0] && e[0].size / 1024 / 1024 > 1) { throw new Error('Tamaño incorrecto.'); }
+    if (e[0] && selectedRowData.value) {
+      selectedRowDataAvatarHelper.value = e[0];
+      selectedRowData.value.avatar_url = URL.createObjectURL(e[0]);
+    }
+  } catch (error) {
+    useToast().add({
+      title: `Error al cargar archivo: ${error}`,
+      icon: 'i-hugeicons-settings-error-01',
+      color: 'rose',
+    });
+  }
+};
 </script>
 
 <template>
@@ -41,8 +67,7 @@ defineExpose({
           required
           placeholder="Email del Usuario"
           icon="i-heroicons-envelope"
-          :disabled="!!selectedRowData.id"
-          :ui="inputUI"
+          :disabled="formModel === 'edit'"
           :loading="isLoading" />
       </UFormGroup>
 
@@ -63,7 +88,6 @@ defineExpose({
           required
           placeholder="Nombres del Usuario"
           icon="i-heroicons-user"
-          :ui="inputUI"
           :loading="isLoading" />
       </UFormGroup>
 
@@ -84,7 +108,6 @@ defineExpose({
           required
           placeholder="Apellidos del Usuario"
           icon="i-heroicons-user"
-          :ui="inputUI"
           :loading="isLoading" />
       </UFormGroup>
 
@@ -195,19 +218,27 @@ defineExpose({
         name="avatar_url">
         <div class="flex items-center">
           <UAvatar
-            :src="selectedRowData.avatar_url!"
+            v-if="selectedRowData.avatar_url"
+            :src="selectedRowData.avatar_url"
+            :alt="selectedRowData.user_lastname"
+            size="lg" />
+          <UAvatar
+            v-else
             :alt="selectedRowData.user_lastname"
             size="lg" />
           <UButton
             label="Seleccionar"
+            trailing-icon="i-hugeicons-cloud-upload"
             color="white"
             size="md"
-            class="ml-5" />
+            class="ml-5"
+            @click="onFileClick" />
           <UInput
             ref="fileRef"
             type="file"
             class="hidden"
-            accept=".jpg, .jpeg, .png, .gif" />
+            accept=".jpg, .jpeg, .png, .gif"
+            @change="onFileChange" />
         </div>
       </UFormGroup>
 

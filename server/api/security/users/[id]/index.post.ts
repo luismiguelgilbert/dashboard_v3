@@ -19,9 +19,10 @@ export default defineEventHandler(async (event) => {
     }
     const user_id = event.context.user.id;
 
+    const config = useRuntimeConfig();
     const { data: signUpData, error: signUpError } = await supabaseInstance().supabase.auth.admin.createUser({
       email: payload.email!,
-      password: process.env.NEWUSERSDEFAULTPWD!,
+      password: config.newUserDefaultPwd,
       email_confirm: true,
       user_metadata: {
         user_name: payload.user_name,

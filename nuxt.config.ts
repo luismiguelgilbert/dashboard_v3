@@ -20,6 +20,7 @@ export default defineNuxtConfig({
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
     algoliaAppId: process.env.ALGOLIA_APPLICATION_ID,
     algoliaAdminApiKey: process.env.ALGOLIA_ADMIN_API_KEY,
+    newUserDefaultPwd: process.env.NEWUSERSDEFAULTPWD,
 
     // Public keys that are exposed to the client
     public: {
@@ -52,6 +53,7 @@ export default defineNuxtConfig({
     clientBundle: {
       // list of icons to include in the client bundle
       icons: [
+        //HugeIcons
         'hugeicons-alert-diamond',
         'hugeicons-building-03',
         'hugeicons-cancel-circle',
@@ -63,8 +65,11 @@ export default defineNuxtConfig({
         'hugeicons-loading-03',
         'hugeicons-logout-04',
         'hugeicons-plus-sign-circle',
+        'hugeicons-transition-right',
         'hugeicons-search-01',
         'hugeicons-settings-error-01',
+        //HeroIcons
+        'heroicons:sun-20-solid'
       ],
 
       // scan all components in the project and include icons 

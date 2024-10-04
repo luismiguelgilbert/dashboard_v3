@@ -7,7 +7,7 @@ export const sys_users_schema = z.object({
   user_name: z.string().min(3, 'Debe incluir 3 o más caracteres.'),
   user_lastname: z.string().min(3, 'Debe incluir 3 o más caracteres.'),
   user_sex: z.coerce.boolean().default(true),
-  avatar_url: z.string().optional().nullable(),
+  avatar_url: z.coerce.string().optional().nullable(),
   website: z.string().optional().nullable(),
   email: z.coerce.string().email().optional().nullable(),
   sys_profile_id: z.coerce.number(),
@@ -60,3 +60,13 @@ export const sys_users_query_schema = z.object({
   sortBy: sys_users_sort_enum,
 }).strict();
 export type sys_users_query = z.infer<typeof sys_users_query_schema>
+
+export const sys_users_password_reset_schema = z.object({
+  id: z.string().uuid('Debe seleccionar un usuario'),
+  password: z.string().min(6, 'Debe incluir 6 o más caracteres.'),
+  passwordConfirm: z.string().min(6, 'Debe incluir 6 o más caracteres.'),
+}).refine((data) => data.password === data.passwordConfirm, {
+  message: 'Contraseñas no coinciden',
+  path: ['passwordConfirm'],
+});;
+export type sys_users_password_reset = z.infer<typeof sys_users_password_reset_schema>

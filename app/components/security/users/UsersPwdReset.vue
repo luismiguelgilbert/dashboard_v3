@@ -181,6 +181,7 @@ const validateAndSave = async () => {
             <UInput
               v-model.trim="resetData.password"
               :type="passwordVisible ? 'text' : 'password'"
+              autocomplete="new-password"
               class="w-full"
               icon="i-hugeicons-password-validation" />
             <UButton
@@ -201,6 +202,7 @@ const validateAndSave = async () => {
             <UInput
               v-model.trim="resetData.passwordConfirm"
               :type="passwordConfirmVisible ? 'text' : 'password'"
+              autocomplete="new-password"
               class="w-full"
               icon="i-hugeicons-password-validation" />
             <UButton

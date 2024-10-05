@@ -61,6 +61,21 @@ export const sys_users_query_schema = z.object({
 }).strict();
 export type sys_users_query = z.infer<typeof sys_users_query_schema>
 
+export const sys_users_query_download_schema = z.object({
+  searchString: z.string()
+    .refine(s => !s.includes(' '), 'Sin espacios!')
+    .refine(s => !s.includes(';'), 'Sin caracteres especiales!')
+    .refine(s => !s.includes('truncate'), 'Sin palabras claves!')
+    .refine(s => !s.includes('drop'), 'Sin palabras claves!')
+    .refine(s => !s.includes('delete'), 'Sin palabras claves!')
+    .refine(s => !s.includes('select'), 'Sin palabras claves!')
+    .refine(s => !s.includes('insert'), 'Sin palabras claves!')
+    .refine(s => !s.includes('update'), 'Sin palabras claves!'),
+  filterProfile: z.coerce.number().array(),
+  filterSex: z.coerce.boolean().array(),
+  sortBy: sys_users_sort_enum,
+}).strict();
+
 export const sys_users_password_reset_schema = z.object({
   id: z.string().uuid('Debe seleccionar un usuario'),
   password: z.string().min(6, 'Debe incluir 6 o más caracteres.'),

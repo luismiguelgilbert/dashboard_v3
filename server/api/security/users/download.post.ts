@@ -2,56 +2,65 @@ import serverDB from '@@/server/utils/db';
 import Excel from 'exceljs';
 import { hasPermission } from '@@/server/utils/handler';
 import { PermissionsList } from '@/types/permissionsEnum';
-
-
-// import { filter_payload } from '@/types/server/filter_payload';
-// import { sanitizeSQL } from '@/utils/utils';
-// import { sort_options, filter_options } from '@/types/server/security/sys_users';
-// import { type type_filter_selection } from '@/types/client/filter_payload';
+import { sys_users_query_download_schema } from '@/types/sys_users';
 
 export default defineEventHandler( async (event) => {
   try{
     await hasPermission(event, PermissionsList.USERS_EXPORT);
+    const { data: payload, error } = await readValidatedBody(event, sys_users_query_download_schema.safeParse);
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: `Invalid request: ${error.issues.map(e => e.message).join(';')}`,
+      });
+    }
+    const sortBy = payload.sortBy;
 
-    // const filter = await readValidatedBody(event, body => filter_payload.cast(body));
-    // const sortBy = sort_options.find(x => x.key === filter.sortBy)?.query!;
-    // const sortByOrder = Boolean(filter.sortByOrder);
-    // const filterBy: type_filter_selection = filter.filterSelection;
-    // let filterQueryString = '';
-    // Object.keys(filterBy).forEach(key => {
-    //   if (filterBy[key].length > 0) {
-    //     filterQueryString += ` and ${filter_options.find(x => x.key == key)?.query} in (${JSON.stringify(filterBy[key]) })`;
-    //   }
-    // });
-    // filterQueryString = filterQueryString.replaceAll('([', '(').replaceAll('])', ')').replaceAll('"', '\'');
-
-    // const search_string = sanitizeSQL(filter.searchString);
-    // const filterSearchString = search_string.length > 0
-    //   ? ` and fts @@ to_tsquery('${search_string.replaceAll(' ','+') }:*')`
-    //   : '';
-    
-    const text = `
+    //QUERIES
+    const userDataQuery = `
       select
-      a.id,
-      INITCAP(b.user_name) as user_name,
-      INITCAP(b.user_lastname) as user_lastname,
-      b.user_sex,
-      b.avatar_url,
-      b.website,
-      a.email,
-      INITCAP(coalesce(d.name_es, '...')) as sys_profile_name,
-      to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at,
-      to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at,
-      to_char (a.last_sign_in_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at
-      from auth.users a
-      left join sys_users b on a.id = b.id
-      left join sys_profiles d on b.sys_profile_id = d.id
-      WHERE 1 = 1
+        a.id
+      ,INITCAP(a.user_name) as user_name
+      ,INITCAP(a.user_lastname) as user_lastname
+      ,a.user_sex
+      ,a.avatar_url
+      ,a.website
+      ,a.website as email
+      ,a.sys_profile_id
+      ,INITCAP(a.sys_profile_name) as sys_profile_name
+      ,a.default_color
+      ,a.default_dark_color
+      ,a.dark_enabled
+      ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
+      ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
+      ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at
+      , count(*) OVER() AS rows_count
+      from sys_users a
+      where (1 = 1)
+      ${payload.searchString?.length > 0
+        ? `and (
+            a.user_name &@ '${payload.searchString}'
+            or a.user_lastname &@ '${payload.searchString}'
+            or a.website &@ '${payload.searchString}'
+            or a.sys_profile_name &@ '${payload.searchString}'
+          )`
+        : ''
+      }
+      ${payload.filterProfile?.length > 0
+        ? `and (a.sys_profile_id in (${payload.filterProfile}))`
+        : ''
+      }
+      ${payload.filterSex?.length > 0
+        ? `and (a.user_sex in (${payload.filterSex}))`
+        : ''
+      }
+      ORDER BY ${ sortBy }
     `;
-    // ${filterQueryString}
-    //     ${filterSearchString}
-    //     ORDER BY ${sortBy} ${sortByOrder ? 'ASC' : 'DESC'}
-    const data = await serverDB.query(text);
+
+    console.time(`${event.method} ${event.path}`);
+    const data = await serverDB.query(userDataQuery);
+    console.timeEnd(`${event.method} ${event.path}`);
+    
     const workbook = new Excel.Workbook();
     const worksheet = await workbook.addWorksheet('Usuarios');
     const fileColumns = [

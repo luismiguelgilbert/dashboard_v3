@@ -8,18 +8,6 @@ export const requiresUser = async (event: H3Event) => {
     if (!sessionCookie) throw createError({ status: 401, statusMessage: 'Unauthorized' });
     const userSessionData = await supabaseInstance().supabase.auth.getUser(sessionCookie);
     if (!userSessionData.error) event.context.user = userSessionData.data.user;
-    // Refresh session
-    // console.log('No session, or expired; refreshing');
-    // if (userSessionData.error) {
-    //   console.log('should I catch session expired here?');
-    //   const refreshCookie = getCookie(event, 'sb-refresh-token') || '';
-    //   console.log('refreshCookie', refreshCookie);
-    //   const newUserSession = await supabaseInstance().supabase.auth.refreshSession({ refresh_token: refreshCookie });
-    //   const sbAccessToken = newUserSession.data.session?.access_token ?? '';
-    //   const sbRefreshToken = newUserSession.data.session?.refresh_token ?? '';
-    //   setCookie(event, 'sb-access-token', sbAccessToken);
-    //   setCookie(event, 'sb-refresh-token', sbRefreshToken);
-    // }
     return event;
   } catch (error) {
     console.error(error);

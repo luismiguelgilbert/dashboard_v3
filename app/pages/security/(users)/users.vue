@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { v4 as uuidv4 } from 'uuid';
+import { PermissionsList } from '~/types/permissionsEnum';
 import type { sys_users } from '~/types/sys_users';
 
 const router = useRouter();
@@ -25,6 +26,7 @@ const actionMenuItems = [
     {
       label: 'Descargar Lista',
       icon: 'i-ri-file-excel-2-line',
+      disabled: !hasClientPermission(PermissionsList.USERS_EXPORT),
       click: () => downloadList(),
     },
     {
@@ -37,6 +39,7 @@ const actionMenuItems = [
     {
       label: 'Restablecer contraseñas',
       icon: 'i-hugeicons-password-validation',
+      disabled: !hasClientPermission(PermissionsList.USERS_EDIT),
       click: () => showUserPwdResetForm.value = true,
     },
   ]
@@ -120,7 +123,7 @@ onMounted(async () => {
           :label="!isMobile ? 'Nuevo' : undefined"
           size="md"
           variant="solid"
-          :disabled="isDownloading"
+          :disabled="isDownloading || !hasClientPermission(PermissionsList.USERS_CREATE)"
           :loading="isDownloading || isLoading"
           icon="i-hugeicons-plus-sign-circle"
           @click="newClicked" />

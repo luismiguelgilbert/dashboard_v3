@@ -55,7 +55,7 @@ const newClicked = () => {
 const downloadList = async() => {
   try {
     isDownloading.value = true;
-    const response: Blob = await $fetch('/api/security/users/download', {
+    const response: Blob = await $fetch('/api/security/roles/download', {
       method: 'POST',
       body: {
         searchString: searchString.value.toLocaleLowerCase().replaceAll(' ', ''),
@@ -66,7 +66,7 @@ const downloadList = async() => {
     const url = window.URL.createObjectURL(response);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Usuarios.xlsx');
+    link.setAttribute('download', 'Perfiles.xlsx');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

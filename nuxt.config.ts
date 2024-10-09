@@ -69,7 +69,8 @@ export default defineNuxtConfig({
         'hugeicons-search-01',
         'hugeicons-settings-error-01',
         //HeroIcons
-        'heroicons:sun-20-solid'
+        'heroicons:sun-20-solid',
+        'heroicons:arrow-path-20-solid',
       ],
 
       // scan all components in the project and include icons 

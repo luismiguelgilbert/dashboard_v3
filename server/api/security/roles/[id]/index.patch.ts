@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
 
     await serverDB.query('BEGIN');
 
-    const userDataQuery = `
+    const rolesDataQuery = `
       UPDATE sys_profiles SET
       name_es = '${payload.name_es}',
       is_active = ${payload.is_active},
@@ -28,8 +28,16 @@ export default defineEventHandler(async (event) => {
       
       where id = '${id}'
     `;
+
+    const usersDataQuery = `
+      UPDATE sys_users SET
+      sys_profile_name = '${payload.name_es}'
+      
+      where sys_profile_id = '${id}'
+    `;
     
-    await serverDB.query(userDataQuery);
+    await serverDB.query(rolesDataQuery);
+    await serverDB.query(usersDataQuery);
 
     await serverDB.query('COMMIT');
     

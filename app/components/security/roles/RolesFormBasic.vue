@@ -42,7 +42,7 @@ defineExpose({
           v-model:model-value="selectedRowData.name_es"
           required
           placeholder="Nombre del Rol"
-          icon="i-heroicons-envelope"
+          icon="i-hugeicons-account-setting-01"
           :loading="isLoading" />
       </UFormGroup>
 

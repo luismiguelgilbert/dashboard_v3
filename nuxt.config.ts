@@ -54,8 +54,10 @@ export default defineNuxtConfig({
       // list of icons to include in the client bundle
       icons: [
         //HugeIcons
+        'hugeicons-account-setting-01',
         'hugeicons-alert-diamond',
         'hugeicons-building-03',
+        'hugeicons-building-06',
         'hugeicons-cancel-circle',
         'hugeicons-circle-arrow-down-01',
         'hugeicons-checkmark-circle-01',
@@ -68,6 +70,7 @@ export default defineNuxtConfig({
         'hugeicons-transition-right',
         'hugeicons-search-01',
         'hugeicons-settings-error-01',
+        'hugeicons-user-group',
         //HeroIcons
         'heroicons:sun-20-solid',
         'heroicons:arrow-path-20-solid',

@@ -66,7 +66,6 @@ const fetchData = async () => {
         disabled: false,
         created_at: null,
         updated_at: null,
-        updated_by: '',
         rows_count: 0,
       };
     }
@@ -83,7 +82,7 @@ const validateAndSave = async () => {
     isLoading.value = true;
     isSaveSuccess.value = false;
     hasError.value = false;
-    await $fetch(`/api/security/users/:${useRoute().query.id}`, {
+    await $fetch(`/api/security/roles/:${useRoute().query.id}`, {
       method: formModel.value === 'edit' ? 'PATCH' : 'POST',
       body: selectedRowData.value,
     });
@@ -112,7 +111,7 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
         <template #header>
           <div class="flex items-center justify-between">
             <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-              {{ formModel === 'create' ? 'Crear' : 'Editar' }} usuario:
+              {{ formModel === 'create' ? 'Crear' : 'Editar' }} perfil:
             </h3>
             <div class="flex gap-3">
               <UButton
@@ -133,8 +132,6 @@ watch(() => useRoute().query.id, (value) => { if (value) { fetchData(); } });
             </div>
           </div>
         </template>
-
-        
 
         <div
           v-if="isLoading"

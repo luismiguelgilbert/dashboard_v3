@@ -68,7 +68,7 @@ export default defineEventHandler(async (event) => {
     
     return await event.$fetch(`/api/security/users/:${id}`);
   } catch(err) {
-    console.error(`Error at ${event.path}. ${err}`);
+    console.error(`Error at ${event.method} ${event.path}. ${err}`);
     await serverDB.query('ROLLBACK');
     throw createError({
       statusCode: 500,

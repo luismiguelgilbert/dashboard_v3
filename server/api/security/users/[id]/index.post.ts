@@ -94,7 +94,7 @@ export default defineEventHandler(async (event) => {
     if (deleteID) {
       await supabaseInstance().supabase.auth.admin.deleteUser(deleteID, false);
     }
-    console.error(`Error at ${event.path}. ${err}`);
+    console.error(`Error at ${event.method} ${event.path}. ${err}`);
     
     await serverDB.query('ROLLBACK');
     throw createError({

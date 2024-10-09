@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { v4 as uuidv4 } from 'uuid';
 
 export const sys_profiles_schema = z.object({
   id: z.coerce.number().default(0),
@@ -8,17 +7,16 @@ export const sys_profiles_schema = z.object({
   disabled: z.coerce.boolean().default(true),
   created_at: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
-  updated_by: z.string().uuid().default(uuidv4()),
   rows_count: z.coerce.number().optional().nullable().default(0),
 });
 
 export type sys_profiles = z.infer<typeof sys_profiles_schema>
 
 export const sys_profiles_form_schema = sys_profiles_schema.extend({
-  // sys_companies_users: z.array(z.string().uuid()).min(1, 'Debe seleccionar al menos una opción.').default([]),
-  // default_user_company: z.string().uuid().optional(),
-  // email: z.coerce.string().email(),
-  // sys_profile_id: z.coerce.number().min(1, 'Debe seleccionar una opción.'),
+  is_active: z.coerce.boolean(),
+  disabled: z.coerce.boolean().optional(),
+  created_at: z.string().optional().nullable(),
+  updated_at: z.string().optional().nullable(),
 }).strict();
 export type sys_profiles_form = z.infer<typeof sys_profiles_form_schema>
 

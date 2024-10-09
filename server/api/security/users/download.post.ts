@@ -82,7 +82,7 @@ export default defineEventHandler( async (event) => {
 
     return await workbook.xlsx.writeBuffer();
   } catch(err) {
-    console.error(`Error at ${event.path}. ${err}`);
+    console.error(`Error at ${event.method} ${event.path}. ${err}`);
     throw createError({
       statusCode: 500,
       statusMessage: 'Unhandled exception',

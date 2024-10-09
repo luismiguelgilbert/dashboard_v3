@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
       default_user_company: results[2].rows[0]?.sys_company_id ?? undefined,
     });
   }catch(err) {
-    console.error(`Error at ${event.path}. ${err}`);
+    console.error(`Error at ${event.method} ${event.path}. ${err}`);
     throw createError({
       statusCode: 500,
       statusMessage: 'Unhandled exception',

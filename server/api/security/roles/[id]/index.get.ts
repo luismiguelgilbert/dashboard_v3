@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
       ...sys_profiles_schema.array().parse(results[0].rows)[0],
     });
   }catch(err) {
-    console.error(`Error at ${event.path}. ${err}`);
+    console.error(`Error at ${event.method} ${event.path}. ${err}`);
     throw createError({
       statusCode: 500,
       statusMessage: 'Unhandled exception',

@@ -67,7 +67,7 @@ const downloadList = async() => {
     const url = window.URL.createObjectURL(response);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Perfiles.xlsx');
+    link.setAttribute('download', 'Organizaciones.xlsx');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -77,7 +77,7 @@ const downloadList = async() => {
     isDownloading.value = false;
   }
 };
-// const closeFilters = () => showFilters.value = false;
+const closeFilters = () => showFilters.value = false;
 
 onMounted(async () => {
   if (useRoute().query.id) {
@@ -135,11 +135,11 @@ onMounted(async () => {
     <SecurityCompaniesList
       @row-click="rowClicked" />
     
-    <!-- 
-    <SecurityRolesFilters
+    <SecurityCompaniesFilters
       :is-open="showFilters"
       @cancel="closeFilters" />
-
+    
+    <!-- 
     <SecurityRolesForm
       :id="selectedRowId"
       :is-open="showForm"

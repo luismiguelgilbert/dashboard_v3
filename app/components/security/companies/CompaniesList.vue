@@ -22,9 +22,10 @@ const rows = shallowRef<sys_companies[]>([]);
 const mainTable = useTemplateRef('mainTable');
 const columns = computed(() => [
   { key: 'id', label: '', class: 'hidden' },
-  { key: 'name', label: 'Name', class: 'hidden' },
-  { key: 'mail', label: 'Email', class: 'hidden' },
-  { key: 'profile', label: 'Profile', class: 'hidden' },
+  { key: 'name_es_short', label: 'Nombre', class: 'hidden' },
+  { key: 'name_es', label: 'Razón Social', class: 'hidden' },
+  { key: 'company_number', label: 'RUC', class: 'hidden' },
+  { key: 'is_active', label: 'Estado', class: 'hidden' },
 ].filter(x => (isMobile.value && ['id', 'name'].includes(x.key)) || (!isMobile.value))
 );
 
@@ -87,23 +88,20 @@ refreshData();
           :alt="row.name_es_short[0]"
           size="sm" />
       </template>
-      <template #name-data="{row} : {row: sys_companies}">
+      <template #name_es_short-data="{row} : {row: sys_companies}">
         <span class="text-xs sm:text-base font-semibold dark:text-white text-black truncate text-ellipsis">
           {{ row.name_es_short }}
         </span>
         <span class="flex sm:hidden text-xs text-gray-500 dark:text-gray-400 truncate text-ellipsis">
           {{ row.name_es }}
         </span>
-        <p class="flex text-xs truncate text-ellipsis">
-          {{ row.company_number }}
-        </p>
       </template>
-      <template #mail-data="{row} : {row: sys_companies}">
-        <span class="hidden sm:flex text-xs text-gray-500 dark:text-gray-400 truncate text-ellipsis">
+      <template #name_es-data="{row} : {row: sys_companies}">
+        <span class="hidden sm:flex text-base text-gray-500 dark:text-gray-400 truncate text-ellipsis">
           {{ row.name_es }}
         </span>
       </template>
-      <template #profile-data="{row} : {row: sys_companies}">
+      <template #is_active-data="{row} : {row: sys_companies}">
         <UBadge
           variant="subtle"
           :color="row.is_active ? 'green' : 'rose'"
@@ -145,3 +143,9 @@ refreshData();
     </div>
   </div>
 </template>
+
+<style scoped>
+:deep(table > tbody > tr > td:nth-child(1)) {
+  max-width: 20px;
+}
+</style>

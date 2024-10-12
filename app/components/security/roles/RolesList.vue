@@ -127,3 +127,9 @@ refreshData();
     </div>
   </div>
 </template>
+
+<style scoped>
+:deep(table > tbody > tr > td:nth-child(1)) {
+  max-width: 20px;
+}
+</style>

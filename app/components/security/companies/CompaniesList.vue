@@ -105,7 +105,7 @@ refreshData();
         <UBadge
           variant="subtle"
           :color="row.is_active ? 'green' : 'rose'"
-          size="lg">
+          size="sm">
           {{ row.is_active ? 'Activo' : 'Inactivo' }}
         </UBadge>
       </template>

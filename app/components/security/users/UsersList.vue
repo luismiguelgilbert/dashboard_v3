@@ -111,7 +111,7 @@ refreshData();
         <UBadge
           variant="solid"
           :color="isDarkMode ? 'gray' : 'white'"
-          size="lg">
+          size="sm">
           {{ row.sys_profile_name }}
         </UBadge>
       </template>

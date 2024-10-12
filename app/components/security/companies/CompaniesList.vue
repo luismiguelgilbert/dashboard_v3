@@ -26,7 +26,7 @@ const columns = computed(() => [
   { key: 'name_es', label: 'Razón Social', class: 'hidden' },
   { key: 'company_number', label: 'RUC', class: 'hidden' },
   { key: 'is_active', label: 'Estado', class: 'hidden' },
-].filter(x => (isMobile.value && ['id', 'name'].includes(x.key)) || (!isMobile.value))
+].filter(x => (isMobile.value && ['id', 'name_es_short'].includes(x.key)) || (!isMobile.value))
 );
 
 const refreshData = async () => {
@@ -89,15 +89,15 @@ refreshData();
           size="sm" />
       </template>
       <template #name_es_short-data="{row} : {row: sys_companies}">
-        <span class="text-xs sm:text-base font-semibold dark:text-white text-black truncate text-ellipsis">
-          {{ row.name_es_short }}
-        </span>
-        <span class="flex sm:hidden text-xs text-gray-500 dark:text-gray-400 truncate text-ellipsis">
+        <span class="text-xs sm:text-base font-semibold dark:text-white text-black truncate text-ellipsis ml-0 sm:ml-5">
           {{ row.name_es }}
         </span>
+        <p class="flex sm:hidden text-xs truncate text-ellipsis">
+          {{ row.name_es_short }}
+        </p>
       </template>
       <template #name_es-data="{row} : {row: sys_companies}">
-        <span class="hidden sm:flex text-base text-gray-500 dark:text-gray-400 truncate text-ellipsis">
+        <span class="sm:flex text-base text-gray-500 dark:text-gray-400 truncate text-ellipsis">
           {{ row.name_es }}
         </span>
       </template>

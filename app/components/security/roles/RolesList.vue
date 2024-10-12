@@ -81,7 +81,7 @@ refreshData();
           size="sm" />
       </template>
       <template #name-data="{row} : {row: sys_profiles}">
-        <span class="text-xs sm:text-base font-semibold dark:text-white text-black truncate text-ellipsis">
+        <span class="text-xs sm:text-base font-semibold dark:text-white text-black truncate text-ellipsis ml-5 sm:ml-0">
           {{ row.name_es }}
         </span>
       </template>

@@ -53,7 +53,7 @@ const closeSlideOder = () => {
 
 onMounted(async () => {
   if (import.meta.client) {
-    $fetch('/api/filters/security/rolesActive').then((data) => rowsIsActive.value = data);
+    $fetch('/api/filters/security/companiesActive').then((data) => rowsIsActive.value = data);
   }
 });
 </script>

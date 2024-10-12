@@ -36,10 +36,10 @@ const actionMenuItems = [
 ];
 defineShortcuts({ '/': () => { searchinputcomponent.value?.input?.focus(); } });
 
-// const closeForm = () => {
-//   showForm.value = false;
-//   router.replace({ query: { } });
-// };
+const closeForm = () => {
+  showForm.value = false;
+  router.replace({ query: { } });
+};
 const rowClicked = (record: sys_companies) => {
   selectedRowId.value = record.id;
   formModel.value = 'edit';
@@ -139,10 +139,9 @@ onMounted(async () => {
       :is-open="showFilters"
       @cancel="closeFilters" />
     
-    <!-- 
-    <SecurityRolesForm
+    <SecurityCompaniesForm
       :id="selectedRowId"
       :is-open="showForm"
-      @cancel="closeForm" /> -->
+      @cancel="closeForm" />
   </div>
 </template>

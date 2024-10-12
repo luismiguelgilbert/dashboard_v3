@@ -2,9 +2,9 @@ import { z } from 'zod';
 
 export const sys_companies_schema = z.object({
   id: z.coerce.string().uuid(),
-  company_number: z.coerce.string(),
-  name_es: z.coerce.string(),
-  name_es_short: z.coerce.string(),
+  company_number: z.coerce.string().min(10, 'Debe incluir 10 o más caracteres.'),
+  name_es: z.coerce.string().min(3, 'Debe incluir 3 o más caracteres.'),
+  name_es_short: z.coerce.string().min(3, 'Debe incluir 3 o más caracteres.'),
   billing_phone: z.coerce.string().optional(),
   billing_address: z.coerce.string().optional(),
   is_active: z.coerce.boolean().default(true),

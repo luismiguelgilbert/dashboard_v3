@@ -14,6 +14,7 @@ export const useCompaniesStore = defineStore('companies', () => {
   const selectedRowId = ref<string>();
   const formModel = ref<'edit'|'create'>('edit');
   const selectedRowData = ref<sys_companies_form>();
+  const selectedRowDataAvatarHelper = ref<File | null>();
 
   const hasFilter = computed<boolean>(() => searchString.value !== '' || filterIsActive.value.length > 0 );
 
@@ -31,6 +32,7 @@ export const useCompaniesStore = defineStore('companies', () => {
     formModel,
     selectedRowId,
     selectedRowData,
+    selectedRowDataAvatarHelper,
     // Getters
     hasFilter,
   };

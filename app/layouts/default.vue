@@ -61,6 +61,7 @@ onMounted(async () => {
   if (import.meta.client) {
     isMobile.value = myScreenSize.value === 'mobile'; 
     useAppConfig().ui.primary = userData.value?.default_color ?? 'bitt';
+    useColorMode().preference = userData.value?.dark_enabled ? 'dark' : 'light';
     handleSpecialColors();
   }
 });

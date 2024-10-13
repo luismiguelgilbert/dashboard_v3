@@ -1,18 +1,85 @@
 <script setup lang="ts">
 import { colors_enum, dark_colors_enum } from '@/types/colors';
 const mainStore = useMainStore();
+const usersStore = useUsersStore();
 const appConfig = useAppConfig();
+const colorMode = useColorMode();
+const fileRef = useTemplateRef('fileRef');
 const { userData, isLoadingUserData, isMobile } = storeToRefs(mainStore);
 const inputSize = 'xl';
-const inputUI = {};
+const isUpdating = ref<boolean>(false);
 
-const setDarkBackgroundColor = (color: string) => {
+const {
+  selectedRowDataAvatarHelper,
+} = storeToRefs(usersStore);
+
+const updatePreferences = async () => {
+  try {
+    isUpdating.value = true;
+    await $fetch(`/api/security/users/:${userData.value?.id}/preferences`, {
+      method: 'PATCH',
+      body: userData.value,
+    });
+    isUpdating.value = false;
+  } catch (error) {
+    isUpdating.value = false;
+    useToast().add({
+      title: `Error al guardar preferencias: ${error}`,
+      icon: 'i-hugeicons-settings-error-01',
+      color: 'rose',
+    });
+  };
+};
+
+const setDarkBackgroundColor = async (color: string) => {
   appConfig.ui.gray = color;
+  await updatePreferences();
 };
 
-const setColor = (color: string) => {
+const setColor = async (color: string) => {
   appConfig.ui.primary = color;
+  await updatePreferences();
 };
+
+const setBackgroundColor = async () => {
+  if (userData.value) {
+    userData.value.dark_enabled = colorMode.preference === 'dark' ;
+    await updatePreferences();
+  }
+};
+
+const onFileClick = () => { fileRef.value?.input.click(); };
+const onFileChange = async (e: FileList) => {
+  try {
+    isUpdating.value = true;
+    if (!e.length) { throw new Error('No se seleccionó archivo.'); }
+    if (e[0] && e[0].size / 1024 / 1024 > 1) { throw new Error('Tamaño incorrecto.'); }
+    if (e[0] && userData.value) {
+      selectedRowDataAvatarHelper.value = e[0];
+      userData.value.avatar_url = URL.createObjectURL(e[0]);
+      const body = new FormData();
+      body.append('file', selectedRowDataAvatarHelper.value);
+      await $fetch(`/api/security/users/:${userData.value?.id}/avatar`, {
+        method: 'PATCH',
+        body: body,
+      });
+    }
+    useToast().add({
+      title: 'Avatar actualizado. Puede tarde unos minutos en reflejarse.',
+      color: 'green',
+    });
+    isUpdating.value = false;
+  } catch (error) {
+    isUpdating.value = false;
+    useToast().add({
+      title: `Error al cargar archivo: ${error}`,
+      icon: 'i-hugeicons-settings-error-01',
+      color: 'rose',
+    });
+  }
+};
+
+watch(() => colorMode.preference, async () => { await setBackgroundColor(); }, { deep: true });
 </script>
 
 <template>
@@ -34,9 +101,6 @@ const setColor = (color: string) => {
             :src="userData.avatar_url!"
             :alt="userData.user_lastname"
             size="3xl" />
-          <!-- <UAvatar
-            alt="Luis Miguel Gilbert"
-            size="2xl" /> -->
         </ULandingCard>
         <UForm
           ref="form"
@@ -61,7 +125,6 @@ const setColor = (color: string) => {
                 placeholder="Email del Usuario"
                 icon="i-heroicons-envelope"
                 :disabled="!!userData.id"
-                :ui="inputUI"
                 :loading="isLoadingUserData" />
             </UFormGroup>
   
@@ -80,9 +143,9 @@ const setColor = (color: string) => {
               <UInput
                 v-model:model-value="userData.user_name"
                 required
+                disabled
                 placeholder="Nombres del Usuario"
-                icon="i-heroicons-user"
-                :ui="inputUI"
+                icon="i-hugeicons-user-circle"
                 :loading="isLoadingUserData" />
             </UFormGroup>
   
@@ -101,9 +164,9 @@ const setColor = (color: string) => {
               <UInput
                 v-model:model-value="userData.user_lastname"
                 required
+                disabled
                 placeholder="Apellidos del Usuario"
-                icon="i-heroicons-user"
-                :ui="inputUI"
+                icon="i-hugeicons-user-circle-02"
                 :loading="isLoadingUserData" />
             </UFormGroup>
   
@@ -121,7 +184,7 @@ const setColor = (color: string) => {
               name="user_sex">
               <UToggle
                 v-model="userData.user_sex"
-                :disabled="isLoadingUserData" />
+                disabled />
               <span
                 class="ml-5"
                 style="vertical-align: text-bottom;">{{ userData.user_sex ? 'Hombre' : 'Mujer' }}</span>
@@ -138,18 +201,14 @@ const setColor = (color: string) => {
             </div>
             <UFormGroup
               :size="inputSize"
-              name="sys_profile_id">
-              <USelectMenu
-                v-model="userData.sys_profile_id"
-                searchable
+              name="sys_profile_name">
+              <UInput
+                v-model:model-value="userData.sys_profile_name"
                 required
-                :loading="true"
-                searchable-placeholder="Buscar rol..."
-                placeholder="Seleccionar rol..."
-                icon="i-heroicons-user-circle"
-                value-attribute="id"
-                option-attribute="name_es"
-                :options="[]" />
+                disabled
+                placeholder="Apellidos del Usuario"
+                icon="i-hugeicons-account-setting-01"
+                :loading="isLoadingUserData" />
             </UFormGroup>
   
             <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -165,20 +224,30 @@ const setColor = (color: string) => {
               :size="inputSize"
               name="avatar_url">
               <div class="flex items-center">
+                <!---->
                 <UAvatar
-                  :src="userData.avatar_url!"
-                  :alt="userData.user_lastname"
+                  v-if="userData.avatar_url"
+                  :src="userData.avatar_url"
+                  :alt="userData.user_name"
+                  size="lg" />
+                <UAvatar
+                  v-else
+                  :alt="userData.user_name"
                   size="lg" />
                 <UButton
                   label="Seleccionar"
                   color="white"
                   size="md"
-                  class="ml-5" />
+                  class="ml-5"
+                  :disabled="isUpdating"
+                  @click="onFileClick" />
                 <UInput
                   ref="fileRef"
                   type="file"
                   class="hidden"
-                  accept=".jpg, .jpeg, .png, .gif" />
+                  accept=".jpg, .jpeg, .png, .gif"
+                  :disabled="isUpdating"
+                  @change="onFileChange" />
               </div>
             </UFormGroup>
   
@@ -194,7 +263,7 @@ const setColor = (color: string) => {
             <UFormGroup
               :size="inputSize"
               name="dark_enabled">
-              <UColorModeSelect />
+              <UColorModeSelect :disabled="isUpdating" />
             </UFormGroup>
   
             <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -214,6 +283,7 @@ const setColor = (color: string) => {
                 icon="i-heroicons-moon"
                 :options="Object.keys(dark_colors_enum.Values)"
                 :loading="isLoadingUserData"
+                :disabled="isUpdating"
                 @update:model-value="setDarkBackgroundColor" />
             </UFormGroup>
   
@@ -257,7 +327,6 @@ const setColor = (color: string) => {
               readonly
               placeholder="ID del Usuario"
               icon="i-heroicons-circle-stack"
-              :ui="inputUI"
               :loading="isLoadingUserData" />
             <br />
             <UAlert

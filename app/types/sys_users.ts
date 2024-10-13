@@ -34,6 +34,15 @@ export const sys_users_form_schema = sys_users_schema.extend({
 
 export type sys_users_form = z.infer<typeof sys_users_form_schema>
 
+export const sys_users_preferences_schema = z.object({
+  id: z.string().uuid().default(uuidv4()),
+  avatar_url: z.coerce.string().optional().nullable(),
+  default_color: colors_enum.default('indigo'),
+  default_dark_color: dark_colors_enum.default('zinc'),
+  dark_enabled: z.coerce.boolean().default(false),
+});
+export type sys_users_preferences = z.infer<typeof sys_users_preferences_schema>
+
 export const sys_users_sort_enum = z.enum(['a.user_name', 'a.user_lastname', 'a.sys_profile_name', 'a.user_sex']);
 export type sys_users_sort_enum = z.infer<typeof sys_users_sort_enum>;
 

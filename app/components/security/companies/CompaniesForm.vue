@@ -19,6 +19,7 @@ const { isMobile } = storeToRefs(mainStore);
 const {
   isLoading,
   selectedRowData,
+  selectedRowDataAvatarHelper,
   formModel,
 } = storeToRefs(companiesStore);
 const hasError = ref(false);
@@ -82,23 +83,31 @@ const fetchData = async () => {
 };
 
 const validateAndSave = async () => {
-  // try {
-  //   await formComponent.value?.validateMainForm();
-  //   isLoading.value = true;
-  //   isSaveSuccess.value = false;
-  //   hasError.value = false;
-  //   await $fetch(`/api/security/roles/:${useRoute().query.id}`, {
-  //     method: formModel.value === 'edit' ? 'PATCH' : 'POST',
-  //     body: selectedRowData.value,
-  //   });
-  //   isLoading.value = false;
-  //   isSaveSuccess.value = true;
-  // } catch (error) {
-  //   isLoading.value = false;
-  //   hasError.value = true;
-  //   isSaveSuccess.value = false;
-  //   console.error(error);
-  // }
+  try {
+    await formComponent.value?.validateMainForm();
+    isLoading.value = true;
+    isSaveSuccess.value = false;
+    hasError.value = false;
+    const userData = await $fetch(`/api/security/companies/:${useRoute().query.id}`, {
+      method: formModel.value === 'edit' ? 'PATCH' : 'POST',
+      body: selectedRowData.value,
+    });
+    if (selectedRowData.value?.avatar_url && selectedRowDataAvatarHelper.value ) {
+      const body = new FormData();
+      body.append('file', selectedRowDataAvatarHelper.value);
+      await $fetch(`/api/security/companies/:${userData.id}/avatar`, {
+        method: 'PATCH',
+        body: body,
+      });
+    }
+    isLoading.value = false;
+    isSaveSuccess.value = true;
+  } catch (error) {
+    isLoading.value = false;
+    hasError.value = true;
+    isSaveSuccess.value = false;
+    console.error(error);
+  }
 };
 
 onMounted(() => fetchData());

@@ -90,10 +90,10 @@ refreshData();
       </template>
       <template #name_es_short-data="{row} : {row: sys_companies}">
         <span class="text-xs sm:text-base font-semibold dark:text-white text-black truncate text-ellipsis ml-0 sm:ml-5">
-          {{ row.name_es }}
+          {{ row.name_es_short }}
         </span>
         <p class="flex sm:hidden text-xs truncate text-ellipsis">
-          {{ row.name_es_short }}
+          {{ row.name_es }}
         </p>
       </template>
       <template #name_es-data="{row} : {row: sys_companies}">

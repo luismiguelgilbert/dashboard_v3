@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { sys_profiles_link_schema } from '@/types/sys_links';
 
 export const sys_profiles_schema = z.object({
   id: z.coerce.number().default(0),
@@ -15,6 +16,7 @@ export type sys_profiles = z.infer<typeof sys_profiles_schema>
 export const sys_profiles_form_schema = sys_profiles_schema.extend({
   is_active: z.coerce.boolean(),
   disabled: z.coerce.boolean().optional(),
+  sys_profiles_links: z.array(sys_profiles_link_schema).optional().default([]),
   created_at: z.string().optional().nullable(),
   updated_at: z.string().optional().nullable(),
 }).strict();

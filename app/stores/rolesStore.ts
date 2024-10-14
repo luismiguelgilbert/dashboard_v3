@@ -1,4 +1,5 @@
 import type { sys_profiles, sys_profiles_form, sys_profiles_sort_enum } from '@/types/sys_profiles';
+import type { sys_links } from '@/types/sys_links';
 
 export const useRolesStore = defineStore('roles', () => {
   const searchString = ref<string>('');
@@ -14,6 +15,7 @@ export const useRolesStore = defineStore('roles', () => {
   const selectedRowId = ref<number>();
   const formModel = ref<'edit'|'create'>('edit');
   const selectedRowData = ref<sys_profiles_form>();
+  const lookupSysLinks = ref<sys_links[]>();
 
   const hasFilter = computed<boolean>(() => searchString.value !== '' || filterIsActive.value.length > 0 );
 
@@ -31,6 +33,7 @@ export const useRolesStore = defineStore('roles', () => {
     formModel,
     selectedRowId,
     selectedRowData,
+    lookupSysLinks,
     // Getters
     hasFilter,
   };

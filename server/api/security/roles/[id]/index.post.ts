@@ -20,12 +20,22 @@ export default defineEventHandler(async (event) => {
 
     await serverDB.query('BEGIN');
 
-    //Insert user data
+    //Insert data
     const sqlInsertUserData = `insert into public.sys_profiles (name_es, is_active, updated_by)
       values ('${payload.name_es}', ${payload.is_active}, '${user_id}') RETURNING id;`;
 
     const { rows } = await serverDB.query(sqlInsertUserData);
     id = rows[0].id;
+
+    if (payload.sys_profiles_links && payload.sys_profiles_links.length > 0) {
+      let sqlLinksInsert = 'insert into sys_profiles_links (sys_profile_id, sys_link_id) values';
+      payload.sys_profiles_links?.forEach((linkId) => {
+        sqlLinksInsert += `('${id}', '${linkId.sys_link_id}'),`;
+      });
+      sqlLinksInsert = sqlLinksInsert.substring(0, sqlLinksInsert.length - 1);//remove last comma
+      await serverDB.query(sqlLinksInsert);
+    }
+
     await serverDB.query('COMMIT');
 
     return await event.$fetch(`/api/security/roles/:${id}`);

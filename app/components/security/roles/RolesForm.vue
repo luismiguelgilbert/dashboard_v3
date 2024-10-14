@@ -19,6 +19,7 @@ const { isMobile } = storeToRefs(mainStore);
 const {
   isLoading,
   selectedRowData,
+  lookupSysLinks,
   formModel,
 } = storeToRefs(rolesStore);
 const hasError = ref(false);
@@ -51,11 +52,21 @@ const fetchData = async () => {
   
         const results = await Promise.all([
           $fetch(`/api/security/roles/:${useRoute().query.id}`),
+          $fetch('/api/lookups/sys_links'),
+          $fetch(`/api/security/roles/:${useRoute().query.id}/sys_profiles_links`),
         ]);
         selectedRowData.value = results[0];
+        lookupSysLinks.value = results[1];
+        selectedRowData.value.sys_profiles_links = results[2];
         isLoading.value = false;
       }
     } else {
+      const results = await Promise.all([
+          $fetch('/api/lookups/sys_links'),
+        ]);
+      lookupSysLinks.value = results[0];
+      isLoading.value = false;
+
       hasError.value = false;
       isSaveSuccess.value = false;
       isLoading.value = false;
@@ -63,6 +74,7 @@ const fetchData = async () => {
         id: props.id,
         name_es: '',
         is_active: true,
+        sys_profiles_links: [],
         disabled: false,
         created_at: null,
         updated_at: null,

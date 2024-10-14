@@ -35,9 +35,21 @@ export default defineEventHandler(async (event) => {
       
       where sys_profile_id = '${id}'
     `;
-    
+
+    const sqlLinksDelete = `delete from sys_profiles_links where sys_profile_id = '${id}'`;
+
     await serverDB.query(rolesDataQuery);
     await serverDB.query(usersDataQuery);
+    await serverDB.query(sqlLinksDelete);
+
+    if (payload.sys_profiles_links && payload.sys_profiles_links.length > 0) {
+      let sqlLinksInsert = 'insert into sys_profiles_links (sys_profile_id, sys_link_id) values';
+      payload.sys_profiles_links?.forEach((linkId) => {
+        sqlLinksInsert += `('${id}', '${linkId.sys_link_id}'),`;
+      });
+      sqlLinksInsert = sqlLinksInsert.substring(0, sqlLinksInsert.length - 1);//remove last comma
+      await serverDB.query(sqlLinksInsert);
+    }
 
     await serverDB.query('COMMIT');
     

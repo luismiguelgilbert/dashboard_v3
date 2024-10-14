@@ -1,15 +1,34 @@
 <script setup lang="ts">
 import { sys_profiles_form_schema } from '@/types/sys_profiles';
+import type { sys_links } from '@/types/sys_links';
 
 const rolesStore = useRolesStore();
 const mainRef = useTemplateRef('mainForm');
 
 const {
   selectedRowData,
+  lookupSysLinks,
   isLoading,
 } = storeToRefs(rolesStore);
 
 const inputSize = 'xl';
+
+const isRowSelected = (row: sys_links): boolean => {
+  return Boolean(selectedRowData.value?.sys_profiles_links?.some(x => x.sys_link_id === row.id));
+};
+
+const toggleRow = (row: sys_links, value: boolean) => {
+  if (value) {
+    if (selectedRowData.value?.sys_profiles_links) {
+      selectedRowData.value?.sys_profiles_links.push({ sys_link_id: row.id });
+    }
+  }
+  else {
+    if (selectedRowData.value?.sys_profiles_links) {
+      selectedRowData.value.sys_profiles_links = selectedRowData.value?.sys_profiles_links.filter((item) => item.sys_link_id != row.id) ?? [];
+    }
+  }
+};
 
 defineExpose({
   validateMainForm: async () => {
@@ -65,6 +84,47 @@ defineExpose({
           class="ml-5"
           style="vertical-align: text-bottom;">{{ selectedRowData.is_active ? 'Activo' : 'Inactivo' }}</span>
       </UFormGroup>
+
+      <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
+      <div class="self-start">
+        <p class="text-gray-900 dark:text-white font-semibold">
+          Permisos:
+        </p>
+      </div>
+      <div class="overflow-y-auto">
+        <div
+          v-for="row in lookupSysLinks"
+          :key="Number(row.id)">
+          <UCheckbox
+            class="pl-4 py-3 items-center"
+            :model-value="isRowSelected(row)"
+            @change="(value) => toggleRow(row, value)">
+            <template #label>
+              <span class="text-base text-gray-900 dark:text-gray-50 cursor-pointer">
+                <span
+                  v-if="row.row_level === 0"
+                  class="font-black">
+                  <UIcon :name="row.icon!" />
+                  {{ row.name_es }}
+                </span>
+                <span
+                  v-if="row.row_level === 1"
+                  class="font-bold ml-5">
+                  <UIcon :name="row.icon!" />
+                  {{ row.name_es }}
+                </span>
+                <span
+                  v-if="row.row_level > 1"
+                  class="font-normal ml-10">
+                  <UIcon :name="row.icon!" />
+                  {{ row.name_es }}
+                </span>
+              </span>
+            </template>
+          </UCheckbox>
+          <UDivider />
+        </div>
+      </div>
       <br /><br />
     </div>
   </UForm>

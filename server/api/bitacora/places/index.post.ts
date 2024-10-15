@@ -1,12 +1,12 @@
 import serverDB from '@@/server/utils/db';
-import { sys_companies_schema, sys_companies_query_schema } from '@/types/sys_companies';
+import { bitacora_places_schema, bitacora_places_query_schema } from '@/types/bitacora_places';
 import { hasPermission } from '@@/server/utils/handler';
 import { PermissionsList } from '@/types/permissionsEnum';
 
 export default defineEventHandler( async (event) => {
   try {
-    await hasPermission(event, PermissionsList.COMPANIES_READ);
-    const { data: payload, error } = await readValidatedBody(event, sys_companies_query_schema.safeParse);
+    await hasPermission(event, PermissionsList.BITACORA_PLACES_READ);
+    const { data: payload, error } = await readValidatedBody(event, bitacora_places_query_schema.safeParse);
     if (error) {
       throw createError({
         statusCode: 500,
@@ -22,18 +22,17 @@ export default defineEventHandler( async (event) => {
     const userDataQuery = `
       select
        a.id
+      ,a.sys_company_id
       ,INITCAP(a.name_es) as name_es
       ,INITCAP(a.name_es_short) as name_es_short
-      ,a.company_number
-      ,a.billing_phone
-      ,a.billing_address
       ,a.is_active
       ,a.avatar_url
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
       , count(*) OVER() AS rows_count
-      from sys_companies a
+      from bita_places a
       where (1 = 1)
+      and a.sys_company_id = '${payload.sys_company_id}' 
       ${payload.searchString?.length > 0
         ? `and (
             a.name_es &@ '${payload.searchString}'
@@ -53,7 +52,7 @@ export default defineEventHandler( async (event) => {
     console.time(`${event.method} ${event.path}`);
     const result = await serverDB.query(userDataQuery);
     console.timeEnd(`${event.method} ${event.path}`);
-    return sys_companies_schema.array().parse(result.rows);
+    return bitacora_places_schema.array().parse(result.rows);
   } catch (err) {
     throw createError({
       statusCode: 500,

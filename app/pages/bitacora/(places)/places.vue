@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { v4 as uuidv4 } from 'uuid';
 import { PermissionsList } from '~/types/permissionsEnum';
-import type { sys_companies } from '~/types/sys_companies';
+import type { bitacora_places } from '~/types/bitacora_places';
 
 const router = useRouter();
 const searchinputcomponent = ref<{ input: HTMLInputElement }>();
 const mainStore = useMainStore();
-const companiesStore = useCompaniesStore();
+const bitacoraPlacesStore = useBitacoraPlacesStore();
 const {
   searchString,
   isLoading,
@@ -15,7 +15,7 @@ const {
   selectedRowId,
   filterIsActive,
   sortBy,
-} = storeToRefs(companiesStore);
+} = storeToRefs(bitacoraPlacesStore);
 const { isMobile } = storeToRefs(mainStore);
 const showFilters = ref<boolean>(false);
 const showForm = ref<boolean>(false);
@@ -24,7 +24,7 @@ const actionMenuItems = [
     {
       label: 'Descargar Lista',
       icon: 'i-ri-file-excel-2-line',
-      disabled: !hasClientPermission(PermissionsList.COMPANIES_EXPORT),
+      disabled: !hasClientPermission(PermissionsList.BITACORA_PLACES_EXPORT),
       click: () => downloadList(),
     },
     {
@@ -36,11 +36,11 @@ const actionMenuItems = [
 ];
 defineShortcuts({ '/': () => { searchinputcomponent.value?.input?.focus(); } });
 
-const closeForm = () => {
-  showForm.value = false;
-  router.replace({ query: { } });
-};
-const rowClicked = (record: sys_companies) => {
+// const closeForm = () => {
+//   showForm.value = false;
+//   router.replace({ query: { } });
+// };
+const rowClicked = (record: bitacora_places) => {
   selectedRowId.value = record.id;
   formModel.value = 'edit';
   showForm.value = true;
@@ -77,7 +77,7 @@ const downloadList = async() => {
     isDownloading.value = false;
   }
 };
-const closeFilters = () => showFilters.value = false;
+// const closeFilters = () => showFilters.value = false;
 
 onMounted(async () => {
   if (useRoute().query.id) {
@@ -132,16 +132,16 @@ onMounted(async () => {
     </div>
     <UDivider />
 
-    <SecurityCompaniesList
+    <BitacoraPlacesList
       @row-click="rowClicked" />
     
-    <SecurityCompaniesFilters
+    <!-- <SecurityCompaniesFilters
       :is-open="showFilters"
       @cancel="closeFilters" />
     
     <SecurityCompaniesForm
       :id="selectedRowId"
       :is-open="showForm"
-      @cancel="closeForm" />
+      @cancel="closeForm" /> -->
   </div>
 </template>

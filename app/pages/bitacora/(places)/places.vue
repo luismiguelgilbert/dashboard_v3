@@ -16,7 +16,7 @@ const {
   filterIsActive,
   sortBy,
 } = storeToRefs(bitacoraPlacesStore);
-const { isMobile } = storeToRefs(mainStore);
+const { isMobile, userCompany } = storeToRefs(mainStore);
 const showFilters = ref<boolean>(false);
 const showForm = ref<boolean>(false);
 const actionMenuItems = [
@@ -56,11 +56,12 @@ const newClicked = () => {
 const downloadList = async() => {
   try {
     isDownloading.value = true;
-    const response: Blob = await $fetch('/api/security/companies/download', {
+    const response: Blob = await $fetch('/api/bitacora/places/download', {
       method: 'POST',
       body: {
         searchString: searchString.value.toLocaleLowerCase().replaceAll(' ', ''),
         filterIsActive: filterIsActive.value,
+        sys_company_id: userCompany.value?.id,
         sortBy: sortBy.value,
       }
     }); 
@@ -77,7 +78,7 @@ const downloadList = async() => {
     isDownloading.value = false;
   }
 };
-// const closeFilters = () => showFilters.value = false;
+const closeFilters = () => showFilters.value = false;
 
 onMounted(async () => {
   if (useRoute().query.id) {
@@ -134,12 +135,12 @@ onMounted(async () => {
 
     <BitacoraPlacesList
       @row-click="rowClicked" />
-    
-    <!-- <SecurityCompaniesFilters
+
+    <BitacoraPlacesFilters
       :is-open="showFilters"
       @cancel="closeFilters" />
-    
-    <SecurityCompaniesForm
+
+    <!--<SecurityCompaniesForm
       :id="selectedRowId"
       :is-open="showForm"
       @cancel="closeForm" /> -->

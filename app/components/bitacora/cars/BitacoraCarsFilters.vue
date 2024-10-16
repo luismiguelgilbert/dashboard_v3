@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { booleanFilterItem } from '@/types/filters';
-import type { bitacora_places_sort_options } from '@/types/bitacora_places';
+import type { bitacora_cars_sort_options } from '@/types/bitacora_cars';
 
 const props = defineProps({
   isOpen: {
@@ -12,17 +12,17 @@ const props = defineProps({
 const emits = defineEmits(['cancel']);
 
 const mainStore = useMainStore();
-const bitacoraPlacesStore = useBitacoraPlacesStore();
+const bitacoraCarsStore = useBitacoraCarsStore();
 const { isMobile, userCompany } = storeToRefs(mainStore);
 const {
   filterIsActive,
   sortBy,
   isLoading,
   totalRows,
-} = storeToRefs(bitacoraPlacesStore);
+} = storeToRefs(bitacoraCarsStore);
 
 const rowsIsActive = ref<booleanFilterItem[]>([]);
-const sortOptions: bitacora_places_sort_options[] = [
+const sortOptions: bitacora_cars_sort_options[] = [
   {
     value: 'a.name_es_short',
     label: 'Nombre'
@@ -52,7 +52,7 @@ const closeSlideOder = () => {
 };
 
 const fetchData = () => {
-  $fetch(`/api/filters/bitacora/:${userCompany.value?.id}/placesActive`).then((data) => rowsIsActive.value = data);
+  $fetch(`/api/filters/bitacora/:${userCompany.value?.id}/carsActive`).then((data) => rowsIsActive.value = data);
 };
 
 onMounted(async () => {

@@ -78,7 +78,7 @@ const downloadList = async() => {
     isDownloading.value = false;
   }
 };
-// const closeFilters = () => showFilters.value = false;
+const closeFilters = () => showFilters.value = false;
 
 onMounted(async () => {
   if (useRoute().query.id) {
@@ -136,9 +136,9 @@ onMounted(async () => {
     <BitacoraCarsList
       @row-click="rowClicked" />
 
-    <!-- <BitacoraPlacesFilters
+    <BitacoraCarsFilters
       :is-open="showFilters"
-      @cancel="closeFilters" /> -->
+      @cancel="closeFilters" />
 
     <BitacoraCarsForm
       :id="selectedRowId"

@@ -68,7 +68,7 @@ const downloadList = async() => {
     const url = window.URL.createObjectURL(response);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Organizaciones.xlsx');
+    link.setAttribute('download', 'Puntos de Control.xlsx');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

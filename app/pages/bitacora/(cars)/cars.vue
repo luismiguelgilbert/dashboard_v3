@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { v4 as uuidv4 } from 'uuid';
 import { PermissionsList } from '~/types/permissionsEnum';
-// import type { bitacora_cars } from '~/types/bitacora_cars';
+import type { bitacora_cars } from '~/types/bitacora_cars';
 
 const router = useRouter();
 const searchinputcomponent = ref<{ input: HTMLInputElement }>();
@@ -36,16 +36,16 @@ const actionMenuItems = [
 ];
 defineShortcuts({ '/': () => { searchinputcomponent.value?.input?.focus(); } });
 
-// const closeForm = () => {
-//   showForm.value = false;
-//   router.replace({ query: { } });
-// };
-// const rowClicked = (record: bitacora_cars) => {
-//   selectedRowId.value = record.id;
-//   formModel.value = 'edit';
-//   showForm.value = true;
-//   router.replace({ query: { id: selectedRowId.value } });
-// };
+const closeForm = () => {
+  showForm.value = false;
+  router.replace({ query: { } });
+};
+const rowClicked = (record: bitacora_cars) => {
+  selectedRowId.value = record.id;
+  formModel.value = 'edit';
+  showForm.value = true;
+  router.replace({ query: { id: selectedRowId.value } });
+};
 const newClicked = () => {
   const newID = uuidv4();
   selectedRowId.value = newID;
@@ -133,16 +133,16 @@ onMounted(async () => {
     </div>
     <UDivider />
 
-    <!-- <BitacoraPlacesList
+    <BitacoraCarsList
       @row-click="rowClicked" />
 
-    <BitacoraPlacesFilters
+    <!-- <BitacoraPlacesFilters
       :is-open="showFilters"
-      @cancel="closeFilters" />
+      @cancel="closeFilters" /> -->
 
-    <BitacoraPlacesForm
+    <BitacoraCarsForm
       :id="selectedRowId"
       :is-open="showForm"
-      @cancel="closeForm" /> -->
+      @cancel="closeForm" />
   </div>
 </template>

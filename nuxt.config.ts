@@ -60,6 +60,7 @@ export default defineNuxtConfig({
         'hugeicons-building-03',
         'hugeicons-building-06',
         'hugeicons-cancel-circle',
+        'hugeicons-car-03',
         'hugeicons-circle-arrow-down-01',
         'hugeicons-checkmark-circle-01',
         'hugeicons-database',

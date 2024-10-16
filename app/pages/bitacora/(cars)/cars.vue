@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { v4 as uuidv4 } from 'uuid';
 import { PermissionsList } from '~/types/permissionsEnum';
-import type { bitacora_places } from '~/types/bitacora_places';
+// import type { bitacora_cars } from '~/types/bitacora_cars';
 
 const router = useRouter();
 const searchinputcomponent = ref<{ input: HTMLInputElement }>();
 const mainStore = useMainStore();
-const bitacoraPlacesStore = useBitacoraPlacesStore();
+const bitacoraCarsStore = useBitacoraCarsStore();
 const {
   searchString,
   isLoading,
@@ -15,7 +15,7 @@ const {
   selectedRowId,
   filterIsActive,
   sortBy,
-} = storeToRefs(bitacoraPlacesStore);
+} = storeToRefs(bitacoraCarsStore);
 const { isMobile, userCompany } = storeToRefs(mainStore);
 const showFilters = ref<boolean>(false);
 const showForm = ref<boolean>(false);
@@ -24,7 +24,7 @@ const actionMenuItems = [
     {
       label: 'Descargar Lista',
       icon: 'i-ri-file-excel-2-line',
-      disabled: !hasClientPermission(PermissionsList.BITACORA_PLACES_EXPORT),
+      disabled: !hasClientPermission(PermissionsList.BITACORA_CARS_EXPORT),
       click: () => downloadList(),
     },
     {
@@ -36,16 +36,16 @@ const actionMenuItems = [
 ];
 defineShortcuts({ '/': () => { searchinputcomponent.value?.input?.focus(); } });
 
-const closeForm = () => {
-  showForm.value = false;
-  router.replace({ query: { } });
-};
-const rowClicked = (record: bitacora_places) => {
-  selectedRowId.value = record.id;
-  formModel.value = 'edit';
-  showForm.value = true;
-  router.replace({ query: { id: selectedRowId.value } });
-};
+// const closeForm = () => {
+//   showForm.value = false;
+//   router.replace({ query: { } });
+// };
+// const rowClicked = (record: bitacora_cars) => {
+//   selectedRowId.value = record.id;
+//   formModel.value = 'edit';
+//   showForm.value = true;
+//   router.replace({ query: { id: selectedRowId.value } });
+// };
 const newClicked = () => {
   const newID = uuidv4();
   selectedRowId.value = newID;
@@ -56,7 +56,7 @@ const newClicked = () => {
 const downloadList = async() => {
   try {
     isDownloading.value = true;
-    const response: Blob = await $fetch('/api/bitacora/places/download', {
+    const response: Blob = await $fetch('/api/bitacora/cars/download', {
       method: 'POST',
       body: {
         searchString: searchString.value.toLocaleLowerCase().replaceAll(' ', ''),
@@ -78,7 +78,7 @@ const downloadList = async() => {
     isDownloading.value = false;
   }
 };
-const closeFilters = () => showFilters.value = false;
+// const closeFilters = () => showFilters.value = false;
 
 onMounted(async () => {
   if (useRoute().query.id) {
@@ -113,7 +113,7 @@ onMounted(async () => {
           :label="!isMobile ? 'Nuevo' : undefined"
           size="md"
           variant="solid"
-          :disabled="isDownloading || !hasClientPermission(PermissionsList.BITACORA_PLACES_CREATE)"
+          :disabled="isDownloading || !hasClientPermission(PermissionsList.BITACORA_CARS_CREATE)"
           :loading="isDownloading || isLoading"
           icon="i-hugeicons-plus-sign-circle"
           @click="newClicked" />
@@ -133,7 +133,7 @@ onMounted(async () => {
     </div>
     <UDivider />
 
-    <BitacoraPlacesList
+    <!-- <BitacoraPlacesList
       @row-click="rowClicked" />
 
     <BitacoraPlacesFilters
@@ -143,6 +143,6 @@ onMounted(async () => {
     <BitacoraPlacesForm
       :id="selectedRowId"
       :is-open="showForm"
-      @cancel="closeForm" />
+      @cancel="closeForm" /> -->
   </div>
 </template>

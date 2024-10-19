@@ -50,24 +50,11 @@ const onSubmit = async (credentialData: CredentialData) => {
       password: credentialData.password,
     });
     const { supabase } = useSupabase();
-    const { data, error } = await supabase.auth.signInWithPassword(credentials);
+    const { error } = await supabase.auth.signInWithPassword(credentials);
     if (error) {
       errorMessage.value = error.message;
       throw error;
     }
-
-    const accessToken = useCookie('sb-access-token');
-    const refreshToken = useCookie('sb-refresh-token');
-    accessToken.value = data.session.access_token;
-    refreshToken.value = data.session.refresh_token;
-    isUserSessionValid.value = true;
-
-    const headers = useRequestHeaders(['cookie']);
-    const { data: userMenuData, error: userMenuError } = await useFetch('/api/system/user_menu_token', { headers });
-    if (userMenuError.value) throw new Error('Error fetching user menu token');
-    const menuToken = useCookie('sb-menu-token');
-    menuToken.value = userMenuData.value;
-
     await navigateTo('/');
   }
   catch (error) {

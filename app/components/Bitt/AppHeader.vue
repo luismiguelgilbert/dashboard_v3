@@ -9,6 +9,7 @@ const mainStore = useMainStore();
 const route = useRoute();
 const {
   isLoadingMenu,
+  isUserSessionValid,
   isMobile,
   leftDrawer,
   userCompany,
@@ -90,6 +91,7 @@ const links = computed(() => {
         </UButton>
       </USelectMenu>
       <UButton
+        v-if="isUserSessionValid"
         variant="ghost"
         color="gray"
         :ui="{ rounded: 'rounded-xl' }"

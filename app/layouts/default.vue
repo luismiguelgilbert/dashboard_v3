@@ -6,6 +6,8 @@ const route = useRoute();
 const {
   isMobile,
   isLoadingMenu,
+  isLoadingUserData,
+  isUserSessionValid,
   leftDrawer,
   userMenuFormatted,
   isDarkMode,
@@ -59,7 +61,10 @@ const handleSpecialColors = () => {
 // HOOKS and WATCHERS
 onMounted(async () => {
   if (import.meta.client) {
-    isMobile.value = myScreenSize.value === 'mobile'; 
+    isMobile.value = myScreenSize.value === 'mobile';
+    await mainStore.fetchUserData();
+    await mainStore.fetchUserCompanies();
+    await mainStore.fetchUserMenu();
     useAppConfig().ui.primary = userData.value?.default_color ?? 'bitt';
     useColorMode().preference = userData.value?.dark_enabled ? 'dark' : 'light';
     handleSpecialColors();
@@ -102,8 +107,19 @@ watch(() => isDarkMode.value, () => handleSpecialColors());
         </template>
   
         <div class="h-[calc(100dvh-65px)] overflow-y-auto">
+          <BittSkeletonHeader
+            v-if="isLoadingUserData"
+            :lines="5" />
+          <UAlert
+            v-if="!isLoadingUserData && !isUserSessionValid"
+            class="col-span-1 sm:col-span-2 my-5 sm:my-0"
+            icon="i-hugeicons-logout-04"
+            color="rose"
+            variant="subtle"
+            :title="isMobile? 'Error de Sesión' : 'No se encontró una sesión activa.'"
+            :actions="[{ variant: 'solid', color: 'rose', label: 'Regresar a Login', click: () => { navigateTo('/auth/login') } }]" />
           <suspense>
-            <NuxtPage />
+            <NuxtPage v-if="isUserSessionValid" />
           </suspense>
         </div>
       </UPage>

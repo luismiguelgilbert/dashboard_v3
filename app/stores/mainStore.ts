@@ -6,7 +6,7 @@ import type { sys_users } from '@/types/sys_users';
 export const useMainStore = defineStore('main', () => {
   const isLoadingCompanies = ref<boolean>(false);
   const isLoadingMenu = ref<boolean>(false);
-  const isLoadingUserData = ref<boolean>(false);
+  const isLoadingUserData = ref<boolean>(true);
   const isMobile = ref<boolean>(false);
   const isUserSessionValid = ref<boolean>(false);
   const leftDrawer = ref<boolean>(true);
@@ -38,16 +38,35 @@ export const useMainStore = defineStore('main', () => {
     }
   };
 
+  /** fetchUserData is a ClientSide oriented action*/
   const fetchUserData = async () => {
     try {
       isLoadingUserData.value = true;
       const headers = useRequestHeaders(['cookie']);
-      const { data, error } = await useFetch('/api/system/user_data', { headers });
-      if (error.value) {
-        throw new Error(`Error fetching user data: ${error.value.message}`);
-      }
-      if (data.value) {
-        userData.value = data.value;
+
+      //Refresh Session if exists
+      const { supabase } = useSupabase();
+      const { data: sessionData } = await supabase.auth.refreshSession();
+      if (sessionData?.session) {
+        //Set tokens
+        const accessToken = useCookie('sb-access-token');
+        const refreshToken = useCookie('sb-refresh-token');
+        accessToken.value = sessionData.session.access_token;
+        refreshToken.value = sessionData.session.refresh_token;
+        //Set menu token
+        const { data: userMenuData, error: userMenuError } = await useFetch('/api/system/user_menu_token', { headers });
+        if (userMenuError.value) throw new Error('Error fetching user menu token');
+        const menuToken = useCookie('sb-menu-token');
+        menuToken.value = userMenuData.value;
+        //Fetch user data
+        const { data, error } = await useFetch('/api/system/user_data', { headers });
+        if (error.value) {
+          throw new Error(`Error fetching user data: ${error.value.message}`);
+        }
+        if (data.value) {
+          userData.value = data.value;
+          isUserSessionValid.value = true;
+        }
       }
     }
     catch (error) {

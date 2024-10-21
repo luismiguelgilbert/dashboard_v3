@@ -42,34 +42,37 @@ export const useMainStore = defineStore('main', () => {
   const fetchUserData = async () => {
     try {
       isLoadingUserData.value = true;
-      const headers = useRequestHeaders(['cookie']);
 
       //Refresh Session if exists
       const { supabase } = useSupabase();
       const { data: sessionData } = await supabase.auth.refreshSession();
       if (sessionData?.session) {
         //Set tokens
-        const accessToken = useCookie('sb-access-token');
-        const refreshToken = useCookie('sb-refresh-token');
+        const accessToken = await useCookie('sb-access-token');
+        const refreshToken = await useCookie('sb-refresh-token');
         accessToken.value = sessionData.session.access_token;
         refreshToken.value = sessionData.session.refresh_token;
-        //Set menu token
-        const { data: userMenuData, error: userMenuError } = await useFetch('/api/system/user_menu_token', { headers });
-        if (userMenuError.value) throw new Error('Error fetching user menu token');
-        const menuToken = useCookie('sb-menu-token');
-        menuToken.value = userMenuData.value;
         //Fetch user data
-        const { data, error } = await useFetch('/api/system/user_data', { headers });
+        const headers = useRequestHeaders(['cookie']);
+        const { data, error } = await useFetch('/api/system/user_data', { headers, credentials: 'include' });
         if (error.value) {
           throw new Error(`Error fetching user data: ${error.value.message}`);
         }
         if (data.value) {
           userData.value = data.value;
-          isUserSessionValid.value = true;
         }
+        //Set menu token
+        const { data: userMenuData, error: userMenuError } = await useFetch('/api/system/user_menu_token', { headers, credentials: 'include' });
+        if (userMenuError.value) {
+          throw new Error('Error fetching user menu token');
+        }
+        const menuToken = useCookie('sb-menu-token');
+        menuToken.value = userMenuData.value;
+        isUserSessionValid.value = true;
       }
     }
     catch (error) {
+      isUserSessionValid.value = false;
       throw new Error(`Error fetching user data B: ${error}`);
     }
     finally {
@@ -114,6 +117,7 @@ export const useMainStore = defineStore('main', () => {
     refreshToken.value = null;
     menuToken.value = null;
     isUserSessionValid.value = false;
+    localStorage.clear();//
     await navigateTo('/auth/login');
     finish();
   };

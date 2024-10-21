@@ -60,14 +60,20 @@ const handleSpecialColors = () => {
 };
 // HOOKS and WATCHERS
 onMounted(async () => {
-  if (import.meta.client) {
-    isMobile.value = myScreenSize.value === 'mobile';
-    await mainStore.fetchUserData();
-    await mainStore.fetchUserCompanies();
-    await mainStore.fetchUserMenu();
-    useAppConfig().ui.primary = userData.value?.default_color ?? 'bitt';
-    useColorMode().preference = userData.value?.dark_enabled ? 'dark' : 'light';
-    handleSpecialColors();
+  try {
+    if (import.meta.client) {
+      isMobile.value = myScreenSize.value === 'mobile';
+      await mainStore.fetchUserData();
+      await mainStore.fetchUserCompanies();
+      await mainStore.fetchUserMenu();
+      useAppConfig().ui.primary = userData.value?.default_color ?? 'bitt';
+      useColorMode().preference = userData.value?.dark_enabled ? 'dark' : 'light';
+      handleSpecialColors();
+    }
+  } catch (error) {
+    console.error(error);
+    isLoadingUserData.value = false;
+    isLoadingMenu.value = false;
   }
 });
 

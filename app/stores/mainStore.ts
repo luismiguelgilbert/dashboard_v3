@@ -5,7 +5,7 @@ import type { sys_users } from '@/types/sys_users';
 
 export const useMainStore = defineStore('main', () => {
   const isLoadingCompanies = ref<boolean>(false);
-  const isLoadingMenu = ref<boolean>(false);
+  const isLoadingMenu = ref<boolean>(true);
   const isLoadingUserData = ref<boolean>(true);
   const isMobile = ref<boolean>(false);
   const isUserSessionValid = ref<boolean>(false);

@@ -17,6 +17,7 @@ const {
   sortBy,
 } = storeToRefs(companiesStore);
 const { isMobile } = storeToRefs(mainStore);
+const routeIsAllowed = computed<boolean>(() => mainStore.userMenu.some(menu => router.currentRoute.value.path === menu.link));
 const showFilters = ref<boolean>(false);
 const showForm = ref<boolean>(false);
 const actionMenuItems = [
@@ -90,7 +91,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <div v-if="routeIsAllowed">
     <div class="flex justify-between m-4">
       <div class="flex items-center">
         <UInput
@@ -144,4 +145,11 @@ onMounted(async () => {
       :is-open="showForm"
       @cancel="closeForm" />
   </div>
+  <UAlert
+    v-else
+    icon="i-hugeicons-alert-circle"
+    color="rose"
+    variant="subtle"
+    title="Página no permitida"
+    :actions="[{ variant: 'solid', color: 'rose', label: 'Regresar a Inicio', click: () => { navigateTo('/') } }]" />
 </template>

@@ -56,6 +56,7 @@ export default defineNuxtConfig({
         //HugeIcons
         'hugeicons-account-setting-01',
         'hugeicons-ai-security-01',
+        'hugeicons-alert-circle',
         'hugeicons-alert-diamond',
         'hugeicons-building-03',
         'hugeicons-building-06',

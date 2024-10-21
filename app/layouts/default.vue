@@ -108,19 +108,21 @@ watch(() => isDarkMode.value, () => handleSpecialColors());
   
         <div class="h-[calc(100dvh-65px)] overflow-y-auto">
           <BittSkeletonHeader
-            v-if="isLoadingUserData"
+            v-if="isLoadingUserData || isLoadingMenu"
             :lines="5" />
-          <UAlert
-            v-if="!isLoadingUserData && !isUserSessionValid"
-            class="col-span-1 sm:col-span-2 my-5 sm:my-0"
-            icon="i-hugeicons-logout-04"
-            color="rose"
-            variant="subtle"
-            :title="isMobile? 'Error de Sesión' : 'No se encontró una sesión activa.'"
-            :actions="[{ variant: 'solid', color: 'rose', label: 'Regresar a Login', click: () => { navigateTo('/auth/login') } }]" />
-          <suspense>
+          <div v-if="!isLoadingUserData && !isLoadingMenu">
+            <UAlert
+              v-if="!isUserSessionValid"
+              class="col-span-1 sm:col-span-2 my-5 sm:my-0"
+              icon="i-hugeicons-logout-04"
+              color="rose"
+              variant="subtle"
+              title="Error de Sesión"
+              :actions="[{ variant: 'solid', color: 'rose', label: 'Regresar a Login', click: () => { navigateTo('/auth/login') } }]" />
+            <!-- <suspense> -->
             <NuxtPage v-if="isUserSessionValid" />
-          </suspense>
+            <!-- </suspense> -->
+          </div>
         </div>
       </UPage>
     </UContainer>

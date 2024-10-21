@@ -65,7 +65,7 @@ onMounted(async () => {
       isMobile.value = myScreenSize.value === 'mobile';
       await mainStore.fetchUserData();
       await mainStore.fetchUserCompanies();
-      await mainStore.fetchUserMenu();
+
       useAppConfig().ui.primary = userData.value?.default_color ?? 'bitt';
       useColorMode().preference = userData.value?.dark_enabled ? 'dark' : 'light';
       handleSpecialColors();

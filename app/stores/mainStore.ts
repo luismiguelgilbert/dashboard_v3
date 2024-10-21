@@ -42,6 +42,7 @@ export const useMainStore = defineStore('main', () => {
   const fetchUserData = async () => {
     try {
       isLoadingUserData.value = true;
+      isLoadingMenu.value = true;
 
       //Refresh Session if exists
       const { supabase } = useSupabase();
@@ -61,13 +62,21 @@ export const useMainStore = defineStore('main', () => {
         if (data.value) {
           userData.value = data.value;
         }
-        //Set menu token
+        //Fetch menu token
         const { data: userMenuData, error: userMenuError } = await useFetch('/api/system/user_menu_token', { headers, credentials: 'include' });
         if (userMenuError.value) {
           throw new Error('Error fetching user menu token');
         }
         const menuToken = useCookie('sb-menu-token');
         menuToken.value = userMenuData.value;
+        //Fetch user menu
+        const { data: menuData, error: menuError } = await useFetch('/api/system/user_menu', { headers });
+        if (menuError.value) {
+          throw new Error(`Error fetching user menu: ${menuError.value?.message}`);
+        }
+        if (menuData.value) {
+          userMenu.value = menuData.value;
+        }
         isUserSessionValid.value = true;
       }
     }
@@ -77,25 +86,6 @@ export const useMainStore = defineStore('main', () => {
     }
     finally {
       isLoadingUserData.value = false;
-    }
-  };
-
-  const fetchUserMenu = async () => {
-    try {
-      isLoadingMenu.value = true;
-      const headers = useRequestHeaders(['cookie']);
-      const { data, error } = await useFetch('/api/system/user_menu', { headers });
-      if (error.value) {
-        throw new Error(`Error fetching user menu: ${error.value?.message}`);
-      }
-      if (data.value) {
-        userMenu.value = data.value;
-      }
-    }
-    catch (error) {
-      throw new Error(`Error fetching user menu B: ${error}`);
-    }
-    finally {
       isLoadingMenu.value = false;
     }
   };
@@ -179,6 +169,5 @@ export const useMainStore = defineStore('main', () => {
     clearUserDataAndLogout,
     fetchUserCompanies,
     fetchUserData,
-    fetchUserMenu,
   };
 });

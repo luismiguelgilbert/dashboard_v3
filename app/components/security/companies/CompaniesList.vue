@@ -66,6 +66,7 @@ watch(() => [
   filterIsActive.value,
 ], () => { page.value = 1; refreshData(); }, { deep: true });
 refreshData();
+defineExpose({refreshData});
 </script>
 
 <template>

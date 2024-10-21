@@ -11,7 +11,7 @@ const props = defineProps({
     default: null,
   },
 });
-const emits = defineEmits(['cancel']);
+const emits = defineEmits(['cancel','save']);
 
 const mainStore = useMainStore();
 const companiesStore = useCompaniesStore();
@@ -102,6 +102,7 @@ const validateAndSave = async () => {
     }
     isLoading.value = false;
     isSaveSuccess.value = true;
+    emits('save');
   } catch (error) {
     isLoading.value = false;
     hasError.value = true;

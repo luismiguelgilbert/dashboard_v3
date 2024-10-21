@@ -17,6 +17,7 @@ const {
   sortBy,
 } = storeToRefs(bitacoraCarsStore);
 const { isMobile, userCompany } = storeToRefs(mainStore);
+const mainTable = useTemplateRef('mainTable');
 const routeIsAllowed = computed<boolean>(() => mainStore.userMenu.some(menu => router.currentRoute.value.path === menu.link));
 const showFilters = ref<boolean>(false);
 const showForm = ref<boolean>(false);
@@ -135,6 +136,7 @@ onMounted(async () => {
     <UDivider />
 
     <BitacoraCarsList
+      ref="mainTable"
       @row-click="rowClicked" />
 
     <BitacoraCarsFilters
@@ -144,7 +146,8 @@ onMounted(async () => {
     <BitacoraCarsForm
       :id="selectedRowId"
       :is-open="showForm"
-      @cancel="closeForm" />
+      @cancel="closeForm"
+      @save="mainTable?.refreshData" />
   </div>
   <UAlert
     v-else

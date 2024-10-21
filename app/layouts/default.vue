@@ -63,6 +63,7 @@ onMounted(async () => {
   try {
     if (import.meta.client) {
       isMobile.value = myScreenSize.value === 'mobile';
+      leftDrawer.value = isMobile.value ? false : true;
       await mainStore.fetchUserData();
       await mainStore.fetchUserCompanies();
 

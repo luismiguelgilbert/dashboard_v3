@@ -18,6 +18,7 @@ const {
   sortBy,
 } = storeToRefs(usersStore);
 const { isMobile } = storeToRefs(mainStore);
+const mainTable = useTemplateRef('mainTable');
 const routeIsAllowed = computed<boolean>(() => mainStore.userMenu.some(menu => router.currentRoute.value.path === menu.link));
 const showFilters = ref<boolean>(false);
 const showUserForm = ref<boolean>(false);
@@ -145,6 +146,7 @@ onMounted(async () => {
     <UDivider />
 
     <SecurityUsersList
+      ref="mainTable"
       @row-click="rowClicked" />
 
     <SecurityUsersFilters
@@ -154,17 +156,12 @@ onMounted(async () => {
     <SecurityUsersUserForm
       :id="selectedRowId"
       :is-open="showUserForm"
-      @cancel="closeUserForm" />
+      @cancel="closeUserForm"
+      @save="mainTable?.refreshData" />
 
     <SecurityUsersPwdReset
       :is-open="showUserPwdResetForm"
       @cancel="showUserPwdResetForm = false" />
   </div>
-  <UAlert
-    v-else
-    icon="i-hugeicons-alert-circle"
-    color="rose"
-    variant="subtle"
-    title="Página no permitida"
-    :actions="[{ variant: 'solid', color: 'rose', label: 'Regresar a Inicio', click: () => { navigateTo('/') } }]" />
+  
 </template>

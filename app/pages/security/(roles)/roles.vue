@@ -16,6 +16,7 @@ const {
   sortBy,
 } = storeToRefs(rolesStore);
 const { isMobile } = storeToRefs(mainStore);
+const mainTable = useTemplateRef('mainTable');
 const routeIsAllowed = computed<boolean>(() => mainStore.userMenu.some(menu => router.currentRoute.value.path === menu.link));
 const showFilters = ref<boolean>(false);
 const showForm = ref<boolean>(false);
@@ -133,6 +134,7 @@ onMounted(async () => {
     <UDivider />
 
     <SecurityRolesList
+      ref="mainTable"
       @row-click="rowClicked" />
 
     <SecurityRolesFilters
@@ -142,7 +144,8 @@ onMounted(async () => {
     <SecurityRolesForm
       :id="selectedRowId"
       :is-open="showForm"
-      @cancel="closeForm" />
+      @cancel="closeForm"
+      @save="mainTable?.refreshData" />
   </div>
   <UAlert
     v-else

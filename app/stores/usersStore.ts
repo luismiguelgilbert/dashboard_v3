@@ -1,4 +1,4 @@
-import type { sys_users, sys_users_form, sys_users_sort_enum } from '@/types/sys_users';
+import type { sys_users_form, sys_users_sort_enum } from '@/types/sys_users';
 import type { sys_companies } from '@/types/sys_companies';
 import type { sys_profiles } from '@/types/sys_profiles';
 
@@ -10,7 +10,6 @@ export const useUsersStore = defineStore('users', () => {
   const sortBy = ref<sys_users_sort_enum>('a.user_lastname');
   const filterSex = ref<boolean[]>([]);
   const filterProfile = ref<number[]>([]);
-  const rows = ref<{ [k: string]: sys_users[] }>({});
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
   const isDownloading = ref<boolean>(false);
@@ -34,7 +33,6 @@ export const useUsersStore = defineStore('users', () => {
     totalRows,
     isLoading,
     isDownloading,
-    rows,
     formModel,
     selectedRowId,
     selectedRowData,

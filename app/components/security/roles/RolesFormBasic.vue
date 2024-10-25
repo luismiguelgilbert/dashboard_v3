@@ -17,16 +17,14 @@ const isRowSelected = (row: sys_links): boolean => {
   return Boolean(selectedRowData.value?.sys_profiles_links?.some(x => x.sys_link_id === row.id));
 };
 
-const toggleRow = (row: sys_links, value: boolean) => {
-  if (value) {
-    if (selectedRowData.value?.sys_profiles_links) {
-      selectedRowData.value?.sys_profiles_links.push({ sys_link_id: row.id });
-    }
+// const toggleRow = (row: sys_links, value: boolean) => {
+const toggleRow = (row: sys_links) => {
+  const rowIndex = selectedRowData.value?.sys_profiles_links?.findIndex(x => x.sys_link_id === row.id);
+  if (rowIndex === -1) {
+    selectedRowData.value?.sys_profiles_links?.push({ sys_link_id: row.id });
   }
-  else {
-    if (selectedRowData.value?.sys_profiles_links) {
-      selectedRowData.value.sys_profiles_links = selectedRowData.value?.sys_profiles_links.filter((item) => item.sys_link_id != row.id) ?? [];
-    }
+  else if (selectedRowData.value) {
+    selectedRowData.value.sys_profiles_links = selectedRowData.value?.sys_profiles_links.filter((item) => item.sys_link_id != row.id) ?? [];
   }
 };
 
@@ -38,6 +36,8 @@ defineExpose({
 </script>
 
 <template>
+  <!-- <BittTreeChecklist :items="lookupSysLinks?.map(x => { return {id: x.id, parent: x.parent, name_es: x.name_es }}) ?? []" /> -->
+
   <UForm
     v-if="selectedRowData"
     ref="mainForm"
@@ -85,46 +85,61 @@ defineExpose({
           style="vertical-align: text-bottom;">{{ selectedRowData.is_active ? 'Activo' : 'Inactivo' }}</span>
       </UFormGroup>
 
-      <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-      <div class="self-start">
-        <p class="text-gray-900 dark:text-white font-semibold">
-          Permisos:
-        </p>
+
+      <p class="text-gray-900 dark:text-white font-semibold">
+        Permisos:
+      </p>
+
+      <div class="col-span-2">
+
+        <UAccordion
+          :items="lookupSysLinks?.filter(n => !n.parent)?.map(x => { return {id: x.id, parent: x.parent, label: x.name_es, icon: x.icon ?? undefined }}) ?? []"
+          variant="soft"
+          size="xl">
+          <template #item="{item}">
+            <UAccordion
+              :items="lookupSysLinks?.filter(n => n.parent === item.id).map(x => { return {id: x.id, parent: x.parent, label: x.name_es, icon: x.icon ?? undefined }}) ?? []"
+              class="pl-2 sm:pl-5"
+              variant="ghost"
+              size="xl">
+              <template #item="{item: itemChild}">
+                <div class="pl-4 pr-2">
+                  <UCard
+                    :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
+                    class="min-w-0">
+                    <ul
+                      role="list"
+                      class="divide-y divide-gray-200 dark:divide-gray-800">
+                      <li
+                        v-for="(row, index) in lookupSysLinks?.filter(n => n.parent === itemChild.id) ?? []"
+                        :key="Number(row.id)"
+                        class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+                        :class="(index === 0)
+                          ? 'rounded-t-lg'
+                          : (index === (lookupSysLinks?.filter(n => n.parent === itemChild.id)?.length ?? 0) -1)
+                            ? 'rounded-b-lg'
+                            : ''"
+                        @click="toggleRow(row)">
+                        <div class="w-full flex items-baseline justify-between gap-3 min-w-0 font-semibold">
+                          <div class="flex items-center">
+                            <UIcon
+                              :name="row.icon!"
+                              class="h5 w5 font-black text-2xl" />
+                            <span class="pl-3">{{ row.name_es }}</span>
+                          </div>
+                          <UToggle :model-value="isRowSelected(row)"/>
+                        </div>
+                      </li>
+                    </ul>
+                  </UCard>
+                </div>
+              </template>
+            </UAccordion>
+          </template>
+        </UAccordion>
+
       </div>
-      <div class="overflow-y-auto">
-        <div
-          v-for="row in lookupSysLinks"
-          :key="Number(row.id)">
-          <UCheckbox
-            class="pl-4 py-3 items-center"
-            :model-value="isRowSelected(row)"
-            @change="(value) => toggleRow(row, value)">
-            <template #label>
-              <span class="text-base text-gray-900 dark:text-gray-50 cursor-pointer">
-                <span
-                  v-if="row.row_level === 0"
-                  class="font-black">
-                  <UIcon :name="row.icon!" />
-                  {{ row.name_es }}
-                </span>
-                <span
-                  v-if="row.row_level === 1"
-                  class="font-bold ml-5">
-                  <UIcon :name="row.icon!" />
-                  {{ row.name_es }}
-                </span>
-                <span
-                  v-if="row.row_level > 1"
-                  class="font-normal ml-10">
-                  <UIcon :name="row.icon!" />
-                  {{ row.name_es }}
-                </span>
-              </span>
-            </template>
-          </UCheckbox>
-          <UDivider />
-        </div>
-      </div>
+
       <br /><br />
     </div>
   </UForm>

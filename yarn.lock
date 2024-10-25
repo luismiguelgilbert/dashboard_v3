@@ -970,6 +970,13 @@
   dependencies:
     "@iconify/types" "*"
 
+"@iconify-json/heroicons@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@iconify-json/heroicons/-/heroicons-1.2.1.tgz#c298591995780de651ca1dd38f3a1c35d2087124"
+  integrity sha512-TkKfS5U27kE5MXmSGLzPoz95BP5VA9xEJXwJFwmPMVLX+xyWq0OkoiWTUXB0uAoQODpb8BaRpzSydItrq9fIRA==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify-json/hugeicons@^1.1.1":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@iconify-json/hugeicons/-/hugeicons-1.2.0.tgz#884ff26fa31dfcfaceaa024d06a95a801fb3dcab"
@@ -998,12 +1005,19 @@
   dependencies:
     "@iconify/types" "*"
 
+"@iconify/collections@^1.0.474":
+  version "1.0.474"
+  resolved "https://registry.yarnpkg.com/@iconify/collections/-/collections-1.0.474.tgz#8a2364a146ab58e76d62a902aba4be7e237cf991"
+  integrity sha512-24NyXV43CZ6fGY5HX7fwur5HgefoL37HVgyw+JAXMMBvkOvdUe3KvQi+lujo/U0hvvcKkqWiy3BiWASDdE2qPA==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify/types@*", "@iconify/types@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@iconify/types/-/types-2.0.0.tgz#ab0e9ea681d6c8a1214f30cd741fe3a20cc57f57"
   integrity sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==
 
-"@iconify/utils@^2.1.32":
+"@iconify/utils@^2.1.32", "@iconify/utils@^2.1.33":
   version "2.1.33"
   resolved "https://registry.yarnpkg.com/@iconify/utils/-/utils-2.1.33.tgz#cbf7242a52fd0ec58c42d37d28e4406b5327e8c0"
   integrity sha512-jP9h6v/g0BIZx0p7XGJJVtkVnydtbgTgt9mVNcGDYwaa7UhdHdI9dvoq+gKj9sijMSJKxUPEG2JyjsgXjxL7Kw==
@@ -1199,6 +1213,15 @@
     "@nuxt/schema" "^3.13.2"
     execa "^7.2.0"
 
+"@nuxt/devtools-kit@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@nuxt/devtools-kit/-/devtools-kit-1.6.0.tgz#dca1bbb85dbe839d40ec7ac602eed786ed2fcba4"
+  integrity sha512-kJ8mVKwTSN3tdEVNy7mxKCiQk9wsG5t3oOrRMWk6IEbTSov+5sOULqQSM/+OWxWsEDmDfA7QlS5sM3Ti9uMRqQ==
+  dependencies:
+    "@nuxt/kit" "^3.13.2"
+    "@nuxt/schema" "^3.13.2"
+    execa "^7.2.0"
+
 "@nuxt/devtools-wizard@1.5.0":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@nuxt/devtools-wizard/-/devtools-wizard-1.5.0.tgz#3af10c064563b2f64c96a21f34db343ba3663718"
@@ -1325,6 +1348,25 @@
     pathe "^1.1.2"
     std-env "^3.7.0"
 
+"@nuxt/icon@^1.5.5":
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/@nuxt/icon/-/icon-1.5.7.tgz#2a7dcc19624836bd8b69b6280fa7cbbb122b2295"
+  integrity sha512-i6pDpHlcx1qXlzS42E2hvOnMTPtSekvvzqIx1AY0g49bQUgFrtPEN2+EdRqg5hgIdo3MDT5T9957LbcK0qsU9Q==
+  dependencies:
+    "@iconify/collections" "^1.0.474"
+    "@iconify/types" "^2.0.0"
+    "@iconify/utils" "^2.1.33"
+    "@iconify/vue" "4.1.3-beta.1"
+    "@nuxt/devtools-kit" "^1.6.0"
+    "@nuxt/kit" "^3.13.2"
+    consola "^3.2.3"
+    local-pkg "^0.5.0"
+    mlly "^1.7.2"
+    ohash "^1.1.4"
+    pathe "^1.1.2"
+    std-env "^3.7.0"
+    tinyglobby "^0.2.9"
+
 "@nuxt/kit@3.13.2", "@nuxt/kit@^3.12.3", "@nuxt/kit@^3.13.0", "@nuxt/kit@^3.13.1", "@nuxt/kit@^3.13.2", "@nuxt/kit@^3.7.0", "@nuxt/kit@^3.9.0":
   version "3.13.2"
   resolved "https://registry.yarnpkg.com/@nuxt/kit/-/kit-3.13.2.tgz#4c019a87e08c33ec14d1059497ba40568b82bfed"
@@ -1393,32 +1435,32 @@
     rc9 "^2.1.2"
     std-env "^3.7.0"
 
-"@nuxt/ui-pro@^1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@nuxt/ui-pro/-/ui-pro-1.4.3.tgz#6afebac2132904ee1ba6c389e27f2088831c9414"
-  integrity sha512-3xEtApJHitBXOtlI5y3eoL+Ij3OP5BtjeInix1u2jFtZF446Bu38G/BC37Lt/oPu9GFqQ1FRMsasQwGEE5nIig==
+"@nuxt/ui-pro@^1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@nuxt/ui-pro/-/ui-pro-1.4.4.tgz#58901072c1c843149f8d54abb44be0cc1a961902"
+  integrity sha512-sQbaXcUaMWxTYf0UewkncvRc5U3CeamTuDP3bDYi0uni//9BqVSby7avKgKGRZZwq4z2U+cmlMkWgxk1DFM0hQ==
   dependencies:
     "@iconify-json/vscode-icons" "^1.2.2"
-    "@nuxt/ui" "^2.18.6"
+    "@nuxt/ui" "^2.18.7"
     "@vueuse/core" "^11.1.0"
     defu "^6.1.4"
     git-url-parse "^15.0.0"
-    ofetch "^1.4.0"
+    ofetch "^1.4.1"
     parse-git-config "^3.0.0"
     pathe "^1.1.2"
-    pkg-types "^1.2.0"
-    tailwind-merge "^2.5.2"
+    pkg-types "^1.2.1"
+    tailwind-merge "^2.5.3"
     vue3-smooth-dnd "^0.0.6"
 
-"@nuxt/ui@^2.18.6":
-  version "2.18.6"
-  resolved "https://registry.yarnpkg.com/@nuxt/ui/-/ui-2.18.6.tgz#1992af09631e219e4d257d020a62a192732ee7cd"
-  integrity sha512-IyAMdw+oyrLnILp8k/Xfe2eX1RoFcQSnJd6Z0DBR/NmurrHR8M1EGRxDyT5ob6EbR1PbTZa6t3xQOO5xjslPwg==
+"@nuxt/ui@^2.18.7":
+  version "2.18.7"
+  resolved "https://registry.yarnpkg.com/@nuxt/ui/-/ui-2.18.7.tgz#d25606c278cd1595f55028258612a5d9c80d752f"
+  integrity sha512-8k0Ha43WC9iaL6n98ieLcOVg+2wkSKWww4MEXKOkoOv2YzvsALrdSLh2anv3P7OfI8VCWYXDehhYuOTJd9um2g==
   dependencies:
     "@headlessui/tailwindcss" "^0.2.1"
     "@headlessui/vue" "^1.7.23"
-    "@iconify-json/heroicons" "^1.2.0"
-    "@nuxt/icon" "^1.5.1"
+    "@iconify-json/heroicons" "^1.2.1"
+    "@nuxt/icon" "^1.5.5"
     "@nuxt/kit" "^3.13.2"
     "@nuxtjs/color-mode" "^3.5.1"
     "@nuxtjs/tailwindcss" "^6.12.1"
@@ -1435,8 +1477,8 @@
     ohash "^1.1.4"
     pathe "^1.1.2"
     scule "^1.3.0"
-    tailwind-merge "^2.5.2"
-    tailwindcss "^3.4.12"
+    tailwind-merge "^2.5.3"
+    tailwindcss "^3.4.13"
 
 "@nuxt/vite-builder@3.13.2":
   version "3.13.2"
@@ -3255,6 +3297,11 @@ confbox@^0.1.7:
   resolved "https://registry.yarnpkg.com/confbox/-/confbox-0.1.7.tgz#ccfc0a2bcae36a84838e83a3b7f770fb17d6c579"
   integrity sha512-uJcB/FKZtBMCJpK8MQji6bJHgu1tixKPxRLeGkNzBoOZzpnZUJm0jm2/sBDWcuBx1dYgxV4JU+g5hmNxCyAmdA==
 
+confbox@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/confbox/-/confbox-0.1.8.tgz#820d73d3b3c82d9bd910652c5d4d599ef8ff8b06"
+  integrity sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==
+
 consola@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/consola/-/consola-3.2.3.tgz#0741857aa88cfa0d6fd53f1cff0375136e98502f"
@@ -4248,6 +4295,11 @@ fdir@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/fdir/-/fdir-6.3.0.tgz#fcca5a23ea20e767b15e081ee13b3e6488ee0bb0"
   integrity sha512-QOnuT+BOtivR77wYvCWHfGt9s4Pz1VIMbD463vegT5MLqNXy8rYFT/lPVEqf/bhYeT6qmqrNHhsX+rWwe3rOCQ==
+
+fdir@^6.4.0:
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/fdir/-/fdir-6.4.2.tgz#ddaa7ce1831b161bc3657bb99cb36e1622702689"
+  integrity sha512-KnhMXsKSPZlAhp7+IjUkRZKPb4fUyccpDrdFXbi4QL1qkmFh9kVY09Yox+n4MaOb3lHZ1Tv829C3oaaXoMYPDQ==
 
 file-entry-cache@^8.0.0:
   version "8.0.0"
@@ -5694,6 +5746,16 @@ mlly@^1.3.0, mlly@^1.4.2, mlly@^1.6.1, mlly@^1.7.1:
     pkg-types "^1.1.1"
     ufo "^1.5.3"
 
+mlly@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/mlly/-/mlly-1.7.2.tgz#21c0d04543207495b8d867eff0ac29fac9a023c0"
+  integrity sha512-tN3dvVHYVz4DhSXinXIk7u9syPYaJvio118uomkovAtWBT+RdbP6Lfh/5Lvo519YMmwBafwlh20IPTXIStscpA==
+  dependencies:
+    acorn "^8.12.1"
+    pathe "^1.1.2"
+    pkg-types "^1.2.0"
+    ufo "^1.5.4"
+
 mri@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/mri/-/mri-1.2.0.tgz#6721480fec2a11a4889861115a48b6cbe7cc8f0b"
@@ -6036,10 +6098,19 @@ obuf@~1.1.2:
   resolved "https://registry.yarnpkg.com/obuf/-/obuf-1.1.2.tgz#09bea3343d41859ebd446292d11c9d4db619084e"
   integrity sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==
 
-ofetch@^1.3.4, ofetch@^1.4.0:
+ofetch@^1.3.4:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/ofetch/-/ofetch-1.4.0.tgz#89ef58fb673fbe2a87250973d4586ce7725e8399"
   integrity sha512-MuHgsEhU6zGeX+EMh+8mSMrYTnsqJQQrpM00Q6QHMKNqQ0bKy0B43tk8tL1wg+CnsSTy1kg4Ir2T5Ig6rD+dfQ==
+  dependencies:
+    destr "^2.0.3"
+    node-fetch-native "^1.6.4"
+    ufo "^1.5.4"
+
+ofetch@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/ofetch/-/ofetch-1.4.1.tgz#b6bf6b0d75ba616cef6519dd8b6385a8bae480ec"
+  integrity sha512-QZj2DfGplQAr2oj9KzceK9Hwz6Whxazmn85yYeVuS3u9XTMOGMRx0kO95MQ+vLsj/S/NwBDMMLU5hpxvI6Tklw==
   dependencies:
     destr "^2.0.3"
     node-fetch-native "^1.6.4"
@@ -6423,6 +6494,15 @@ pkg-types@^1.0.3, pkg-types@^1.1.1, pkg-types@^1.2.0:
   dependencies:
     confbox "^0.1.7"
     mlly "^1.7.1"
+    pathe "^1.1.2"
+
+pkg-types@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/pkg-types/-/pkg-types-1.2.1.tgz#6ac4e455a5bb4b9a6185c1c79abd544c901db2e5"
+  integrity sha512-sQoqa8alT3nHjGuTjuKgOnvjo4cljkufdtLMnO2LBP/wRwuDlo1tkaEdMxCRhyGRPacv/ztlZgDPm2b7FAmEvw==
+  dependencies:
+    confbox "^0.1.8"
+    mlly "^1.7.2"
     pathe "^1.1.2"
 
 pluralize@^8.0.0:
@@ -7593,12 +7673,40 @@ tailwind-config-viewer@^2.0.4:
     portfinder "^1.0.26"
     replace-in-file "^6.1.0"
 
-tailwind-merge@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-2.5.2.tgz#000f05a703058f9f9f3829c644235f81d4c08a1f"
-  integrity sha512-kjEBm+pvD+6eAwzJL2Bi+02/9LFLal1Gs61+QB7HvTfQQ0aXwC5LGT8PEt1gS0CWKktKe6ysPTAy3cBC5MeiIg==
+tailwind-merge@^2.5.3:
+  version "2.5.4"
+  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-2.5.4.tgz#4bf574e81fa061adeceba099ae4df56edcee78d1"
+  integrity sha512-0q8cfZHMu9nuYP/b5Shb7Y7Sh1B7Nnl5GqNr1U+n2p6+mybvRtayrQ+0042Z5byvTA8ihjlP8Odo8/VnHbZu4Q==
 
-tailwindcss@^3.4.12, tailwindcss@~3.4.4:
+tailwindcss@^3.4.13:
+  version "3.4.14"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.14.tgz#6dd23a7f54ec197b19159e91e3bb1e55e7aa73ac"
+  integrity sha512-IcSvOcTRcUtQQ7ILQL5quRDg7Xs93PdJEk1ZLbhhvJc7uj/OAhYOnruEiwnGgBvUtaUAJ8/mhSw1o8L2jCiENA==
+  dependencies:
+    "@alloc/quick-lru" "^5.2.0"
+    arg "^5.0.2"
+    chokidar "^3.5.3"
+    didyoumean "^1.2.2"
+    dlv "^1.1.3"
+    fast-glob "^3.3.0"
+    glob-parent "^6.0.2"
+    is-glob "^4.0.3"
+    jiti "^1.21.0"
+    lilconfig "^2.1.0"
+    micromatch "^4.0.5"
+    normalize-path "^3.0.0"
+    object-hash "^3.0.0"
+    picocolors "^1.0.0"
+    postcss "^8.4.23"
+    postcss-import "^15.1.0"
+    postcss-js "^4.0.1"
+    postcss-load-config "^4.0.1"
+    postcss-nested "^6.0.1"
+    postcss-selector-parser "^6.0.11"
+    resolve "^1.22.2"
+    sucrase "^3.32.0"
+
+tailwindcss@~3.4.4:
   version "3.4.12"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.12.tgz#fd3b67c6d2c04d9d7bfa13e3fc70ccef9fef0455"
   integrity sha512-Htf/gHj2+soPb9UayUNci/Ja3d8pTmu9ONTfh4QY8r3MATTZOzmv6UYWF7ZwikEIC8okpfqmGqrmDehua8mF8w==
@@ -7715,6 +7823,14 @@ tinyglobby@0.2.6, tinyglobby@^0.2.6:
   integrity sha512-NbBoFBpqfcgd1tCiO8Lkfdk+xrA7mlLR9zgvZcZWQQwU63XAfUePyd6wZBaU93Hqw347lHnwFzttAkemHzzz4g==
   dependencies:
     fdir "^6.3.0"
+    picomatch "^4.0.2"
+
+tinyglobby@^0.2.9:
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/tinyglobby/-/tinyglobby-0.2.9.tgz#6baddd1b0fe416403efb0dd40442c7d7c03c1c66"
+  integrity sha512-8or1+BGEdk1Zkkw2ii16qSS7uVrQJPre5A9o/XkWPATkk23FZh/15BKFxPnlTy6vkljZxLqYCzzBMj30ZrSvjw==
+  dependencies:
+    fdir "^6.4.0"
     picomatch "^4.0.2"
 
 tmp@^0.2.0:

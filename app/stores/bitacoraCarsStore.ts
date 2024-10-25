@@ -1,4 +1,4 @@
-import type { bitacora_cars, bitacora_cars_form, bitacora_cars_sort_enum } from '@/types/bitacora_cars';
+import type { bitacora_cars_form, bitacora_cars_sort_enum } from '@/types/bitacora_cars';
 
 export const useBitacoraCarsStore = defineStore('bitacoraCars', () => {
   const searchString = ref<string>('');
@@ -7,7 +7,6 @@ export const useBitacoraCarsStore = defineStore('bitacoraCars', () => {
   const pagesLoaded = ref<number[]>([]);
   const sortBy = ref<bitacora_cars_sort_enum>('a.name_es');
   const filterIsActive = ref<boolean[]>([]);
-  const rows = ref<{ [k: string]: bitacora_cars[] }>({});
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
   const isDownloading = ref<boolean>(false);
@@ -28,7 +27,6 @@ export const useBitacoraCarsStore = defineStore('bitacoraCars', () => {
     totalRows,
     isLoading,
     isDownloading,
-    rows,
     formModel,
     selectedRowId,
     selectedRowData,

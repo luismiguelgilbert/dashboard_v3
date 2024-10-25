@@ -1,4 +1,4 @@
-import type { bitacora_places, bitacora_places_form, bitacora_places_sort_enum } from '@/types/bitacora_places';
+import type { bitacora_places_form, bitacora_places_sort_enum } from '@/types/bitacora_places';
 
 export const useBitacoraPlacesStore = defineStore('bitacoraPlaces', () => {
   const searchString = ref<string>('');
@@ -7,7 +7,6 @@ export const useBitacoraPlacesStore = defineStore('bitacoraPlaces', () => {
   const pagesLoaded = ref<number[]>([]);
   const sortBy = ref<bitacora_places_sort_enum>('a.name_es');
   const filterIsActive = ref<boolean[]>([]);
-  const rows = ref<{ [k: string]: bitacora_places[] }>({});
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
   const isDownloading = ref<boolean>(false);
@@ -28,7 +27,6 @@ export const useBitacoraPlacesStore = defineStore('bitacoraPlaces', () => {
     totalRows,
     isLoading,
     isDownloading,
-    rows,
     formModel,
     selectedRowId,
     selectedRowData,

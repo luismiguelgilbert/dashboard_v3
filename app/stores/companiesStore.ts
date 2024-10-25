@@ -1,4 +1,4 @@
-import type { sys_companies, sys_companies_form, sys_companies_sort_enum } from '@/types/sys_companies';
+import type { sys_companies_form, sys_companies_sort_enum } from '@/types/sys_companies';
 
 export const useCompaniesStore = defineStore('companies', () => {
   const searchString = ref<string>('');
@@ -7,7 +7,6 @@ export const useCompaniesStore = defineStore('companies', () => {
   const pagesLoaded = ref<number[]>([]);
   const sortBy = ref<sys_companies_sort_enum>('a.name_es');
   const filterIsActive = ref<boolean[]>([]);
-  const rows = ref<{ [k: string]: sys_companies[] }>({});
   const totalRows = ref<number>(0);
   const isLoading = ref<boolean>(false);
   const isDownloading = ref<boolean>(false);
@@ -28,7 +27,6 @@ export const useCompaniesStore = defineStore('companies', () => {
     totalRows,
     isLoading,
     isDownloading,
-    rows,
     formModel,
     selectedRowId,
     selectedRowData,

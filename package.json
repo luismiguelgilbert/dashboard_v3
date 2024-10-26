@@ -23,6 +23,7 @@
     "@vueuse/core": "^11.0.3",
     "crypto-js": "^4.2.0",
     "exceljs": "^4.4.0",
+    "performant-array-to-tree": "^1.11.0",
     "pg": "^8.12.0",
     "uuid": "^10.0.0",
     "vue": "latest",
